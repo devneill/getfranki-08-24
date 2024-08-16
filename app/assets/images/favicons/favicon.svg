@@ -1,8 +1,8 @@
-<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1080">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1080">
   <defs>
     <style>
       path {
-        fill: black;
+        fill: #000;
         stroke-width: 0px;
       }
     @media (prefers-color-scheme: dark) {
