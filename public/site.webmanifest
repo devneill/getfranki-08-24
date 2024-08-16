@@ -1,6 +1,6 @@
 {
-	"name": "Epic Notes",
-	"short_name": "Epic Notes",
+	"name": "GetFranki",
+	"short_name": "GetFranki",
 	"start_url": "/",
 	"icons": [
 		{
@@ -14,7 +14,7 @@
 			"type": "image/png"
 		}
 	],
-	"theme_color": "#A9ADC1",
-	"background_color": "#1f2028",
+	"theme_color": "#579789",
+	"background_color": "#DDDCCD",
 	"display": "standalone"
 }
