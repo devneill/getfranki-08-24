@@ -210,7 +210,7 @@ function App() {
 			env={data.ENV}
 		>
 			<div className="flex h-screen flex-col justify-between">
-				<header className="container py-6">
+				<header className="container">
 					<nav className="flex flex-wrap items-center justify-between gap-4 sm:flex-nowrap md:gap-8">
 						<Logo />
 						<div className="ml-auto hidden max-w-sm flex-1 sm:block">
@@ -225,7 +225,6 @@ function App() {
 								</Button>
 							)}
 						</div>
-						<div className="block w-full sm:hidden">{searchBar}</div>
 					</nav>
 				</header>
 
@@ -246,13 +245,12 @@ function App() {
 
 function Logo() {
 	return (
-		<Link to="/" className="group grid leading-snug">
-			<span className="font-light transition group-hover:-translate-x-1">
-				get
-			</span>
-			<span className="font-bold transition group-hover:translate-x-1">
-				franki
-			</span>
+		<Link to="/">
+			<Icon
+				name="logo-text"
+				title="logo"
+				className="size-28 transition hover:translate-x-2"
+			/>
 		</Link>
 	)
 }
