@@ -9,6 +9,7 @@ import {
 import { cn } from '#app/utils/misc.tsx'
 import { logos } from './logos/logos.ts'
 import { Button } from '#app/components/ui/button.js'
+import { useState } from 'react'
 
 export const meta: MetaFunction = () => [{ title: 'GetFranki' }]
 
@@ -30,39 +31,63 @@ const rowClasses: Record<(typeof logos)[number]['row'], string> = {
 }
 
 export default function Index() {
+	const featureText = {
+		bookings: 'Bookings description',
+		chat: 'Chat description',
+		notes: 'Notes description',
+		files: 'Files description',
+		invoicing: 'Invoicing description',
+		payments: 'Payments description',
+		commission: 'Commission description',
+	}
+	const [activeFeature, setActiveFeature] = useState('bookings')
+
 	return (
 		<main className="font-poppins grid h-full place-items-center">
 			<div className="grid place-items-center px-4 py-10 xl:grid-cols-2 xl:gap-24">
 				<div className="flex max-w-lg flex-col items-center gap-8 text-center xl:order-2 xl:items-start xl:text-left">
-					<h1 className="animate-slide-top text-4xl font-bold leading-normal text-foreground [animation-fill-mode:backwards] sm:text-6xl xl:mt-2 xl:animate-slide-left xl:text-xl/6 xl:leading-10 xl:[animation-delay:0.3s] xl:[animation-fill-mode:backwards]">
+					<h1 className="animate-slide-top text-4xl font-extrabold leading-normal text-foreground [animation-fill-mode:backwards] sm:text-6xl xl:mt-2 xl:animate-slide-left xl:text-xl/6 xl:leading-10 xl:[animation-delay:0.3s] xl:[animation-fill-mode:backwards]">
 						Run your events,
 						<br />
-						<span className="rounded bg-foreground px-2 text-background shadow-xl">
-							in one place.
+						<span className="relative whitespace-nowrap">
+							<span className="absolute -bottom-1 -left-3 -right-3 -top-1 rounded-md bg-foreground"></span>
+							<span className="relative text-background">in one place</span>
 						</span>
 					</h1>
 					<p
 						data-paragraph
 						className="animate-slide-top text-lg text-muted-foreground [animation-fill-mode:backwards] md:text-2xl xl:mt-2 xl:animate-slide-left xl:text-xl/6 xl:leading-10 xl:[animation-delay:0.3s] xl:[animation-fill-mode:backwards]"
 					>
-						Quit managing suppliers through multiple apps. <br />
-						Let Franki do it for you.
+						The event management tool with all you need to run large-scale
+						events, with multiple suppliers, and make your commission
+						automatically.
 					</p>
-					<Button size="wide">🍔 Get Started</Button>
+					{/* Quit managing suppliers through multiple apps. <br />
+					Let Franki do it for you. */}
+					<Button size="wide">
+						Get Started <Icon name="arrow-right" className="ml-2 font-bold" />
+					</Button>
 					<p
 						data-paragraph
-						className="animate-slide-top text-lg text-muted-foreground [animation-fill-mode:backwards] md:text-2xl xl:mt-2 xl:animate-slide-left xl:text-xl/6 xl:leading-10 xl:[animation-delay:0.3s] xl:[animation-fill-mode:backwards]"
+						className="animate-slide-top text-sm text-muted-foreground [animation-fill-mode:backwards] md:text-2xl xl:mt-2 xl:animate-slide-left xl:text-xl/6 xl:leading-10 xl:[animation-delay:0.3s] xl:[animation-fill-mode:backwards]"
 					>
-						<span className="font-bold text-green-600">R1000</span> off for the
-						first 20 customers 🚀
+						<span className="font-bold text-green-600">
+							<Icon size="md" className="mr-1" name="rocket" /> R2000
+						</span>{' '}
+						off for the first 10 customers (3 left)
 					</p>
 					<p
 						data-paragraph
-						className="w-full rounded-md border p-8 text-lg text-muted-foreground md:text-2xl xl:mt-2 xl:animate-slide-left xl:text-xl/6 xl:leading-10 xl:[animation-delay:0.3s] xl:[animation-fill-mode:backwards]"
+						className="w-full p-8 text-lg text-muted-foreground md:text-2xl xl:mt-2 xl:animate-slide-left xl:text-xl/6 xl:leading-10 xl:[animation-delay:0.3s] xl:[animation-fill-mode:backwards]"
 					>
-						Testimonials here
+						"Oh my zeus. This app is amazing"
+						<div className="mt-4 flex items-center justify-center gap-4">
+							<div className="size-12 rounded-full bg-gray-300" />
+							@chefollie
+						</div>
 					</p>
 				</div>
+				{/* Make the icons below represent all the tasks that are normally scatted across multiple apps.*/}
 				<ul className="mt-16 flex max-w-3xl flex-wrap justify-center gap-2 sm:gap-4 xl:mt-0 xl:grid xl:grid-flow-col xl:grid-cols-5 xl:grid-rows-6">
 					<TooltipProvider>
 						{logos.map((logo, i) => (
@@ -79,7 +104,7 @@ export default function Index() {
 									<TooltipTrigger asChild>
 										<a
 											href={logo.href}
-											className="grid size-20 place-items-center rounded-2xl bg-violet-600/10 p-4 transition hover:-rotate-6 hover:bg-violet-600/15 dark:bg-violet-200 dark:hover:bg-violet-100 sm:size-24"
+											className="grid size-20 place-items-center rounded-2xl bg-secondary/70 p-4 transition hover:-rotate-6 hover:bg-primary/15 dark:bg-violet-200 dark:hover:bg-violet-100 sm:size-24"
 										>
 											<img src={logo.src} alt="" />
 										</a>
@@ -90,10 +115,12 @@ export default function Index() {
 						))}
 					</TooltipProvider>
 				</ul>
+				<Icon size="xl" name="arrow-down" className="mt-16" />
+				<Icon name="logo" className="mt-8 size-28" />
 				<div className="mt-16 flex w-full flex-col gap-8 text-center">
 					<p
 						data-paragraph
-						className="rounded-md bg-red-100/50 p-8 text-lg text-muted-foreground md:text-2xl xl:mt-2 xl:animate-slide-left xl:text-xl/6 xl:leading-10 xl:[animation-delay:0.3s] xl:[animation-fill-mode:backwards]"
+						className="rounded-md bg-red-200/40 p-8 text-lg text-muted-foreground md:text-2xl xl:mt-2 xl:animate-slide-left xl:text-xl/6 xl:leading-10 xl:[animation-delay:0.3s] xl:[animation-fill-mode:backwards]"
 					>
 						❌ Seperate chat and email threads
 						<br />
@@ -104,12 +131,13 @@ export default function Index() {
 					</p>
 					<p
 						data-paragraph
-						className="p-8 text-lg text-muted-foreground md:text-2xl xl:mt-2 xl:animate-slide-left xl:text-xl/6 xl:leading-10 xl:[animation-delay:0.3s] xl:[animation-fill-mode:backwards]"
+						className="text-md p-8 text-muted-foreground md:text-2xl xl:mt-2 xl:animate-slide-left xl:text-xl/6 xl:leading-10 xl:[animation-delay:0.3s] xl:[animation-fill-mode:backwards]"
 					>
-						↓ There's an easier way
+						<Icon size="md" className="mr-2" name="arrow-down" />
+						There's an easier way
 					</p>
 					<h2 className="animate-slide-top text-2xl font-bold leading-normal text-foreground [animation-fill-mode:backwards] sm:text-6xl xl:mt-2 xl:animate-slide-left xl:text-xl/6 xl:leading-10 xl:[animation-delay:0.3s] xl:[animation-fill-mode:backwards]">
-						See every message, calendar and payment in one place, with your
+						Every booking, message and payment in one place, with your
 						commission{' '}
 						<span className="underline underline-offset-2">automatically</span>{' '}
 						included.
@@ -117,46 +145,186 @@ export default function Index() {
 					</h2>
 					<p
 						data-paragraph
-						className="p-8 text-lg text-muted-foreground md:text-2xl xl:mt-2 xl:animate-slide-left xl:text-xl/6 xl:leading-10 xl:[animation-delay:0.3s] xl:[animation-fill-mode:backwards]"
+						className="text-lg text-muted-foreground md:text-2xl xl:mt-2 xl:animate-slide-left xl:text-xl/6 xl:leading-10 xl:[animation-delay:0.3s] xl:[animation-fill-mode:backwards]"
 					>
-						expand on value here
+						Book suppliers, create invoices, process payments and get paid with
+						ease. Spend your time creating the ultimate occasion for your
+						clients, not dealing with logistics. GetFranki provides you with the
+						organisation you need to run your events, EASILY.
 					</p>
-					<p
-						data-paragraph
-						className="w-full rounded-md border p-8 text-lg text-muted-foreground md:text-2xl xl:mt-2 xl:animate-slide-left xl:text-xl/6 xl:leading-10 xl:[animation-delay:0.3s] xl:[animation-fill-mode:backwards]"
-					>
-						Team overview here
-					</p>
+					<div className="flex flex-col">
+						<div className="flex w-full flex-wrap justify-center gap-2">
+							<div
+								className={cn(
+									'flex size-24 cursor-pointer flex-col items-center gap-2',
+									{
+										'text-primary': activeFeature === 'bookings',
+									},
+								)}
+								onClick={() => setActiveFeature('bookings')}
+							>
+								<Icon size="xl" name="pencil-1" />
+								<p className="font-bold">Bookings</p>
+							</div>
+							<div
+								className={cn(
+									'flex size-24 cursor-pointer flex-col items-center gap-2',
+									{
+										'text-primary': activeFeature === 'chat',
+									},
+								)}
+								onClick={() => setActiveFeature('chat')}
+							>
+								<Icon size="xl" name="camera" />
+								<p className="font-bold">Chat</p>
+							</div>
+							<div
+								className={cn(
+									'flex size-24 cursor-pointer flex-col items-center gap-2',
+									{
+										'text-primary': activeFeature === 'notes',
+									},
+								)}
+								onClick={() => setActiveFeature('notes')}
+							>
+								<Icon size="xl" name="avatar" />
+								<p className="font-bold">Notes</p>
+							</div>
+							<div
+								className={cn(
+									'flex size-24 cursor-pointer flex-col items-center gap-2',
+									{
+										'text-primary': activeFeature === 'files',
+									},
+								)}
+								onClick={() => setActiveFeature('files')}
+							>
+								<Icon size="xl" name="avatar" />
+								<p className="font-bold">Files</p>
+							</div>
+							<div
+								className={cn(
+									'flex size-24 cursor-pointer flex-col items-center gap-2',
+									{
+										'text-primary': activeFeature === 'invoicing',
+									},
+								)}
+								onClick={() => setActiveFeature('invoicing')}
+							>
+								<Icon size="xl" name="avatar" />
+								<p className="font-bold">Invoicing</p>
+							</div>
+							<div
+								className={cn(
+									'flex size-24 cursor-pointer flex-col items-center gap-2',
+									{
+										'text-primary': activeFeature === 'payments',
+									},
+								)}
+								onClick={() => setActiveFeature('payments')}
+							>
+								<Icon size="xl" name="moon" />
+								<p className="font-bold">Payments</p>
+							</div>
+							<div
+								className={cn(
+									'flex size-24 cursor-pointer flex-col items-center gap-2',
+									{
+										'text-primary': activeFeature === 'commission',
+									},
+								)}
+								onClick={() => setActiveFeature('commission')}
+							>
+								<Icon size="xl" name="avatar" />
+								<p className="font-bold">Commission</p>
+							</div>
+						</div>
+						<div className="rounded-md bg-secondary/70 p-8">
+							<p
+								data-paragraph
+								className="text-lg text-muted-foreground md:text-2xl xl:mt-2 xl:animate-slide-left xl:text-xl/6 xl:leading-10 xl:[animation-delay:0.3s] xl:[animation-fill-mode:backwards]"
+							>
+								{featureText[activeFeature]}
+							</p>
+						</div>
+					</div>
+					<div className="mt-8 flex flex-col gap-10 text-muted-foreground md:text-2xl xl:mt-2 xl:animate-slide-left xl:text-xl/6 xl:leading-10 xl:[animation-delay:0.3s] xl:[animation-fill-mode:backwards]">
+						<h3 className="font-bold text-primary">Meet the team</h3>
+						<div className="grid grid-cols-2 place-items-center gap-4 text-left">
+							<div className="flex w-full items-center gap-4">
+								<div className="size-12 rounded-full bg-gray-300" />
+								<p>Ollie Swart</p>
+							</div>
+							<div className="flex w-full items-center gap-4 text-left">
+								<div className="size-12 min-w-12 rounded-full bg-gray-300" />
+								<p>Keegs Foreman</p>
+							</div>
+							<div className="flex w-full items-center gap-4 text-left">
+								<div className="size-12 min-w-12 rounded-full bg-gray-300" />
+								<p>Nick Schooling</p>
+							</div>
+							<div className="flex w-full items-center gap-4 text-left">
+								<div className="size-12 rounded-full bg-gray-300" />
+								<p>Dev Neill</p>
+							</div>
+						</div>
+						<p
+							data-paragraph
+							className="text-lg text-muted-foreground md:text-2xl xl:mt-2 xl:animate-slide-left xl:text-xl/6 xl:leading-10 xl:[animation-delay:0.3s] xl:[animation-fill-mode:backwards]"
+						>
+							Together, we've organised 1000+ events in different areas of the
+							Western Cape. We've seen the chaos that comes with organising
+							events, and we've built a solution to make it easy for you.
+						</p>
+					</div>
+					<h3 className="mt-8 font-bold text-primary">Pricing</h3>
 					<h2 className="animate-slide-top text-2xl font-bold leading-normal text-foreground [animation-fill-mode:backwards] sm:text-6xl xl:mt-2 xl:animate-slide-left xl:text-xl/6 xl:leading-10 xl:[animation-delay:0.3s] xl:[animation-fill-mode:backwards]">
 						Leave the chaos behind. Run your event from one, powerful dashboard.
 						<br />
 					</h2>
 					<p
 						data-paragraph
-						className="w-full rounded-md border p-8 text-lg text-muted-foreground md:text-2xl xl:mt-2 xl:animate-slide-left xl:text-xl/6 xl:leading-10 xl:[animation-delay:0.3s] xl:[animation-fill-mode:backwards]"
+						className="animate-slide-top text-sm text-muted-foreground [animation-fill-mode:backwards] md:text-2xl xl:mt-2 xl:animate-slide-left xl:text-xl/6 xl:leading-10 xl:[animation-delay:0.3s] xl:[animation-fill-mode:backwards]"
 					>
-						Pricing tier 1 here
+						<span className="font-bold text-green-600">
+							<Icon size="md" className="mr-1" name="rocket" /> R2000
+						</span>{' '}
+						off for the first 10 customers (3 left)
 					</p>
+					<div className="flex h-96 w-full flex-col justify-between rounded-md bg-secondary/70 p-8 text-lg text-muted-foreground md:text-2xl xl:mt-2 xl:animate-slide-left xl:text-xl/6 xl:leading-10 xl:[animation-delay:0.3s] xl:[animation-fill-mode:backwards]">
+						<p className="font-bold">Starter</p>
+						<Button size="wide">
+							Get started
+							<Icon name="arrow-right" className="ml-2 font-bold" />
+						</Button>
+					</div>
+					<div className="flex h-96 w-full flex-col justify-between rounded-md border-2 border-primary bg-secondary/70 p-8 text-lg text-muted-foreground md:text-2xl xl:mt-2 xl:animate-slide-left xl:text-xl/6 xl:leading-10 xl:[animation-delay:0.3s] xl:[animation-fill-mode:backwards]">
+						<p className="font-bold">Pro</p>
+						<Button size="wide">
+							Get started
+							<Icon name="arrow-right" className="ml-2 font-bold" />
+						</Button>
+					</div>
+					<h3 className="mt-8 font-bold text-primary">FAQs</h3>
 					<p
 						data-paragraph
-						className="w-full rounded-md border p-8 text-lg text-muted-foreground md:text-2xl xl:mt-2 xl:animate-slide-left xl:text-xl/6 xl:leading-10 xl:[animation-delay:0.3s] xl:[animation-fill-mode:backwards]"
-					>
-						Pricing tier 2 here
-					</p>
-					<p
-						data-paragraph
-						className="w-full rounded-md border p-8 text-lg text-muted-foreground md:text-2xl xl:mt-2 xl:animate-slide-left xl:text-xl/6 xl:leading-10 xl:[animation-delay:0.3s] xl:[animation-fill-mode:backwards]"
+						className="w-full rounded-md border border-gray-300 p-8 text-lg text-muted-foreground md:text-2xl xl:mt-2 xl:animate-slide-left xl:text-xl/6 xl:leading-10 xl:[animation-delay:0.3s] xl:[animation-fill-mode:backwards]"
 					>
 						FAQs here
 					</p>
 					<p
 						data-paragraph
-						className="w-full rounded-md border p-8 text-lg text-muted-foreground md:text-2xl xl:mt-2 xl:animate-slide-left xl:text-xl/6 xl:leading-10 xl:[animation-delay:0.3s] xl:[animation-fill-mode:backwards]"
+						className="w-full p-8 text-lg text-muted-foreground md:text-2xl xl:mt-2 xl:animate-slide-left xl:text-xl/6 xl:leading-10 xl:[animation-delay:0.3s] xl:[animation-fill-mode:backwards]"
 					>
-						More testimonials here
+						"I never have to negotiate commission again. I just foward the
+						invoice. The supplier and I get paid. It's that simple."
+						<div className="mt-4 flex items-center justify-center gap-4">
+							<div className="size-12 rounded-full bg-gray-300" />
+							@ann_man
+						</div>
 					</p>
 					<h2 className="animate-slide-top text-2xl font-bold leading-normal text-foreground [animation-fill-mode:backwards] sm:text-6xl xl:mt-2 xl:animate-slide-left xl:text-xl/6 xl:leading-10 xl:[animation-delay:0.3s] xl:[animation-fill-mode:backwards]">
-						One more catchy headline here
+						Focus on the occasion, not the admin.
 						<br />
 					</h2>
 				</div>
@@ -174,7 +342,10 @@ export default function Index() {
 					/>
 				</div>
 				<div className="m-10 flex flex-row gap-6">
-					<Button size="wide">Get Started</Button>
+					<Button size="wide">
+						Get started
+						<Icon name="arrow-right" className="ml-2 font-bold" />
+					</Button>
 				</div>
 			</div>
 		</main>

@@ -232,7 +232,7 @@ function App() {
 					<Outlet />
 				</div>
 
-				<div className="container flex justify-between pb-5">
+				<div className="container flex items-center justify-between pb-5">
 					<Logo />
 					<ThemeSwitch userPreference={data.requestInfo.userPrefs.theme} />
 				</div>
@@ -249,7 +249,7 @@ function Logo() {
 			<Icon
 				name="logo-text"
 				title="logo"
-				className="size-28 transition hover:translate-x-2"
+				className="h-20 w-32 transition hover:translate-x-2"
 			/>
 		</Link>
 	)
