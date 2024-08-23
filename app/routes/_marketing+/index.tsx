@@ -1,4 +1,6 @@
 import { type MetaFunction } from '@remix-run/node'
+import { useEffect, useRef, useState } from 'react'
+import { Button } from '#app/components/ui/button.js'
 import { Icon } from '#app/components/ui/icon.js'
 import {
 	Tooltip,
@@ -8,8 +10,6 @@ import {
 } from '#app/components/ui/tooltip.tsx'
 import { cn } from '#app/utils/misc.tsx'
 import { logos } from './logos/logos.ts'
-import { Button } from '#app/components/ui/button.js'
-import { useEffect, useRef, useState } from 'react'
 
 export const meta: MetaFunction = () => [{ title: 'GetFranki' }]
 
