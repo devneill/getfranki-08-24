@@ -232,9 +232,11 @@ function App() {
 					<Outlet />
 				</div>
 
-				<div className="container flex items-center justify-between pb-5">
-					<Logo />
-					<ThemeSwitch userPreference={data.requestInfo.userPrefs.theme} />
+				<div className="bg-secondary/70">
+					<div className="container flex items-center justify-between pb-5">
+						<Logo />
+						<ThemeSwitch userPreference={data.requestInfo.userPrefs.theme} />
+					</div>
 				</div>
 			</div>
 			<EpicToaster closeButton position="top-center" theme={theme} />
