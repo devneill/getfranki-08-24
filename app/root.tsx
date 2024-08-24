@@ -213,14 +213,20 @@ function App() {
 				<header className="container">
 					<nav className="flex flex-wrap items-center justify-between gap-4 sm:flex-nowrap md:gap-8">
 						<Logo />
-						<div className="ml-auto hidden max-w-sm flex-1 sm:block">
-							{searchBar}
+						<div className="flex gap-8">
+							<a href="#pricing">Pricing</a>
+							<a href="#features">Features</a>
 						</div>
 						<div className="flex items-center gap-10">
 							{user ? (
 								<UserDropdown />
 							) : (
-								<Button asChild variant="default" size="lg">
+								<Button
+									asChild
+									className="min-w-32"
+									variant="default"
+									size="lg"
+								>
 									<Link to="/login">Log In</Link>
 								</Button>
 							)}

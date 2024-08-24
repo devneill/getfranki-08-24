@@ -166,69 +166,17 @@ function Agitation() {
 
 function Solution() {
 	const feature = {
-		bookings: (
-			<p
-				data-paragraph
-				key="bookings"
-				className="text-lg text-muted-foreground duration-700 animate-in fade-in"
-			>
-				Bookings description
-			</p>
-		),
-		chat: (
-			<p
-				data-paragraph
-				key="chat"
-				className="text-lg text-muted-foreground duration-700 animate-in fade-in"
-			>
-				Chat description
-			</p>
-		),
-		notes: (
-			<p
-				data-paragraph
-				key="notes"
-				className="text-lg text-muted-foreground duration-700 animate-in fade-in"
-			>
-				Notes description
-			</p>
-		),
-		files: (
-			<p
-				data-paragraph
-				key="files"
-				className="text-lg text-muted-foreground duration-700 animate-in fade-in"
-			>
-				Files description
-			</p>
-		),
-		invoicing: (
-			<p
-				data-paragraph
-				key="invoicing"
-				className="text-lg text-muted-foreground duration-700 animate-in fade-in"
-			>
-				Invoicing description
-			</p>
-		),
-		payments: (
-			<p
-				data-paragraph
-				key="payments"
-				className="text-lg text-muted-foreground duration-700 animate-in fade-in"
-			>
-				Payments description
-			</p>
-		),
+		bookings: <FeatureContent key="bookings" content="Bookings description" />,
 		commission: (
-			<p
-				data-paragraph
-				key="commission"
-				className="text-lg text-muted-foreground duration-700 animate-in fade-in"
-			>
-				Commission description
-			</p>
+			<FeatureContent key="commission" content="Commission description" />
 		),
+		chat: <FeatureContent key="chat" content="Chat description" />,
+		notes: <FeatureContent key="notes" content="Notes description" />,
+		files: <FeatureContent key="files" content="Files description" />,
+		invoicing: (
+			<FeatureContent key="invoicing" content="Invoicing description" />
+		),
+		payments: <FeatureContent key="payments" content="Payments description" />,
 	}
 
 	const features = Object.keys(feature) as FeatureKey[]
@@ -263,7 +211,7 @@ function Solution() {
 		setFeatureClicked(true)
 	}
 	return (
-		<div className="flex flex-col items-center gap-10 lg:gap-12">
+		<div id="features" className="flex flex-col items-center gap-10 lg:gap-12">
 			<section className="flex max-w-3xl flex-col gap-10 px-5 md:px-0">
 				<h2 className="text-3xl font-bold leading-normal tracking-tight text-foreground sm:text-4xl xl:text-5xl">
 					Every booking, message and payment in one place, with your commission{' '}
@@ -284,7 +232,7 @@ function Solution() {
 			<div className="flex flex-col items-center">
 				<div className="flex max-w-3xl flex-wrap justify-center gap-2 xl:gap-4">
 					{features.map((feature) => (
-						<Feature
+						<FeatureTrigger
 							key={feature}
 							name={feature}
 							isActive={activeFeature === feature}
@@ -302,7 +250,7 @@ function Solution() {
 	)
 }
 
-function Feature({
+function FeatureTrigger({
 	isActive,
 	setActive,
 	name,
@@ -323,6 +271,18 @@ function Feature({
 				{name.charAt(0).toUpperCase() + name.slice(1)}
 			</p>
 		</div>
+	)
+}
+
+function FeatureContent({ content }: { content: string }) {
+	return (
+		<p
+			data-paragraph
+			key="commission"
+			className="text-lg text-muted-foreground duration-700 animate-in fade-in"
+		>
+			{content}
+		</p>
 	)
 }
 
@@ -359,9 +319,12 @@ function NameTag({ name = '' }) {
 
 function Pricing() {
 	return (
-		<div className="flex w-full max-w-5xl flex-col items-center gap-10 px-5 pt-24 lg:gap-12">
+		<div
+			id="pricing"
+			className="flex w-full max-w-5xl flex-col items-center gap-10 px-5 pt-24 lg:gap-12"
+		>
 			<div className="flex max-w-3xl flex-col gap-10">
-				<h3 className="text-center font-bold text-primary">Pricing</h3>
+				<h1 className="text-center font-bold text-primary">Pricing</h1>
 				<h2 className="text-center text-3xl font-bold leading-normal tracking-tight text-foreground sm:text-4xl xl:text-5xl">
 					Leave the chaos behind. Run your event from one, powerful dashboard.
 					<br />
