@@ -37,13 +37,13 @@ export default function Index() {
 				<div className="grid place-items-center px-5 xl:grid-cols-2 xl:gap-48">
 					<section className="flex max-w-lg flex-col items-center gap-10 py-24 text-center lg:max-w-2xl lg:gap-12 xl:order-2 xl:items-start xl:text-left">
 						<Open />
-						<div className="animate-slide-top fill-mode-backwards [animation-delay:1.4s] xl:hidden">
+						<div className="animate-slide-top fill-mode-backwards [animation-delay:1s] xl:hidden">
 							<Testimonial index={0} />
 						</div>
 					</section>
 					<IconWall />
 				</div>
-				<div className="hidden xl:block">
+				<div className="hidden animate-slide-top fill-mode-backwards [animation-delay:2.8s] xl:block">
 					<Testimonial index={0} />
 				</div>
 			</div>
@@ -65,9 +65,9 @@ function Open() {
 		<div className="flex flex-col gap-10 lg:gap-12">
 			<Icon
 				name="logo"
-				className="-mb-12 -ml-4 hidden size-28 self-start xl:block"
+				className="-mb-12 -ml-4 hidden size-28 animate-slide-left self-start fill-mode-backwards [animation-delay:1.5s] xl:block"
 			/>
-			<h1 className="animate-slide-top text-4xl font-extrabold leading-normal tracking-tight text-foreground sm:text-5xl xl:animate-slide-left xl:text-6xl xl:[animation-delay:0.3s] xl:[animation-fill-mode:backwards]">
+			<h1 className="animate-slide-top text-4xl font-extrabold leading-normal tracking-tight text-foreground sm:text-5xl sm:leading-snug xl:animate-slide-left xl:text-6xl xl:leading-snug xl:[animation-delay:1.5s] xl:[animation-fill-mode:backwards]">
 				Run your events,
 				<br />
 				<span className="rounded-md bg-foreground px-3 py-1 text-background">
@@ -76,12 +76,12 @@ function Open() {
 			</h1>
 			<p
 				data-paragraph
-				className="animate-slide-top text-lg leading-relaxed text-muted-foreground [animation-delay:0.3s] [animation-fill-mode:backwards] xl:animate-slide-left xl:[animation-delay:0.3s] xl:[animation-fill-mode:backwards]"
+				className="animate-slide-top text-lg leading-relaxed text-muted-foreground [animation-delay:0.3s] [animation-fill-mode:backwards] xl:animate-slide-left xl:[animation-delay:1.9s] xl:[animation-fill-mode:backwards]"
 			>
 				The event management tool with all you need to run large-scale events,
 				with multiple suppliers, and make your commission automatically.
 			</p>
-			<div className="animate-slide-top space-y-4 [animation-delay:1.4s] [animation-fill-mode:backwards]">
+			<div className="animate-slide-top space-y-4 [animation-delay:0.5s] [animation-fill-mode:backwards] xl:[animation-delay:2.2s]">
 				<Button size="wide">
 					Get Started <Icon name="arrow-right" className="ml-2 font-bold" />
 				</Button>
@@ -126,7 +126,7 @@ function IconWall() {
 					))}
 				</TooltipProvider>
 			</ul>
-			<div className="flex animate-slide-top flex-col gap-2 [animation-delay:1.4s] [animation-fill-mode:backwards]">
+			<div className="flex animate-slide-top flex-col items-center gap-2 [animation-delay:1.4s] [animation-fill-mode:backwards] xl:flex-row">
 				<Icon
 					name="arrow-right-hand"
 					className="ml-8 hidden size-32 xl:block"
@@ -231,6 +231,7 @@ function Solution() {
 		),
 	}
 
+	const features = Object.keys(feature) as FeatureKey[]
 	type FeatureKey = keyof typeof feature
 	const [activeFeature, setActiveFeature] = useState<FeatureKey>('bookings')
 	const [featureClicked, setFeatureClicked] = useState(false)
@@ -282,90 +283,14 @@ function Solution() {
 			</section>
 			<div className="flex flex-col items-center">
 				<div className="flex max-w-3xl flex-wrap justify-center gap-2 xl:gap-4">
-					<div
-						className={cn(
-							'flex size-24 cursor-pointer flex-col items-center gap-2',
-							{
-								'text-primary': activeFeature === 'bookings',
-							},
-						)}
-						onClick={() => selectFeature('bookings')}
-					>
-						<Icon size="xl" name="booking" />
-						<p className="font-bold">Bookings</p>
-					</div>
-					<div
-						className={cn(
-							'flex size-24 cursor-pointer flex-col items-center gap-2',
-							{
-								'text-primary': activeFeature === 'chat',
-							},
-						)}
-						onClick={() => selectFeature('chat')}
-					>
-						<Icon size="xl" name="chat" />
-						<p className="font-bold">Chat</p>
-					</div>
-					<div
-						className={cn(
-							'flex size-24 cursor-pointer flex-col items-center gap-2',
-							{
-								'text-primary': activeFeature === 'notes',
-							},
-						)}
-						onClick={() => selectFeature('notes')}
-					>
-						<Icon size="xl" name="notes" />
-						<p className="font-bold">Notes</p>
-					</div>
-					<div
-						className={cn(
-							'flex size-24 cursor-pointer flex-col items-center gap-2',
-							{
-								'text-primary': activeFeature === 'files',
-							},
-						)}
-						onClick={() => selectFeature('files')}
-					>
-						<Icon size="xl" name="files" />
-						<p className="font-bold">Files</p>
-					</div>
-					<div
-						className={cn(
-							'flex size-24 cursor-pointer flex-col items-center gap-2',
-							{
-								'text-primary': activeFeature === 'invoicing',
-							},
-						)}
-						onClick={() => selectFeature('invoicing')}
-					>
-						<Icon size="xl" name="invoicing" />
-						<p className="font-bold">Invoicing</p>
-					</div>
-					<div
-						className={cn(
-							'flex size-24 cursor-pointer flex-col items-center gap-2',
-							{
-								'text-primary': activeFeature === 'payments',
-							},
-						)}
-						onClick={() => selectFeature('payments')}
-					>
-						<Icon size="xl" name="payments" />
-						<p className="font-bold">Payments</p>
-					</div>
-					<div
-						className={cn(
-							'flex size-24 cursor-pointer flex-col items-center gap-2',
-							{
-								'text-primary': activeFeature === 'commission',
-							},
-						)}
-						onClick={() => selectFeature('commission')}
-					>
-						<Icon size="xl" name="commission" />
-						<p className="font-bold">Commission</p>
-					</div>
+					{features.map((feature) => (
+						<Feature
+							key={feature}
+							name={feature}
+							isActive={activeFeature === feature}
+							setActive={() => selectFeature(feature)}
+						/>
+					))}
 				</div>
 				<div className="w-screen items-center bg-secondary/70 px-5 py-8">
 					<div className="mx-auto max-w-3xl text-left">
@@ -377,27 +302,39 @@ function Solution() {
 	)
 }
 
+function Feature({
+	isActive,
+	setActive,
+	name,
+}: {
+	isActive: boolean
+	setActive: () => void
+	name: string
+}) {
+	return (
+		<div
+			className={cn('flex size-24 cursor-pointer flex-col items-center gap-2', {
+				'text-primary': isActive,
+			})}
+			onClick={setActive}
+		>
+			<Icon size="xl" name={name} />
+			<p className="font-bold">
+				{name.charAt(0).toUpperCase() + name.slice(1)}
+			</p>
+		</div>
+	)
+}
+
 function Team() {
 	return (
 		<div className="flex max-w-3xl flex-col gap-10 px-5 leading-relaxed text-muted-foreground lg:gap-12">
 			<h3 className="text-center font-bold text-primary">Meet the team</h3>
 			<div className="grid grid-cols-2 gap-4 xl:gap-8">
-				<div className="flex items-center gap-4">
-					<div className="size-12 rounded-full bg-gray-300" />
-					<p>Ollie Swart</p>
-				</div>
-				<div className="flex items-center gap-4 text-left">
-					<div className="size-12 min-w-12 rounded-full bg-gray-300" />
-					<p>Keegs Foreman</p>
-				</div>
-				<div className="flex items-center gap-4 text-left">
-					<div className="size-12 min-w-12 rounded-full bg-gray-300" />
-					<p>Nick Schooling</p>
-				</div>
-				<div className="flex items-center gap-4 text-left">
-					<div className="size-12 rounded-full bg-gray-300" />
-					<p>Dev Neill</p>
-				</div>
+				<NameTag name="Ollie Swart" />
+				<NameTag name="Keegs Foreman" />
+				<NameTag name="Nick Schooling" />
+				<NameTag name="Dev Neill" />
 			</div>
 			<p
 				data-paragraph
@@ -407,6 +344,15 @@ function Team() {
 				Cape. We've seen the chaos that comes with organising events, and we've
 				built a solution to make it easy for you.
 			</p>
+		</div>
+	)
+}
+
+function NameTag({ name = '' }) {
+	return (
+		<div className="flex items-center gap-4">
+			<div className="size-12 rounded-full bg-gray-300" />
+			<p>{name}</p>
 		</div>
 	)
 }
