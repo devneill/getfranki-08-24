@@ -1,7 +1,13 @@
 import { type MetaFunction } from '@remix-run/node'
 import { useEffect, useRef, useState } from 'react'
+import {
+	Accordion,
+	AccordionItem,
+	AccordionTrigger,
+	AccordionContent,
+} from '#app/components/ui/accordion'
 import { Button } from '#app/components/ui/button.js'
-import { Icon } from '#app/components/ui/icon.js'
+import { Icon, type IconName } from '#app/components/ui/icon.js'
 import {
 	Tooltip,
 	TooltipContent,
@@ -211,7 +217,7 @@ function Solution() {
 		setFeatureClicked(true)
 	}
 	return (
-		<div id="features" className="flex flex-col items-center gap-10 lg:gap-12">
+		<div className="flex flex-col items-center">
 			<section className="flex max-w-3xl flex-col gap-10 px-5 md:px-0">
 				<h2 className="text-3xl font-bold leading-normal tracking-tight text-foreground sm:text-4xl xl:text-5xl">
 					Every booking, message and payment in one place, with your commission{' '}
@@ -221,7 +227,7 @@ function Solution() {
 				</h2>
 				<p
 					data-paragraph
-					className="text-lg leading-relaxed text-muted-foreground xl:text-left"
+					className="leading-relaxed text-muted-foreground xl:text-left"
 				>
 					Book suppliers, create invoices, process payments and get paid with
 					ease. Spend your time creating the ultimate occasion for your clients,
@@ -229,7 +235,7 @@ function Solution() {
 					you need to run your events, EASILY.
 				</p>
 			</section>
-			<div className="flex flex-col items-center">
+			<div id="features" className="flex flex-col items-center pt-10 xl:pt-12">
 				<div className="flex max-w-3xl flex-wrap justify-center gap-2 xl:gap-4">
 					{features.map((feature) => (
 						<FeatureTrigger
@@ -257,19 +263,20 @@ function FeatureTrigger({
 }: {
 	isActive: boolean
 	setActive: () => void
-	name: string
+	name: IconName
 }) {
 	return (
 		<div
-			className={cn('flex size-24 cursor-pointer flex-col items-center gap-2', {
-				'text-primary': isActive,
-			})}
+			className={cn(
+				'flex size-24 cursor-pointer flex-col items-center gap-2 text-sm font-semibold text-muted-foreground',
+				{
+					'text-primary': isActive,
+				},
+			)}
 			onClick={setActive}
 		>
 			<Icon size="xl" name={name} />
-			<p className="font-bold">
-				{name.charAt(0).toUpperCase() + name.slice(1)}
-			</p>
+			{name.charAt(0).toUpperCase() + name.slice(1)}
 		</div>
 	)
 }
@@ -279,7 +286,7 @@ function FeatureContent({ content }: { content: string }) {
 		<p
 			data-paragraph
 			key="commission"
-			className="text-lg text-muted-foreground duration-700 animate-in fade-in"
+			className="text-muted-foreground duration-700 animate-in fade-in"
 		>
 			{content}
 		</p>
@@ -296,10 +303,7 @@ function Team() {
 				<NameTag name="Nick Schooling" />
 				<NameTag name="Dev Neill" />
 			</div>
-			<p
-				data-paragraph
-				className="text-lg leading-relaxed text-muted-foreground"
-			>
+			<p data-paragraph className="leading-relaxed text-muted-foreground">
 				Together, we've organised 1000+ events in different areas of the Western
 				Cape. We've seen the chaos that comes with organising events, and we've
 				built a solution to make it easy for you.
@@ -359,15 +363,28 @@ function Pricing() {
 function FAQs() {
 	return (
 		<div className="flex w-full max-w-5xl flex-col gap-10 px-5 lg:gap-12">
-			<h3 className="text-center font-bold text-primary">
-				Frequently Asked Questions
-			</h3>
-			<p
-				data-paragraph
-				className="w-full rounded-md border border-gray-300 p-8 text-lg text-muted-foreground"
+			<h3 className="text-center font-bold">Frequently Asked Questions</h3>
+			<Accordion
+				type="multiple"
+				className="border-t border-muted-foreground/10"
 			>
-				FAQs here
-			</p>
+				<AccordionItem value="item-1">
+					<AccordionTrigger>Question</AccordionTrigger>
+					<AccordionContent>Answer</AccordionContent>
+				</AccordionItem>
+				<AccordionItem value="item-2">
+					<AccordionTrigger>Question</AccordionTrigger>
+					<AccordionContent>Answer</AccordionContent>
+				</AccordionItem>
+				<AccordionItem value="item-3">
+					<AccordionTrigger>Question</AccordionTrigger>
+					<AccordionContent>Answer</AccordionContent>
+				</AccordionItem>
+				<AccordionItem value="item-4">
+					<AccordionTrigger>Question</AccordionTrigger>
+					<AccordionContent>Answer</AccordionContent>
+				</AccordionItem>
+			</Accordion>
 		</div>
 	)
 }

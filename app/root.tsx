@@ -14,7 +14,6 @@ import {
 	Scripts,
 	ScrollRestoration,
 	useLoaderData,
-	useMatches,
 	useSubmit,
 } from '@remix-run/react'
 import { withSentry } from '@sentry/remix'
@@ -26,7 +25,6 @@ import faviconAssetUrl from './assets/images/favicons/favicon.svg'
 import maskIconAssetUrl from './assets/images/favicons/mask-icon.svg'
 import { GeneralErrorBoundary } from './components/error-boundary.tsx'
 import { EpicProgress } from './components/progress-bar.tsx'
-import { SearchBar } from './components/search-bar.tsx'
 import { useToast } from './components/toaster.tsx'
 import { Button } from './components/ui/button.tsx'
 import {
@@ -165,7 +163,10 @@ function Document({
 	allowIndexing?: boolean
 }) {
 	return (
-		<html lang="en" className={`${theme} h-full overflow-x-hidden`}>
+		<html
+			lang="en"
+			className={`${theme} h-full overflow-x-hidden scroll-smooth`}
+		>
 			<head>
 				<ClientHintCheck nonce={nonce} />
 				<Meta />
@@ -196,9 +197,6 @@ function App() {
 	const nonce = useNonce()
 	const user = useOptionalUser()
 	const theme = useTheme()
-	const matches = useMatches()
-	const isOnSearchPage = matches.find((m) => m.id === 'routes/users+/index')
-	const searchBar = isOnSearchPage ? null : <SearchBar status="idle" />
 	const allowIndexing = data.ENV.ALLOW_INDEXING !== 'false'
 	useToast(data.toast)
 
@@ -214,8 +212,8 @@ function App() {
 					<nav className="flex flex-wrap items-center justify-between gap-4 sm:flex-nowrap md:gap-8">
 						<Logo />
 						<div className="flex gap-8">
-							<a href="#pricing">Pricing</a>
-							<a href="#features">Features</a>
+							<Link to="#pricing">Pricing</Link>
+							<Link to="#features">Features</Link>
 						</div>
 						<div className="flex items-center gap-10">
 							{user ? (
