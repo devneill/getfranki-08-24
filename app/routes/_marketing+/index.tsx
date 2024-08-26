@@ -341,7 +341,7 @@ function Pricing() {
 				</p>
 			</div>
 			<div className="flex w-full flex-col gap-8 lg:flex-row lg:gap-10">
-				<div className="flex w-full flex-col justify-between gap-5 rounded-md bg-background p-8 text-foreground md:text-2xl">
+				<div className="flex w-full flex-col justify-between gap-5 rounded-md bg-background p-8 text-foreground">
 					<p className="text-lg font-bold">Starter</p>
 					<div className="relative flex items-end gap-2">
 						<p className="relative text-base opacity-80">
@@ -404,7 +404,7 @@ function Pricing() {
 						Catchy reminder that this is a great deal!
 					</p>
 				</div>
-				<div className="flex w-full flex-col justify-between gap-5 rounded-md border-2 border-primary bg-background p-8 text-foreground md:text-2xl">
+				<div className="flex w-full flex-col justify-between gap-5 rounded-md border-2 border-primary bg-background p-8 text-foreground">
 					<p className="text-lg font-bold">Pro</p>
 					<div className="relative flex items-end gap-2">
 						<p className="relative text-base opacity-80">
