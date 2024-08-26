@@ -148,19 +148,13 @@ function Agitation() {
 	return (
 		<div className="w-full max-w-xl px-5">
 			<section className="flex flex-col items-center gap-8">
-				<p
-					data-paragraph
-					className="w-full rounded-md bg-red-200/40 p-8 text-center text-lg leading-relaxed text-muted-foreground xl:max-w-xl xl:text-xl/6"
-				>
-					❌ Seperate chat and email threads
-					<br />
-					❌ Multiple event calendars
-					<br />
-					❌ Commission negotiations per supplier
-					<br />❌ Manual bank transfers
-					<br />
-					🌧️
-				</p>
+				<ul className="w-full space-y-2 rounded-md bg-red-200/40 p-8 text-center text-lg leading-relaxed text-muted-foreground xl:max-w-xl xl:text-xl/6">
+					<li>❌ Seperate chat and email threads</li>
+					<li>❌ Multiple event calendars</li>
+					<li>❌ Commission negotiations per supplier</li>
+					<li>❌ Manual bank transfers</li>
+					<li>🌧️</li>
+				</ul>
 				<p data-paragraph className="pt-2 text-sm text-muted-foreground">
 					<Icon size="md" className="mr-2" name="arrow-down" />
 					There's an easier way

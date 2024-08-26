@@ -208,7 +208,7 @@ function App() {
 			env={data.ENV}
 		>
 			<div className="flex h-screen flex-col justify-between">
-				<header className="container">
+				<header className="container max-sm:px-5 max-sm:pt-5">
 					<nav className="flex flex-wrap items-center justify-between gap-4 sm:flex-nowrap md:gap-8">
 						<Logo />
 						<div className="flex gap-8">
@@ -237,7 +237,7 @@ function App() {
 				</div>
 
 				<div className="bg-secondary/70">
-					<div className="container flex items-center justify-between pb-5">
+					<div className="container flex items-center justify-between pb-5 max-sm:px-5">
 						<Logo />
 						<ThemeSwitch userPreference={data.requestInfo.userPrefs.theme} />
 					</div>
@@ -251,13 +251,20 @@ function App() {
 
 function Logo() {
 	return (
-		<Link to="/">
-			<Icon
-				name="logo-text"
-				title="logo"
-				className="h-20 w-32 transition hover:translate-x-2"
-			/>
-		</Link>
+		<>
+			<Link to="/">
+				<Icon
+					name="logo-text"
+					title="logo"
+					className="hidden h-20 w-32 transition hover:translate-x-2 sm:block"
+				/>
+				<Icon
+					name="logo"
+					title="logo"
+					className="size-12 transition hover:translate-x-2 sm:hidden"
+				/>
+			</Link>
+		</>
 	)
 }
 
