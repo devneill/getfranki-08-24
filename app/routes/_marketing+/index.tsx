@@ -58,8 +58,8 @@ export default function Index() {
 			<Team />
 			<div className="flex w-full flex-col items-center gap-24 bg-secondary/70">
 				<Pricing />
-				<FAQs />
 				<Testimonial index={1} />
+				<FAQs />
 				<Close />
 			</div>
 		</main>
@@ -325,7 +325,7 @@ function Pricing() {
 	return (
 		<div
 			id="pricing"
-			className="flex w-full max-w-5xl flex-col items-center gap-10 px-5 pt-24 lg:gap-12"
+			className="flex w-full max-w-5xl flex-col items-center gap-24 px-5 pt-24 lg:gap-12"
 		>
 			<div className="flex max-w-3xl flex-col gap-10">
 				<h1 className="text-center font-bold text-primary">Pricing</h1>
@@ -340,20 +340,132 @@ function Pricing() {
 					off for the first 10 customers (3 left)
 				</p>
 			</div>
-			<div className="flex w-full flex-col gap-8 lg:flex-row">
-				<div className="flex h-96 w-full flex-col justify-between rounded-md bg-background p-8 text-lg text-muted-foreground md:text-2xl">
-					<p className="font-bold">Starter</p>
+			<div className="flex w-full flex-col gap-8 lg:flex-row lg:gap-10">
+				<div className="flex w-full flex-col justify-between gap-5 rounded-md bg-background p-8 text-foreground md:text-2xl">
+					<p className="text-lg font-bold">Starter</p>
+					<div className="relative flex items-end gap-2">
+						<p className="relative text-base opacity-80">
+							<span className="absolute inset-x-0 top-[47%] h-[1.8px] bg-foreground/80"></span>
+							<span className="font-semibold tracking-tight">R999</span>
+						</p>
+						<div className="flex">
+							<p className="text-5xl font-extrabold tracking-tight">R699</p>
+							<span className="self-end font-semibold tracking-tight opacity-80">
+								/month
+							</span>
+						</div>
+					</div>
+					<ul className="space-y-2 leading-relaxed">
+						<li className="flex gap-2">
+							<Icon name="check" size="md" />
+							Unlimited events
+						</li>
+						<li className="flex gap-2">
+							<Icon name="check" size="md" />
+							Unlimited events Unlimited guests
+						</li>
+						<li className="flex gap-2">
+							<Icon name="check" size="md" />
+							Unlimited events Unlimited suppliers
+						</li>
+						<li className="flex gap-2">
+							<Icon name="check" size="md" />
+							Unlimited events Unlimited invoices
+						</li>
+						<li className="flex gap-2">
+							<Icon name="check" size="md" />
+							Unlimited events Unlimited payments
+						</li>
+						<li className="flex gap-2">
+							<Icon name="check" size="md" />
+							Unlimited events Unlimited payments
+						</li>
+						<li className="flex gap-2 text-muted-foreground/70">
+							<Icon size="md" className="p-1" name="cross-1" />
+							Unlimited payments
+						</li>
+						<li className="flex gap-2 text-muted-foreground/70">
+							<Icon size="md" className="p-1" name="cross-1" />
+							Unlimited payments
+						</li>
+						<li className="flex gap-2 text-muted-foreground/70">
+							<Icon size="md" className="p-1" name="cross-1" />
+							Unlimited payments
+						</li>
+					</ul>
 					<Button size="wide">
 						Get started
 						<Icon name="arrow-right" className="ml-2 font-bold" />
 					</Button>
+					<p
+						data-paragraph
+						className="text-center text-sm font-medium text-muted-foreground"
+					>
+						Catchy reminder that this is a great deal!
+					</p>
 				</div>
-				<div className="flex h-96 w-full flex-col justify-between rounded-md border-2 border-primary bg-background p-8 text-lg text-muted-foreground md:text-2xl">
-					<p className="font-bold">Pro</p>
+				<div className="flex w-full flex-col justify-between gap-5 rounded-md border-2 border-primary bg-background p-8 text-foreground md:text-2xl">
+					<p className="text-lg font-bold">Pro</p>
+					<div className="relative flex items-end gap-2">
+						<p className="relative text-base opacity-80">
+							<span className="absolute inset-x-0 top-[47%] h-[1.8px] bg-foreground/80"></span>
+							<span className="font-semibold tracking-tight">R1299</span>
+						</p>
+						<div className="flex">
+							<p className="text-5xl font-extrabold tracking-tight">R899</p>
+							<span className="self-end font-semibold tracking-tight opacity-80">
+								/month
+							</span>
+						</div>
+					</div>
+					<ul className="space-y-2 leading-relaxed">
+						<li className="flex gap-2">
+							<Icon name="check" size="md" />
+							Unlimited events
+						</li>
+						<li className="flex gap-2">
+							<Icon name="check" size="md" />
+							Unlimited guests
+						</li>
+						<li className="flex gap-2">
+							<Icon name="check" size="md" />
+							Unlimited suppliers
+						</li>
+						<li className="flex gap-2">
+							<Icon name="check" size="md" />
+							Unlimited invoices
+						</li>
+						<li className="flex gap-2">
+							<Icon name="check" size="md" />
+							Unlimited payments
+						</li>
+						<li className="flex gap-2">
+							<Icon name="check" size="md" />
+							Unlimited payments
+						</li>
+						<li className="flex gap-2">
+							<Icon name="check" size="md" />
+							Unlimited payments
+						</li>
+						<li className="flex gap-2">
+							<Icon name="check" size="md" />
+							Unlimited payments
+						</li>
+						<li className="flex gap-2">
+							<Icon name="check" size="md" />
+							Unlimited payments
+						</li>
+					</ul>
 					<Button size="wide">
 						Get started
 						<Icon name="arrow-right" className="ml-2 font-bold" />
 					</Button>
+					<p
+						data-paragraph
+						className="text-center text-sm font-medium text-muted-foreground"
+					>
+						Catchy reminder that this is a great deal!
+					</p>
 				</div>
 			</div>
 		</div>
