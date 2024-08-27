@@ -119,12 +119,9 @@ function IconWall() {
 						>
 							<Tooltip>
 								<TooltipTrigger asChild>
-									<a
-										href={logo.href}
-										className="grid size-20 place-items-center rounded-2xl bg-secondary/70 p-4 transition hover:-rotate-6 hover:bg-primary/15 dark:bg-violet-200 dark:hover:bg-violet-100 lg:size-24"
-									>
+									<div className="grid size-20 place-items-center rounded-2xl bg-secondary/70 p-4 transition hover:-rotate-6 hover:bg-secondary dark:bg-violet-200 dark:hover:bg-violet-100 lg:size-24">
 										<img src={logo.src} alt="" />
-									</a>
+									</div>
 								</TooltipTrigger>
 								<TooltipContent>{logo.alt}</TooltipContent>
 							</Tooltip>
