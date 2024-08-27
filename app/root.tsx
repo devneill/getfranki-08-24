@@ -14,7 +14,6 @@ import {
 	Scripts,
 	ScrollRestoration,
 	useLoaderData,
-	useMatches,
 	useSubmit,
 } from '@remix-run/react'
 import { withSentry } from '@sentry/remix'
@@ -26,7 +25,6 @@ import faviconAssetUrl from './assets/images/favicons/favicon.svg'
 import maskIconAssetUrl from './assets/images/favicons/mask-icon.svg'
 import { GeneralErrorBoundary } from './components/error-boundary.tsx'
 import { EpicProgress } from './components/progress-bar.tsx'
-import { SearchBar } from './components/search-bar.tsx'
 import { useToast } from './components/toaster.tsx'
 import { Button } from './components/ui/button.tsx'
 import {
@@ -165,7 +163,10 @@ function Document({
 	allowIndexing?: boolean
 }) {
 	return (
-		<html lang="en" className={`${theme} h-full overflow-x-hidden`}>
+		<html
+			lang="en"
+			className={`${theme} h-full overflow-x-hidden scroll-smooth`}
+		>
 			<head>
 				<ClientHintCheck nonce={nonce} />
 				<Meta />
@@ -196,9 +197,6 @@ function App() {
 	const nonce = useNonce()
 	const user = useOptionalUser()
 	const theme = useTheme()
-	const matches = useMatches()
-	const isOnSearchPage = matches.find((m) => m.id === 'routes/users+/index')
-	const searchBar = isOnSearchPage ? null : <SearchBar status="idle" />
 	const allowIndexing = data.ENV.ALLOW_INDEXING !== 'false'
 	useToast(data.toast)
 
@@ -210,22 +208,22 @@ function App() {
 			env={data.ENV}
 		>
 			<div className="flex h-screen flex-col justify-between">
-				<header className="container py-6">
+				<header className="container max-sm:px-5 max-sm:pt-5">
 					<nav className="flex flex-wrap items-center justify-between gap-4 sm:flex-nowrap md:gap-8">
 						<Logo />
-						<div className="ml-auto hidden max-w-sm flex-1 sm:block">
-							{searchBar}
+						<div className="flex gap-8">
+							<Link to="#pricing">Pricing</Link>
+							<Link to="#features">Features</Link>
 						</div>
 						<div className="flex items-center gap-10">
 							{user ? (
 								<UserDropdown />
 							) : (
-								<Button asChild variant="default" size="lg">
+								<Button asChild className="min-w-20" variant="secondary">
 									<Link to="/login">Log In</Link>
 								</Button>
 							)}
 						</div>
-						<div className="block w-full sm:hidden">{searchBar}</div>
 					</nav>
 				</header>
 
@@ -233,9 +231,11 @@ function App() {
 					<Outlet />
 				</div>
 
-				<div className="container flex justify-between pb-5">
-					<Logo />
-					<ThemeSwitch userPreference={data.requestInfo.userPrefs.theme} />
+				<div className="bg-secondary/70">
+					<div className="container flex items-center justify-between pb-5 max-sm:px-5">
+						<Logo />
+						<ThemeSwitch userPreference={data.requestInfo.userPrefs.theme} />
+					</div>
 				</div>
 			</div>
 			<EpicToaster closeButton position="top-center" theme={theme} />
@@ -246,14 +246,20 @@ function App() {
 
 function Logo() {
 	return (
-		<Link to="/" className="group grid leading-snug">
-			<span className="font-light transition group-hover:-translate-x-1">
-				get
-			</span>
-			<span className="font-bold transition group-hover:translate-x-1">
-				franki
-			</span>
-		</Link>
+		<>
+			<Link to="/">
+				<Icon
+					name="logo-text"
+					title="logo"
+					className="hidden h-20 w-32 transition hover:translate-x-2 sm:block"
+				/>
+				<Icon
+					name="logo"
+					title="logo"
+					className="size-12 transition hover:translate-x-2 sm:hidden"
+				/>
+			</Link>
+		</>
 	)
 }
 

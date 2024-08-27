@@ -1,172 +1,172 @@
 import docker from './docker.svg'
 import eslint from './eslint.svg'
 import fakerJS from './faker.svg'
-import fly from './fly.svg'
-import github from './github.svg'
+import whatsapp from './whatsapp.svg'
+import messenger from './messenger.svg'
 import msw from './msw.svg'
 import playwright from './playwright.svg'
 import prettier from './prettier.svg'
-import prisma from './prisma.svg'
-import radixUI from './radix.svg'
-import reactEmail from './react-email.svg'
-import remix from './remix.svg'
-import resend from './resend.svg'
+import gdrive from './gdrive.svg'
+import invoice from './invoice.svg'
+import sheets from './sheets.svg'
+import gmail from './gmail.svg'
+import imessage from './imessage.svg'
 import sentry from './sentry.svg'
-import shadcnUI from './shadcn-ui.svg'
-import sqlite from './sqlite.svg'
-import tailwind from './tailwind.svg'
+import eft from './eft.svg'
+import gcal from './gcal.svg'
+import commission from './commission.svg'
 import testingLibrary from './testing-library.png'
 import typescript from './typescript.svg'
 import vitest from './vitest.svg'
-import zod from './zod.svg'
+import cards from './cards.svg'
 
 export { default as stars } from './stars.jpg'
 
 export const logos = [
 	{
-		src: remix,
-		alt: 'Remix',
+		src: gmail,
+		alt: 'Email',
 		href: 'https://remix.run',
 		column: 1,
 		row: 1,
 	},
 	{
-		src: fly,
-		alt: 'Fly.io',
-		href: 'https://fly.io',
-		column: 1,
-		row: 2,
-	},
-	{
-		src: sqlite,
-		alt: 'SQLite',
+		src: gcal,
+		alt: 'Scheduling',
 		href: 'https://sqlite.org',
 		column: 1,
+		row: 2,
+	},
+	{
+		src: whatsapp,
+		alt: 'Chat',
+		href: 'https://fly.io',
+		column: 1,
 		row: 3,
 	},
 	{
-		src: prisma,
-		alt: 'Prisma',
-		href: 'https://prisma.io',
+		src: docker,
+		alt: 'Docker',
+		href: 'https://www.docker.com',
 		column: 2,
 		row: 2,
 	},
 	{
-		src: zod,
-		alt: 'Zod',
-		href: 'https://zod.dev/',
+		src: gdrive,
+		alt: 'Files',
+		href: 'https://prisma.io',
 		column: 2,
 		row: 3,
 	},
 	{
-		src: github,
-		alt: 'GitHub',
-		href: 'https://github.com',
+		src: cards,
+		alt: 'Manual Card Payments',
+		href: 'https://zod.dev/',
 		column: 2,
 		row: 4,
 	},
 	{
-		src: resend,
-		alt: 'Resend',
-		href: 'https://resend.com',
+		src: imessage,
+		alt: 'SMS',
+		href: 'https://github.com',
 		column: 2,
 		row: 5,
 	},
 	{
-		src: reactEmail,
-		alt: 'React Email',
-		href: 'https://react.email',
+		src: sheets,
+		alt: 'Manual Spreadsheets',
+		href: 'https://tailwindcss.com',
 		column: 2,
 		row: 6,
 	},
 	{
-		src: tailwind,
-		alt: 'Tailwind CSS',
-		href: 'https://tailwindcss.com',
+		src: commission,
+		alt: 'Commission Negotiation',
+		href: 'https://www.radix-ui.com/',
 		column: 3,
 		row: 3,
 	},
 	{
-		src: radixUI,
-		alt: 'Radix UI',
-		href: 'https://www.radix-ui.com/',
+		src: messenger,
+		alt: 'Online Messaging',
+		href: 'https://resend.com',
 		column: 3,
 		row: 4,
-	},
-	{
-		src: shadcnUI,
-		alt: 'shadcn/ui',
-		href: 'https://ui.shadcn.com/',
-		column: 3,
-		row: 5,
 	},
 	{
 		src: playwright,
 		alt: 'Playwright',
 		href: 'https://playwright.dev/',
-		column: 4,
-		row: 1,
+		column: 3,
+		row: 5,
 	},
 	{
 		src: msw,
 		alt: 'MSW',
 		href: 'https://mswjs.io',
 		column: 4,
-		row: 2,
+		row: 1,
 	},
 	{
 		src: fakerJS,
 		alt: 'Faker.js',
 		href: 'https://fakerjs.dev/',
 		column: 4,
-		row: 3,
+		row: 2,
 	},
 	{
 		src: vitest,
 		alt: 'Vitest',
 		href: 'https://vitest.dev',
 		column: 4,
-		row: 4,
+		row: 3,
 	},
 	{
 		src: testingLibrary,
 		alt: 'Testing Library',
 		href: 'https://testing-library.com',
 		column: 4,
-		row: 5,
-	},
-	{
-		src: docker,
-		alt: 'Docker',
-		href: 'https://www.docker.com',
-		column: 4,
-		row: 6,
+		row: 4,
 	},
 	{
 		src: typescript,
 		alt: 'TypeScript',
 		href: 'https://typescriptlang.org',
-		column: 5,
-		row: 2,
+		column: 4,
+		row: 5,
 	},
 	{
 		src: prettier,
 		alt: 'Prettier',
 		href: 'https://prettier.io',
-		column: 5,
-		row: 3,
+		column: 4,
+		row: 6,
 	},
 	{
 		src: eslint,
 		alt: 'ESLint',
 		href: 'https://eslint.org',
 		column: 5,
-		row: 4,
+		row: 2,
 	},
 	{
 		src: sentry,
 		alt: 'Sentry',
 		href: 'https://sentry.io',
+		column: 5,
+		row: 3,
+	},
+	{
+		src: invoice,
+		alt: 'Manual Invoices',
+		href: 'https://react.email',
+		column: 5,
+		row: 4,
+	},
+	{
+		src: eft,
+		alt: 'Bank Transfers',
+		href: 'https://ui.shadcn.com/',
 		column: 5,
 		row: 5,
 	},
