@@ -38,7 +38,7 @@ const rowClasses: Record<(typeof logos)[number]['row'], string> = {
 
 export default function Index() {
 	return (
-		<main className="font-poppins grid h-full place-items-center gap-24 xl:gap-28 xl:pt-14">
+		<main className="font-poppins grid h-full place-items-center gap-20 xl:gap-28 xl:pt-14">
 			<div className="flex flex-col items-center">
 				<div className="grid place-items-center px-5 xl:grid-cols-2 xl:gap-48">
 					<section className="flex max-w-lg flex-col items-center gap-10 py-16 text-center sm:py-20 lg:max-w-2xl lg:gap-12 xl:order-2 xl:items-start xl:text-left">
@@ -501,7 +501,7 @@ function Close() {
 			<h2 className="text-center text-3xl font-bold leading-normal tracking-tight text-foreground sm:text-4xl xl:text-5xl">
 				Focus on the occasion, not the admin.
 			</h2>
-			<div className="mt-36 animate-slide-top [animation-delay:0.3s] [animation-fill-mode:backwards] xl:-ml-6 xl:animate-slide-left xl:[animation-delay:0.5s] xl:[animation-fill-mode:backwards]">
+			<div className="mt-24 animate-slide-top [animation-delay:0.3s] [animation-fill-mode:backwards] xl:-ml-6 xl:animate-slide-left xl:[animation-delay:0.5s] xl:[animation-fill-mode:backwards]">
 				<Icon name="logo" title="logo" className="size-28 md:size-36" />
 			</div>
 			<div
