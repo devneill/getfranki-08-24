@@ -41,7 +41,7 @@ export default function Index() {
 		<main className="font-poppins grid h-full place-items-center gap-24 xl:gap-28 xl:pt-14">
 			<div className="flex flex-col items-center">
 				<div className="grid place-items-center px-5 xl:grid-cols-2 xl:gap-48">
-					<section className="flex max-w-lg flex-col items-center gap-10 py-24 text-center lg:max-w-2xl lg:gap-12 xl:order-2 xl:items-start xl:text-left">
+					<section className="flex max-w-lg flex-col items-center gap-10 py-16 text-center sm:py-20 lg:max-w-2xl lg:gap-12 xl:order-2 xl:items-start xl:text-left">
 						<Open />
 						<div className="animate-slide-top fill-mode-backwards [animation-delay:1s] xl:hidden">
 							<Testimonial index={0} />
@@ -340,10 +340,10 @@ function Pricing() {
 					<div className="relative flex items-end gap-2">
 						<p className="relative text-base opacity-80">
 							<span className="absolute inset-x-0 top-[47%] h-[1.8px] bg-foreground/80"></span>
-							<span className="font-semibold tracking-tight">R999</span>
+							<span className="font-semibold tracking-tight">R4999</span>
 						</p>
 						<div className="flex">
-							<p className="text-5xl font-extrabold tracking-tight">R699</p>
+							<p className="text-5xl font-extrabold tracking-tight">R2999</p>
 							<span className="self-end font-semibold tracking-tight opacity-80">
 								/month
 							</span>
@@ -403,10 +403,10 @@ function Pricing() {
 					<div className="relative flex items-end gap-2">
 						<p className="relative text-base opacity-80">
 							<span className="absolute inset-x-0 top-[47%] h-[1.8px] bg-foreground/80"></span>
-							<span className="font-semibold tracking-tight">R1299</span>
+							<span className="font-semibold tracking-tight">R5499</span>
 						</p>
 						<div className="flex">
-							<p className="text-5xl font-extrabold tracking-tight">R899</p>
+							<p className="text-5xl font-extrabold tracking-tight">R3499</p>
 							<span className="self-end font-semibold tracking-tight opacity-80">
 								/month
 							</span>

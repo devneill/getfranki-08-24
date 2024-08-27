@@ -219,12 +219,7 @@ function App() {
 							{user ? (
 								<UserDropdown />
 							) : (
-								<Button
-									asChild
-									className="min-w-32"
-									variant="default"
-									size="lg"
-								>
+								<Button asChild className="min-w-20" variant="secondary">
 									<Link to="/login">Log In</Link>
 								</Button>
 							)}
