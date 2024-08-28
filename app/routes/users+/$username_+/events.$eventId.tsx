@@ -27,15 +27,15 @@ import { getNoteImgSrc, useIsPending } from '#app/utils/misc.tsx'
 import { requireUserWithPermission } from '#app/utils/permissions.server.ts'
 import { redirectWithToast } from '#app/utils/toast.server.ts'
 import { userHasPermission, useOptionalUser } from '#app/utils/user.ts'
-import { type loader as notesLoader } from './notes.tsx'
+import { type loader as eventsLoader } from './events.tsx'
 
 export async function loader({ params }: LoaderFunctionArgs) {
-	const note = await prisma.note.findUnique({
-		where: { id: params.noteId },
+	const event = await prisma.event.findUnique({
+		where: { id: params.eventId },
 		select: {
 			id: true,
 			title: true,
-			content: true,
+			notes: true,
 			ownerId: true,
 			updatedAt: true,
 			images: {
@@ -47,20 +47,20 @@ export async function loader({ params }: LoaderFunctionArgs) {
 		},
 	})
 
-	invariantResponse(note, 'Not found', { status: 404 })
+	invariantResponse(event, 'Not found', { status: 404 })
 
-	const date = new Date(note.updatedAt)
+	const date = new Date(event.updatedAt)
 	const timeAgo = formatDistanceToNow(date)
 
 	return json({
-		note,
+		event,
 		timeAgo,
 	})
 }
 
 const DeleteFormSchema = z.object({
-	intent: z.literal('delete-note'),
-	noteId: z.string(),
+	intent: z.literal('delete-event'),
+	eventId: z.string(),
 })
 
 export async function action({ request }: ActionFunctionArgs) {
@@ -76,45 +76,45 @@ export async function action({ request }: ActionFunctionArgs) {
 		)
 	}
 
-	const { noteId } = submission.value
+	const { eventId } = submission.value
 
-	const note = await prisma.note.findFirst({
+	const event = await prisma.event.findFirst({
 		select: { id: true, ownerId: true, owner: { select: { username: true } } },
-		where: { id: noteId },
+		where: { id: eventId },
 	})
-	invariantResponse(note, 'Not found', { status: 404 })
+	invariantResponse(event, 'Not found', { status: 404 })
 
-	const isOwner = note.ownerId === userId
+	const isOwner = event.ownerId === userId
 	await requireUserWithPermission(
 		request,
-		isOwner ? `delete:note:own` : `delete:note:any`,
+		isOwner ? `delete:event:own` : `delete:event:any`,
 	)
 
-	await prisma.note.delete({ where: { id: note.id } })
+	await prisma.event.delete({ where: { id: event.id } })
 
-	return redirectWithToast(`/users/${note.owner.username}/notes`, {
+	return redirectWithToast(`/users/${event.owner.username}/events`, {
 		type: 'success',
 		title: 'Success',
-		description: 'Your note has been deleted.',
+		description: 'Your event has been deleted.',
 	})
 }
 
 export default function NoteRoute() {
 	const data = useLoaderData<typeof loader>()
 	const user = useOptionalUser()
-	const isOwner = user?.id === data.note.ownerId
+	const isOwner = user?.id === data.event.ownerId
 	const canDelete = userHasPermission(
 		user,
-		isOwner ? `delete:note:own` : `delete:note:any`,
+		isOwner ? `delete:event:own` : `delete:event:any`,
 	)
 	const displayBar = canDelete || isOwner
 
 	return (
 		<div className="absolute inset-0 flex flex-col px-10">
-			<h2 className="mb-2 pt-12 text-h2 lg:mb-6">{data.note.title}</h2>
+			<h2 className="mb-2 pt-12 text-h2 lg:mb-6">{data.event.title}</h2>
 			<div className={`${displayBar ? 'pb-24' : 'pb-12'} overflow-y-auto`}>
 				<ul className="flex flex-wrap gap-5 py-5">
-					{data.note.images.map((image) => (
+					{data.event.images.map((image) => (
 						<li key={image.id}>
 							<a href={getNoteImgSrc(image.id)}>
 								<img
@@ -127,7 +127,7 @@ export default function NoteRoute() {
 					))}
 				</ul>
 				<p className="whitespace-break-spaces text-sm md:text-lg">
-					{data.note.content}
+					{data.event.notes}
 				</p>
 			</div>
 			{displayBar ? (
@@ -138,7 +138,7 @@ export default function NoteRoute() {
 						</Icon>
 					</span>
 					<div className="grid flex-1 grid-cols-2 justify-end gap-2 min-[525px]:flex md:gap-4">
-						{canDelete ? <DeleteNote id={data.note.id} /> : null}
+						{canDelete ? <DeleteNote id={data.event.id} /> : null}
 						<Button
 							asChild
 							className="min-[525px]:max-md:aspect-square min-[525px]:max-md:px-0"
@@ -160,17 +160,17 @@ export function DeleteNote({ id }: { id: string }) {
 	const actionData = useActionData<typeof action>()
 	const isPending = useIsPending()
 	const [form] = useForm({
-		id: 'delete-note',
+		id: 'delete-event',
 		lastResult: actionData?.result,
 	})
 
 	return (
 		<Form method="POST" {...getFormProps(form)}>
-			<input type="hidden" name="noteId" value={id} />
+			<input type="hidden" name="eventId" value={id} />
 			<StatusButton
 				type="submit"
 				name="intent"
-				value="delete-note"
+				value="delete-event"
 				variant="destructive"
 				status={isPending ? 'pending' : (form.status ?? 'idle')}
 				disabled={isPending}
@@ -187,22 +187,22 @@ export function DeleteNote({ id }: { id: string }) {
 
 export const meta: MetaFunction<
 	typeof loader,
-	{ 'routes/users+/$username_+/notes': typeof notesLoader }
+	{ 'routes/users+/$username_+/events': typeof eventsLoader }
 > = ({ data, params, matches }) => {
-	const notesMatch = matches.find(
-		(m) => m.id === 'routes/users+/$username_+/notes',
+	const eventsMatch = matches.find(
+		(m) => m.id === 'routes/users+/$username_+/events',
 	)
-	const displayName = notesMatch?.data?.owner.name ?? params.username
-	const noteTitle = data?.note.title ?? 'Note'
-	const noteContentsSummary =
-		data && data.note.content.length > 100
-			? data?.note.content.slice(0, 97) + '...'
-			: 'No content'
+	const displayName = eventsMatch?.data?.owner.name ?? params.username
+	const eventTitle = data?.event.title ?? 'Note'
+	const eventContentsSummary =
+		data?.event.notes && data.event.notes.length > 100
+			? data.event.notes.slice(0, 97) + '...'
+			: 'No notes'
 	return [
-		{ title: `${noteTitle} | ${displayName}'s Notes | GetFranki` },
+		{ title: `${eventTitle} | ${displayName}'s Notes | GetFranki` },
 		{
 			name: 'description',
-			content: noteContentsSummary,
+			notes: eventContentsSummary,
 		},
 	]
 }
@@ -213,7 +213,7 @@ export function ErrorBoundary() {
 			statusHandlers={{
 				403: () => <p>You are not allowed to do that</p>,
 				404: ({ params }) => (
-					<p>No note with the id "{params.noteId}" exists</p>
+					<p>No event with the id "{params.eventId}" exists</p>
 				),
 			}}
 		/>
