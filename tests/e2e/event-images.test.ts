@@ -1,103 +1,107 @@
 import fs from 'fs'
 import { faker } from '@faker-js/faker'
-import { type NoteImage, type Note } from '@prisma/client'
+import { type EventImage, type Event } from '@prisma/client'
 import { prisma } from '#app/utils/db.server.ts'
 import { expect, test } from '#tests/playwright-utils.ts'
 
-test('Users can create note with an image', async ({ page, login }) => {
+test('Users can create event with an image', async ({ page, login }) => {
 	const user = await login()
-	await page.goto(`/users/${user.username}/notes`)
+	await page.goto(`/users/${user.username}/events`)
 
-	const newNote = createNote()
+	const newEvent = createEvent()
 	const altText = 'cute koala'
-	await page.getByRole('link', { name: 'new note' }).click()
+	await page.getByRole('link', { name: 'new event' }).click()
 
 	// fill in form and submit
-	await page.getByRole('textbox', { name: 'title' }).fill(newNote.title)
-	await page.getByRole('textbox', { name: 'content' }).fill(newNote.content)
+	await page.getByRole('textbox', { name: 'title' }).fill(newEvent.title)
+	await page.getByRole('textbox', { name: 'notes' }).fill(newEvent.notes)
 	await page
 		.getByLabel('image')
 		.nth(0)
-		.setInputFiles('tests/fixtures/images/kody-notes/cute-koala.png')
+		.setInputFiles('tests/fixtures/images/kody-events/cute-koala.png')
 	await page.getByRole('textbox', { name: 'alt text' }).fill(altText)
 
 	await page.getByRole('button', { name: 'submit' }).click()
-	await expect(page).toHaveURL(new RegExp(`/users/${user.username}/notes/.*`))
-	await expect(page.getByRole('heading', { name: newNote.title })).toBeVisible()
+	await expect(page).toHaveURL(new RegExp(`/users/${user.username}/events/.*`))
+	await expect(
+		page.getByRole('heading', { name: newEvent.title }),
+	).toBeVisible()
 	await expect(page.getByAltText(altText)).toBeVisible()
 })
 
-test('Users can create note with multiple images', async ({ page, login }) => {
+test('Users can create event with multiple images', async ({ page, login }) => {
 	const user = await login()
-	await page.goto(`/users/${user.username}/notes`)
+	await page.goto(`/users/${user.username}/events`)
 
-	const newNote = createNote()
+	const newEvent = createEvent()
 	const altText1 = 'cute koala'
 	const altText2 = 'koala coder'
-	await page.getByRole('link', { name: 'new note' }).click()
+	await page.getByRole('link', { name: 'new event' }).click()
 
 	// fill in form and submit
-	await page.getByRole('textbox', { name: 'title' }).fill(newNote.title)
-	await page.getByRole('textbox', { name: 'content' }).fill(newNote.content)
+	await page.getByRole('textbox', { name: 'title' }).fill(newEvent.title)
+	await page.getByRole('textbox', { name: 'notes' }).fill(newEvent.notes)
 	await page
 		.getByLabel('image')
 		.nth(0)
-		.setInputFiles('tests/fixtures/images/kody-notes/cute-koala.png')
+		.setInputFiles('tests/fixtures/images/kody-events/cute-koala.png')
 	await page.getByLabel('alt text').nth(0).fill(altText1)
 	await page.getByRole('button', { name: 'add image' }).click()
 
 	await page
 		.getByLabel('image')
 		.nth(1)
-		.setInputFiles('tests/fixtures/images/kody-notes/koala-coder.png')
+		.setInputFiles('tests/fixtures/images/kody-events/koala-coder.png')
 	await page.getByLabel('alt text').nth(1).fill(altText2)
 
 	await page.getByRole('button', { name: 'submit' }).click()
-	await expect(page).toHaveURL(new RegExp(`/users/${user.username}/notes/.*`))
-	await expect(page.getByRole('heading', { name: newNote.title })).toBeVisible()
+	await expect(page).toHaveURL(new RegExp(`/users/${user.username}/events/.*`))
+	await expect(
+		page.getByRole('heading', { name: newEvent.title }),
+	).toBeVisible()
 	await expect(page.getByAltText(altText1)).toBeVisible()
 	await expect(page.getByAltText(altText2)).toBeVisible()
 })
 
-test('Users can edit note image', async ({ page, login }) => {
+test('Users can edit event image', async ({ page, login }) => {
 	const user = await login()
 
-	const note = await prisma.note.create({
+	const event = await prisma.event.create({
 		select: { id: true },
 		data: {
-			...createNoteWithImage(),
+			...createEventWithImage(),
 			ownerId: user.id,
 		},
 	})
-	await page.goto(`/users/${user.username}/notes/${note.id}`)
+	await page.goto(`/users/${user.username}/events/${event.id}`)
 
 	// edit the image
 	await page.getByRole('link', { name: 'Edit', exact: true }).click()
 	const updatedImage = {
 		altText: 'koala coder',
-		location: 'tests/fixtures/images/kody-notes/koala-coder.png',
+		location: 'tests/fixtures/images/kody-events/koala-coder.png',
 	}
 	await page.getByLabel('image').nth(0).setInputFiles(updatedImage.location)
 	await page.getByLabel('alt text').nth(0).fill(updatedImage.altText)
 	await page.getByRole('button', { name: 'submit' }).click()
 
-	await expect(page).toHaveURL(`/users/${user.username}/notes/${note.id}`)
+	await expect(page).toHaveURL(`/users/${user.username}/events/${event.id}`)
 	await expect(page.getByAltText(updatedImage.altText)).toBeVisible()
 })
 
-test('Users can delete note image', async ({ page, login }) => {
+test('Users can delete event image', async ({ page, login }) => {
 	const user = await login()
 
-	const note = await prisma.note.create({
+	const event = await prisma.event.create({
 		select: { id: true, title: true },
 		data: {
-			...createNoteWithImage(),
+			...createEventWithImage(),
 			ownerId: user.id,
 		},
 	})
-	await page.goto(`/users/${user.username}/notes/${note.id}`)
+	await page.goto(`/users/${user.username}/events/${event.id}`)
 
-	await expect(page.getByRole('heading', { name: note.title })).toBeVisible()
+	await expect(page.getByRole('heading', { name: event.title })).toBeVisible()
 	// find image tags
 	const images = page
 		.getByRole('main')
@@ -108,33 +112,33 @@ test('Users can delete note image', async ({ page, login }) => {
 	await page.getByRole('link', { name: 'Edit', exact: true }).click()
 	await page.getByRole('button', { name: 'remove image' }).click()
 	await page.getByRole('button', { name: 'submit' }).click()
-	await expect(page).toHaveURL(`/users/${user.username}/notes/${note.id}`)
+	await expect(page).toHaveURL(`/users/${user.username}/events/${event.id}`)
 	const countAfter = await images.count()
 	expect(countAfter).toEqual(countBefore - 1)
 })
 
-function createNote() {
+function createEvent() {
 	return {
 		title: faker.lorem.words(3),
-		content: faker.lorem.paragraphs(3),
-	} satisfies Omit<Note, 'id' | 'createdAt' | 'updatedAt' | 'type' | 'ownerId'>
+		notes: faker.lorem.paragraphs(3),
+	} satisfies Omit<Event, 'id' | 'createdAt' | 'updatedAt' | 'type' | 'ownerId'>
 }
-function createNoteWithImage() {
+function createEventWithImage() {
 	return {
-		...createNote(),
+		...createEvent(),
 		images: {
 			create: {
 				altText: 'cute koala',
 				contentType: 'image/png',
 				blob: fs.readFileSync(
-					'tests/fixtures/images/kody-notes/cute-koala.png',
+					'tests/fixtures/images/kody-events/cute-koala.png',
 				),
 			},
 		},
 	} satisfies Omit<
-		Note,
+		Event,
 		'id' | 'createdAt' | 'updatedAt' | 'type' | 'ownerId'
 	> & {
-		images: { create: Pick<NoteImage, 'altText' | 'blob' | 'contentType'> }
+		images: { create: Pick<EventImage, 'altText' | 'blob' | 'contentType'> }
 	}
 }

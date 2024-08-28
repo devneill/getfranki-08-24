@@ -23,7 +23,7 @@ import { Icon } from '#app/components/ui/icon.tsx'
 import { StatusButton } from '#app/components/ui/status-button.tsx'
 import { requireUserId } from '#app/utils/auth.server.ts'
 import { prisma } from '#app/utils/db.server.ts'
-import { getNoteImgSrc, useIsPending } from '#app/utils/misc.tsx'
+import { getEventImgSrc, useIsPending } from '#app/utils/misc.tsx'
 import { requireUserWithPermission } from '#app/utils/permissions.server.ts'
 import { redirectWithToast } from '#app/utils/toast.server.ts'
 import { userHasPermission, useOptionalUser } from '#app/utils/user.ts'
@@ -99,7 +99,7 @@ export async function action({ request }: ActionFunctionArgs) {
 	})
 }
 
-export default function NoteRoute() {
+export default function EventRoute() {
 	const data = useLoaderData<typeof loader>()
 	const user = useOptionalUser()
 	const isOwner = user?.id === data.event.ownerId
@@ -116,9 +116,9 @@ export default function NoteRoute() {
 				<ul className="flex flex-wrap gap-5 py-5">
 					{data.event.images.map((image) => (
 						<li key={image.id}>
-							<a href={getNoteImgSrc(image.id)}>
+							<a href={getEventImgSrc(image.id)}>
 								<img
-									src={getNoteImgSrc(image.id)}
+									src={getEventImgSrc(image.id)}
 									alt={image.altText ?? ''}
 									className="h-32 w-32 rounded-lg object-cover"
 								/>
@@ -138,7 +138,7 @@ export default function NoteRoute() {
 						</Icon>
 					</span>
 					<div className="grid flex-1 grid-cols-2 justify-end gap-2 min-[525px]:flex md:gap-4">
-						{canDelete ? <DeleteNote id={data.event.id} /> : null}
+						{canDelete ? <DeleteEvent id={data.event.id} /> : null}
 						<Button
 							asChild
 							className="min-[525px]:max-md:aspect-square min-[525px]:max-md:px-0"
@@ -156,7 +156,7 @@ export default function NoteRoute() {
 	)
 }
 
-export function DeleteNote({ id }: { id: string }) {
+export function DeleteEvent({ id }: { id: string }) {
 	const actionData = useActionData<typeof action>()
 	const isPending = useIsPending()
 	const [form] = useForm({
@@ -193,13 +193,13 @@ export const meta: MetaFunction<
 		(m) => m.id === 'routes/users+/$username_+/events',
 	)
 	const displayName = eventsMatch?.data?.owner.name ?? params.username
-	const eventTitle = data?.event.title ?? 'Note'
+	const eventTitle = data?.event.title ?? 'Event'
 	const eventContentsSummary =
 		data?.event.notes && data.event.notes.length > 100
 			? data.event.notes.slice(0, 97) + '...'
 			: 'No notes'
 	return [
-		{ title: `${eventTitle} | ${displayName}'s Notes | GetFranki` },
+		{ title: `${eventTitle} | ${displayName}'s Events | GetFranki` },
 		{
 			name: 'description',
 			notes: eventContentsSummary,

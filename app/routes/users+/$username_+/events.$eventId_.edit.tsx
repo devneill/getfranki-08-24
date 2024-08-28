@@ -4,17 +4,17 @@ import { useLoaderData } from '@remix-run/react'
 import { GeneralErrorBoundary } from '#app/components/error-boundary.tsx'
 import { requireUserId } from '#app/utils/auth.server.ts'
 import { prisma } from '#app/utils/db.server.ts'
-import { NoteEditor } from './__note-editor.tsx'
+import { EventEditor } from './__event-editor.tsx'
 
-export { action } from './__note-editor.server.tsx'
+export { action } from './__event-editor.server.tsx'
 
 export async function loader({ params, request }: LoaderFunctionArgs) {
 	const userId = await requireUserId(request)
-	const note = await prisma.note.findFirst({
+	const event = await prisma.event.findFirst({
 		select: {
 			id: true,
 			title: true,
-			content: true,
+			notes: true,
 			images: {
 				select: {
 					id: true,
@@ -23,18 +23,18 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
 			},
 		},
 		where: {
-			id: params.noteId,
+			id: params.eventId,
 			ownerId: userId,
 		},
 	})
-	invariantResponse(note, 'Not found', { status: 404 })
-	return json({ note: note })
+	invariantResponse(event, 'Not found', { status: 404 })
+	return json({ event: event })
 }
 
-export default function NoteEdit() {
+export default function EventEdit() {
 	const data = useLoaderData<typeof loader>()
 
-	return <NoteEditor note={data.note} />
+	return <EventEditor event={data.event} />
 }
 
 export function ErrorBoundary() {
@@ -42,7 +42,7 @@ export function ErrorBoundary() {
 		<GeneralErrorBoundary
 			statusHandlers={{
 				404: ({ params }) => (
-					<p>No note with the id "{params.noteId}" exists</p>
+					<p>No event with the id "{params.eventId}" exists</p>
 				),
 			}}
 		/>
