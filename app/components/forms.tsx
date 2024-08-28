@@ -200,3 +200,43 @@ export function CheckboxField({
 		</div>
 	)
 }
+
+export function RadioField({
+	labelProps,
+	inputCollectionProps,
+	errors,
+}: {
+	labelProps: React.LabelHTMLAttributes<HTMLLabelElement>
+	inputCollectionProps: React.InputHTMLAttributes<HTMLInputElement>[]
+	errors?: ListOfErrors
+	className?: string
+}) {
+	const id = useId()
+	const errorId = errors?.length ? `${id}-error` : undefined
+
+	console.log(inputCollectionProps)
+
+	return (
+		<fieldset>
+			<legend className="pb-1 text-sm font-medium leading-none">
+				{labelProps.children}
+			</legend>
+			{inputCollectionProps.map(
+				(props: React.InputHTMLAttributes<HTMLInputElement>, index: number) => (
+					<div key={index} className="mt-2 flex items-center">
+						<input {...props} />
+						<label
+							className="pl-[15px] text-[15px] leading-none"
+							htmlFor={props.id}
+						>
+							{props.value}
+						</label>
+					</div>
+				),
+			)}
+			<div className="min-h-[32px] px-4 pb-3 pt-1">
+				{errorId ? <ErrorList id={errorId} errors={errors} /> : null}
+			</div>
+		</fieldset>
+	)
+}

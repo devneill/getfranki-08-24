@@ -23,7 +23,7 @@ import { Icon } from '#app/components/ui/icon.tsx'
 import { StatusButton } from '#app/components/ui/status-button.tsx'
 import { requireUserId } from '#app/utils/auth.server.ts'
 import { prisma } from '#app/utils/db.server.ts'
-import { getEventImgSrc, useIsPending } from '#app/utils/misc.tsx'
+import { formatDate, getEventImgSrc, useIsPending } from '#app/utils/misc.tsx'
 import { requireUserWithPermission } from '#app/utils/permissions.server.ts'
 import { redirectWithToast } from '#app/utils/toast.server.ts'
 import { userHasPermission, useOptionalUser } from '#app/utils/user.ts'
@@ -35,6 +35,11 @@ export async function loader({ params }: LoaderFunctionArgs) {
 		select: {
 			id: true,
 			title: true,
+			date: true,
+			type: true,
+			venue: true,
+			capacity: true,
+			budget: true,
 			notes: true,
 			ownerId: true,
 			updatedAt: true,
@@ -126,9 +131,44 @@ export default function EventRoute() {
 						</li>
 					))}
 				</ul>
-				<p className="whitespace-break-spaces text-sm md:text-lg">
-					{data.event.notes}
-				</p>
+				<div className="flex flex-col gap-4">
+					<div>
+						<p className="text-h6">Date</p>
+						<p className="whitespace-break-spaces text-sm md:text-lg">
+							{formatDate(data.event.date ?? '')}
+						</p>
+					</div>
+					<div>
+						<p className="text-h6">Type</p>
+						<p className="whitespace-break-spaces text-sm md:text-lg">
+							{data.event.type}
+						</p>
+					</div>
+					<div>
+						<p className="text-h6">Venue</p>
+						<p className="whitespace-break-spaces text-sm md:text-lg">
+							{data.event.venue}
+						</p>
+					</div>
+					<div>
+						<p className="text-h6">Capacity</p>
+						<p className="whitespace-break-spaces text-sm md:text-lg">
+							{data.event.capacity}
+						</p>
+					</div>
+					<div>
+						<p className="text-h6">Budget</p>
+						<p className="whitespace-break-spaces text-sm md:text-lg">
+							{data.event.budget}
+						</p>
+					</div>
+					<div>
+						<p className="text-h6">Notes</p>
+						<p className="whitespace-break-spaces text-sm md:text-lg">
+							{data.event.notes}
+						</p>
+					</div>
+				</div>
 			</div>
 			{displayBar ? (
 				<div className={floatingToolbarClassName}>

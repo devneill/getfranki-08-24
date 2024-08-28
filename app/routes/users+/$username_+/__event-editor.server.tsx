@@ -97,6 +97,11 @@ export async function action({ request }: ActionFunctionArgs) {
 	const {
 		id: eventId,
 		title,
+		date,
+		type,
+		venue,
+		capacity,
+		budget,
 		notes,
 		imageUpdates = [],
 		newImages = [],
@@ -108,11 +113,21 @@ export async function action({ request }: ActionFunctionArgs) {
 		create: {
 			ownerId: userId,
 			title,
+			date,
+			type,
+			venue,
+			capacity,
+			budget,
 			notes,
 			images: { create: newImages },
 		},
 		update: {
 			title,
+			date,
+			type,
+			venue,
+			capacity,
+			budget,
 			notes,
 			images: {
 				deleteMany: { id: { notIn: imageUpdates.map((i) => i.id) } },

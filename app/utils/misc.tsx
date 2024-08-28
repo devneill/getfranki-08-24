@@ -288,3 +288,16 @@ export async function downloadFile(url: string, retries: number = 0) {
 		return downloadFile(url, retries + 1)
 	}
 }
+
+export function formatDate(dateTimeString: string) {
+	const date = new Date(Date.parse(dateTimeString))
+
+	const options = {
+		weekday: 'long',
+		year: 'numeric',
+		month: 'long',
+		day: 'numeric',
+	} as const
+
+	return date.toLocaleDateString('en-ZA', options)
+}

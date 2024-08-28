@@ -6,7 +6,7 @@ import {
 	cleanupDb,
 	createPassword,
 	createUser,
-	getNoteImages,
+	getEventImages,
 	getUserImages,
 	img,
 } from '#tests/db-utils.ts'
@@ -63,7 +63,7 @@ async function seed() {
 
 	const totalUsers = 5
 	console.time(`👤 Created ${totalUsers} users...`)
-	const noteImages = await getNoteImages()
+	const eventImages = await getEventImages()
 	const userImages = await getUserImages()
 
 	for (let index = 0; index < totalUsers; index++) {
@@ -76,18 +76,18 @@ async function seed() {
 					password: { create: createPassword(userData.username) },
 					image: { create: userImages[index % userImages.length] },
 					roles: { connect: { name: 'user' } },
-					notes: {
+					events: {
 						create: Array.from({
 							length: faker.number.int({ min: 1, max: 3 }),
 						}).map(() => ({
 							title: faker.lorem.sentence(),
-							content: faker.lorem.paragraphs(),
+							notes: faker.lorem.paragraphs(),
 							images: {
 								create: Array.from({
 									length: faker.number.int({ min: 1, max: 3 }),
 								}).map(() => {
 									const imgNumber = faker.number.int({ min: 0, max: 9 })
-									const img = noteImages[imgNumber]
+									const img = eventImages[imgNumber]
 									if (!img) {
 										throw new Error(`Could not find image #${imgNumber}`)
 									}
@@ -111,32 +111,32 @@ async function seed() {
 		kodyUser: img({ filepath: './tests/fixtures/images/user/kody.png' }),
 		cuteKoala: img({
 			altText: 'an adorable koala cartoon illustration',
-			filepath: './tests/fixtures/images/kody-notes/cute-koala.png',
+			filepath: './tests/fixtures/images/kody-events/cute-koala.png',
 		}),
 		koalaEating: img({
 			altText: 'a cartoon illustration of a koala in a tree eating',
-			filepath: './tests/fixtures/images/kody-notes/koala-eating.png',
+			filepath: './tests/fixtures/images/kody-events/koala-eating.png',
 		}),
 		koalaCuddle: img({
 			altText: 'a cartoon illustration of koalas cuddling',
-			filepath: './tests/fixtures/images/kody-notes/koala-cuddle.png',
+			filepath: './tests/fixtures/images/kody-events/koala-cuddle.png',
 		}),
 		mountain: img({
 			altText: 'a beautiful mountain covered in snow',
-			filepath: './tests/fixtures/images/kody-notes/mountain.png',
+			filepath: './tests/fixtures/images/kody-events/mountain.png',
 		}),
 		koalaCoder: img({
 			altText: 'a koala coding at the computer',
-			filepath: './tests/fixtures/images/kody-notes/koala-coder.png',
+			filepath: './tests/fixtures/images/kody-events/koala-coder.png',
 		}),
 		koalaMentor: img({
 			altText:
 				'a koala in a friendly and helpful posture. The Koala is standing next to and teaching a woman who is coding on a computer and shows positive signs of learning and understanding what is being explained.',
-			filepath: './tests/fixtures/images/kody-notes/koala-mentor.png',
+			filepath: './tests/fixtures/images/kody-events/koala-mentor.png',
 		}),
 		koalaSoccer: img({
 			altText: 'a cute cartoon koala kicking a soccer ball on a soccer field ',
-			filepath: './tests/fixtures/images/kody-notes/koala-soccer.png',
+			filepath: './tests/fixtures/images/kody-events/koala-soccer.png',
 		}),
 	})
 

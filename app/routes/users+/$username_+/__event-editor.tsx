@@ -1,5 +1,6 @@
 import {
 	FormProvider,
+	getCollectionProps,
 	getFieldsetProps,
 	getFormProps,
 	getInputProps,
@@ -15,7 +16,12 @@ import { useState } from 'react'
 import { z } from 'zod'
 import { GeneralErrorBoundary } from '#app/components/error-boundary.tsx'
 import { floatingToolbarClassName } from '#app/components/floating-toolbar.tsx'
-import { ErrorList, Field, TextareaField } from '#app/components/forms.tsx'
+import {
+	ErrorList,
+	Field,
+	RadioField,
+	TextareaField,
+} from '#app/components/forms.tsx'
 import { Button } from '#app/components/ui/button.tsx'
 import { Icon } from '#app/components/ui/icon.tsx'
 import { Label } from '#app/components/ui/label.tsx'
@@ -26,8 +32,14 @@ import { type action } from './__event-editor.server'
 
 const titleMinLength = 1
 const titleMaxLength = 100
-const eventsMinLength = 1
-const eventsMaxLength = 10000
+const venueMinLength = 1
+const venueMaxLength = 300
+const capacityMin = 1
+const capacityMax = 20000
+const budgetMin = 1
+const budgetMax = 50_000_000
+const notesMinLength = 1
+const notesMaxLength = 10000
 
 export const MAX_UPLOAD_SIZE = 1024 * 1024 * 3 // 3MB
 
@@ -47,7 +59,18 @@ export type ImageFieldset = z.infer<typeof ImageFieldsetSchema>
 export const EventEditorSchema = z.object({
 	id: z.string().optional(),
 	title: z.string().min(titleMinLength).max(titleMaxLength),
-	notes: z.string().min(eventsMinLength).max(eventsMaxLength),
+	date: z
+		.date()
+		.min(new Date(), { message: 'Please enter a date in the future' }),
+	type: z
+		.enum(['Corporate', 'Wedding', 'Private'], {
+			message: 'Please select an event type',
+		})
+		.transform((value) => value.toLowerCase()),
+	venue: z.string().min(venueMinLength).max(venueMaxLength),
+	capacity: z.number().min(capacityMin).max(capacityMax),
+	budget: z.number().min(budgetMin).max(budgetMax),
+	notes: z.string().min(notesMinLength).max(notesMaxLength).optional(),
 	images: z.array(ImageFieldsetSchema).max(5).optional(),
 })
 
@@ -55,7 +78,17 @@ export function EventEditor({
 	event,
 }: {
 	event?: SerializeFrom<
-		Pick<Event, 'id' | 'title' | 'notes'> & {
+		Pick<
+			Event,
+			| 'id'
+			| 'title'
+			| 'date'
+			| 'type'
+			| 'venue'
+			| 'capacity'
+			| 'budget'
+			| 'notes'
+		> & {
 			images: Array<Pick<EventImage, 'id' | 'altText'>>
 		}
 	>
@@ -72,6 +105,10 @@ export function EventEditor({
 		},
 		defaultValue: {
 			...event,
+			date: event?.date?.split('T')[0] ?? '',
+			type: event?.type
+				? event.type.charAt(0).toUpperCase() + event.type.slice(1)
+				: '',
 			images: event?.images ?? [{}],
 		},
 		shouldRevalidate: 'onBlur',
@@ -102,6 +139,54 @@ export function EventEditor({
 								...getInputProps(fields.title, { type: 'text' }),
 							}}
 							errors={fields.title.errors}
+						/>
+						<Field
+							labelProps={{ children: 'Date' }}
+							inputProps={{
+								...getInputProps(fields.date, {
+									type: 'date',
+									ariaAttributes: true,
+								}),
+							}}
+							errors={fields.date.errors}
+						/>
+						<RadioField
+							labelProps={{ htmlFor: fields.type.id, children: 'Type' }}
+							inputCollectionProps={getCollectionProps(fields.type, {
+								type: 'radio',
+								options: ['Corporate', 'Wedding', 'Private'],
+							})}
+							errors={fields.type.errors}
+						/>
+						<Field
+							labelProps={{ children: 'Venue' }}
+							inputProps={{
+								...getInputProps(fields.venue, {
+									type: 'text',
+									ariaAttributes: true,
+								}),
+							}}
+							errors={fields.venue.errors}
+						/>
+						<Field
+							labelProps={{ children: 'Number of people' }}
+							inputProps={{
+								...getInputProps(fields.capacity, {
+									type: 'number',
+									ariaAttributes: true,
+								}),
+							}}
+							errors={fields.capacity.errors}
+						/>
+						<Field
+							labelProps={{ children: 'Budget' }}
+							inputProps={{
+								...getInputProps(fields.budget, {
+									type: 'number',
+									ariaAttributes: true,
+								}),
+							}}
+							errors={fields.budget.errors}
 						/>
 						<TextareaField
 							labelProps={{ children: 'Notes' }}

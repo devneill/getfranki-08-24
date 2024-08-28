@@ -14,6 +14,11 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
 		select: {
 			id: true,
 			title: true,
+			date: true,
+			type: true,
+			venue: true,
+			capacity: true,
+			budget: true,
 			notes: true,
 			images: {
 				select: {
