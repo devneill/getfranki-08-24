@@ -120,8 +120,13 @@ test('Users can delete event image', async ({ page, login }) => {
 function createEvent() {
 	return {
 		title: faker.lorem.words(3),
+		date: faker.date.future(),
+		type: faker.helpers.arrayElement(['Corporate', 'Wedding', 'Private']),
+		venue: faker.location.streetAddress(),
+		capacity: faker.number.int(5000),
+		budget: faker.number.int(5000000),
 		notes: faker.lorem.paragraphs(3),
-	} satisfies Omit<Event, 'id' | 'createdAt' | 'updatedAt' | 'type' | 'ownerId'>
+	} satisfies Omit<Event, 'id' | 'createdAt' | 'updatedAt' | 'ownerId'>
 }
 function createEventWithImage() {
 	return {
@@ -135,10 +140,7 @@ function createEventWithImage() {
 				),
 			},
 		},
-	} satisfies Omit<
-		Event,
-		'id' | 'createdAt' | 'updatedAt' | 'type' | 'ownerId'
-	> & {
+	} satisfies Omit<Event, 'id' | 'createdAt' | 'updatedAt' | 'ownerId'> & {
 		images: { create: Pick<EventImage, 'altText' | 'blob' | 'contentType'> }
 	}
 }
