@@ -14,6 +14,7 @@ import {
 	Scripts,
 	ScrollRestoration,
 	useLoaderData,
+	useMatches,
 	useSubmit,
 } from '@remix-run/react'
 import { withSentry } from '@sentry/remix'
@@ -43,7 +44,12 @@ import { ClientHintCheck, getHints } from './utils/client-hints.tsx'
 import { prisma } from './utils/db.server.ts'
 import { getEnv } from './utils/env.server.ts'
 import { honeypot } from './utils/honeypot.server.ts'
-import { combineHeaders, getDomainUrl, getUserImgSrc } from './utils/misc.tsx'
+import {
+	cn,
+	combineHeaders,
+	getDomainUrl,
+	getUserImgSrc,
+} from './utils/misc.tsx'
 import { useNonce } from './utils/nonce-provider.ts'
 import { type Theme, getTheme } from './utils/theme.server.ts'
 import { makeTimings, time } from './utils/timing.server.ts'
@@ -197,6 +203,10 @@ function App() {
 	const nonce = useNonce()
 	const user = useOptionalUser()
 	const theme = useTheme()
+	const matches = useMatches()
+	const isOnLandingPage = matches.find(
+		(m) => m.id === 'routes/_marketing+/index',
+	)
 	const allowIndexing = data.ENV.ALLOW_INDEXING !== 'false'
 	useToast(data.toast)
 
@@ -208,21 +218,30 @@ function App() {
 			env={data.ENV}
 		>
 			<div className="flex h-screen flex-col justify-between">
-				<header className="container max-sm:px-5 max-sm:pt-5">
-					<nav className="flex flex-wrap items-center justify-between gap-4 sm:flex-nowrap md:gap-8">
+				<header className="container px-5 py-2">
+					<nav className="flex items-center justify-between gap-8 md:gap-16">
 						<Logo />
-						<div className="flex gap-8">
-							<Link to="#pricing">Pricing</Link>
-							<Link to="#features">Features</Link>
-						</div>
-						<div className="flex items-center gap-10">
-							{user ? (
-								<UserDropdown />
-							) : (
-								<Button asChild className="min-w-20" variant="secondary">
-									<Link to="/login">Log In</Link>
-								</Button>
+						<div
+							className={cn(
+								'flex w-full items-center',
+								isOnLandingPage ? 'justify-between' : 'justify-end',
 							)}
+						>
+							{isOnLandingPage ? (
+								<div className="flex gap-8">
+									<Link to="#pricing">Pricing</Link>
+									<Link to="#features">Features</Link>
+								</div>
+							) : null}
+							<div className="flex items-center gap-10">
+								{user ? (
+									<UserDropdown />
+								) : (
+									<Button asChild className="min-w-20" variant="secondary">
+										<Link to="/login">Log In</Link>
+									</Button>
+								)}
+							</div>
 						</div>
 					</nav>
 				</header>
@@ -231,11 +250,9 @@ function App() {
 					<Outlet />
 				</div>
 
-				<div className="bg-secondary/70">
-					<div className="container flex items-center justify-between pb-5 max-sm:px-5">
-						<Logo />
-						<ThemeSwitch userPreference={data.requestInfo.userPrefs.theme} />
-					</div>
+				<div className="container flex items-center justify-between px-5 py-2">
+					<Logo />
+					<ThemeSwitch userPreference={data.requestInfo.userPrefs.theme} />
 				</div>
 			</div>
 			<EpicToaster closeButton position="top-center" theme={theme} />

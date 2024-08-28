@@ -60,8 +60,8 @@ export default function Index() {
 				<Pricing />
 				<Testimonial index={1} />
 				<FAQs />
-				<Close />
 			</div>
+			<Close />
 		</main>
 	)
 }
@@ -465,7 +465,7 @@ function Pricing() {
 
 function FAQs() {
 	return (
-		<div className="flex w-full max-w-5xl flex-col gap-10 px-5 lg:gap-12">
+		<div className="flex w-full max-w-5xl flex-col gap-10 px-5 pb-20 lg:gap-12 xl:pb-28">
 			<h3 className="text-center font-bold">Frequently Asked Questions</h3>
 			<Accordion
 				type="multiple"
