@@ -21,6 +21,7 @@ model User {
 
   image       UserImage?
   password    Password?
+  events      Event[]
   notes       Note[]
   roles       Role[]
   sessions    Session[]
@@ -60,6 +61,45 @@ model NoteImage {
 
   // non-unique foreign key
   @@index([noteId])
+}
+
+model Event {
+  id       String    @id @default(cuid())
+  title    String
+  date     DateTime?
+  type     String? // e.g. corporate, wedding, private
+  venue    String?
+  capacity Int?
+  budget   Int?
+  notes    String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  owner   User         @relation(fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  ownerId String
+  images  EventImage[]
+
+  // non-unique foreign key
+  @@index([ownerId])
+  // This helps our order by in the user search a LOT
+  @@index([ownerId, updatedAt])
+}
+
+model EventImage {
+  id          String  @id @default(cuid())
+  altText     String?
+  contentType String
+  blob        Bytes
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  event   Event  @relation(fields: [eventId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  eventId String
+
+  // non-unique foreign key
+  @@index([eventId])
 }
 
 model UserImage {
