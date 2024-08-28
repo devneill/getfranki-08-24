@@ -14,6 +14,17 @@ test('Users can create event with an image', async ({ page, login }) => {
 
 	// fill in form and submit
 	await page.getByRole('textbox', { name: 'title' }).fill(newEvent.title)
+	await page
+		.getByLabel('Date')
+		.fill(newEvent.date.toISOString().split('T')[0] ?? '')
+	await page.getByRole('radio', { name: newEvent.type }).setChecked(true)
+	await page.getByRole('textbox', { name: 'venue' }).fill(newEvent.venue)
+	await page
+		.getByRole('spinbutton', { name: 'Number of people' })
+		.fill(newEvent.capacity.toString())
+	await page
+		.getByRole('spinbutton', { name: 'budget' })
+		.fill(newEvent.budget.toString())
 	await page.getByRole('textbox', { name: 'notes' }).fill(newEvent.notes)
 	await page
 		.getByLabel('image')
@@ -40,6 +51,17 @@ test('Users can create event with multiple images', async ({ page, login }) => {
 
 	// fill in form and submit
 	await page.getByRole('textbox', { name: 'title' }).fill(newEvent.title)
+	await page
+		.getByLabel('Date')
+		.fill(newEvent.date.toISOString().split('T')[0] ?? '')
+	await page.getByRole('radio', { name: newEvent.type }).setChecked(true)
+	await page.getByRole('textbox', { name: 'venue' }).fill(newEvent.venue)
+	await page
+		.getByRole('spinbutton', { name: 'Number of people' })
+		.fill(newEvent.capacity.toString())
+	await page
+		.getByRole('spinbutton', { name: 'budget' })
+		.fill(newEvent.budget.toString())
 	await page.getByRole('textbox', { name: 'notes' }).fill(newEvent.notes)
 	await page
 		.getByLabel('image')
