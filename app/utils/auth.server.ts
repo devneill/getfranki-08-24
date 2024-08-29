@@ -1,4 +1,4 @@
-import { type Connection, type Password, type User } from '@prisma/client'
+import { Role, type Connection, type Password, type User } from '@prisma/client'
 import { redirect } from '@remix-run/node'
 import bcrypt from 'bcryptjs'
 import { Authenticator } from 'remix-auth'
@@ -112,12 +112,14 @@ export async function resetUserPassword({
 export async function signup({
 	email,
 	username,
-	password,
 	name,
+	role,
+	password,
 }: {
 	email: User['email']
 	username: User['username']
 	name: User['name']
+	role: Role['name']
 	password: string
 }) {
 	const hashedPassword = await getPasswordHash(password)
@@ -130,7 +132,7 @@ export async function signup({
 					email: email.toLowerCase(),
 					username: username.toLowerCase(),
 					name,
-					roles: { connect: { name: 'user' } },
+					roles: { connect: { name: role.toLowerCase() } },
 					password: {
 						create: {
 							hash: hashedPassword,
