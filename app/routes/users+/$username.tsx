@@ -7,16 +7,18 @@ import { Button } from '#app/components/ui/button.tsx'
 import { Icon } from '#app/components/ui/icon.tsx'
 import { prisma } from '#app/utils/db.server.ts'
 import { getUserImgSrc } from '#app/utils/misc.tsx'
-import { useOptionalUser } from '#app/utils/user.ts'
+import { useOptionalUser, userHasRole } from '#app/utils/user.ts'
 
 export async function loader({ params }: LoaderFunctionArgs) {
 	const user = await prisma.user.findFirst({
 		select: {
 			id: true,
 			name: true,
+			about: true,
 			username: true,
 			createdAt: true,
 			image: { select: { id: true } },
+			roles: { select: { name: true, permissions: true } },
 		},
 		where: {
 			username: params.username,
@@ -34,6 +36,18 @@ export default function ProfileRoute() {
 	const userDisplayName = user.name ?? user.username
 	const loggedInUser = useOptionalUser()
 	const isLoggedInUser = data.user.id === loggedInUser?.id
+	const isSupplier = userHasRole(user, 'supplier')
+	const isOrganiser = userHasRole(user, 'organiser')
+	const isLoggedInOrganiser =
+		loggedInUser && userHasRole(loggedInUser, 'organiser')
+
+	if (!loggedInUser) {
+		return (
+			<div className="container mb-48 mt-36 flex flex-col items-center justify-center">
+				<p>Log in to view suppliers</p>
+			</div>
+		)
+	}
 
 	return (
 		<div className="container mb-48 mt-36 flex flex-col items-center justify-center">
@@ -44,7 +58,7 @@ export default function ProfileRoute() {
 					<div className="absolute -top-40">
 						<div className="relative">
 							<img
-								src={getUserImgSrc(data.user.image?.id)}
+								src={getUserImgSrc(user.image?.id)}
 								alt={userDisplayName}
 								className="h-52 w-52 rounded-full object-cover"
 							/>
@@ -54,10 +68,24 @@ export default function ProfileRoute() {
 
 				<Spacer size="sm" />
 
-				<div className="flex flex-col items-center">
+				<div className="flex flex-col items-center gap-4">
 					<div className="flex flex-wrap items-center justify-center gap-4">
 						<h1 className="text-center text-h2">{userDisplayName}</h1>
 					</div>
+					{isSupplier && (
+						<div className="flex flex-col items-center gap-4">
+							<p className="text-center">Supplier</p>
+							{isLoggedInOrganiser && (
+								<Button asChild>
+									<Link to={`/users/${user.username}/book`} prefetch="intent">
+										Book this supplier
+									</Link>
+								</Button>
+							)}
+						</div>
+					)}
+					{isOrganiser && <p className="text-center">Organiser</p>}
+					{user.about ? <p className="text-center">{user.about}</p> : null}
 					<p className="mt-2 text-center text-muted-foreground">
 						Joined {data.userJoinedDisplay}
 					</p>
@@ -73,24 +101,27 @@ export default function ProfileRoute() {
 					<div className="mt-10 flex gap-4">
 						{isLoggedInUser ? (
 							<>
-								<Button asChild>
-									<Link to="events" prefetch="intent">
-										My events
-									</Link>
-								</Button>
+								{isOrganiser && (
+									<Button asChild>
+										<Link to="events" prefetch="intent">
+											My events
+										</Link>
+									</Button>
+								)}
+								{isSupplier && (
+									<Button asChild>
+										<Link to="bookings" prefetch="intent">
+											My bookings
+										</Link>
+									</Button>
+								)}
 								<Button asChild>
 									<Link to="/settings/profile" prefetch="intent">
 										Edit profile
 									</Link>
 								</Button>
 							</>
-						) : (
-							<Button asChild>
-								<Link to="events" prefetch="intent">
-									{userDisplayName}'s events
-								</Link>
-							</Button>
-						)}
+						) : null}
 					</div>
 				</div>
 			</div>

@@ -21,7 +21,7 @@ async function seed() {
 	console.timeEnd('🧹 Cleaned up the database...')
 
 	console.time('🔑 Created permissions...')
-	const entities = ['user', 'event']
+	const entities = ['user', 'event', 'booking']
 	const actions = ['create', 'read', 'update', 'delete']
 	const accesses = ['own', 'any'] as const
 
@@ -116,7 +116,7 @@ async function seed() {
 	}
 	console.timeEnd(`👤 Created ${totalUsers} users...`)
 
-	console.time(`🐨 Created admin user "kody"`)
+	console.time(`🐨 Created admin and organiser "kody"`)
 
 	const kodyImages = await promiseHash({
 		kodyUser: img({ filepath: './tests/fixtures/images/user/kody.png' }),
@@ -220,7 +220,32 @@ async function seed() {
 			},
 		},
 	})
-	console.timeEnd(`🐨 Created admin user "kody"`)
+	console.timeEnd(`🐨 Created admin and organiser "kody"`)
+
+	console.time(`🐨 Created supplier "dev"`)
+
+	await prisma.user.create({
+		select: { id: true },
+		data: {
+			email: 'dev@dev.dev',
+			username: 'dev',
+			name: 'Devon',
+			image: { create: kodyImages.kodyUser },
+			password: { create: createPassword('devisthebest') },
+			roles: { connect: [{ name: 'admin' }, { name: 'supplier' }] },
+			bookings: {
+				create: [
+					{
+						id: 'a27e168e',
+						message: 'Monkeys Wedding - can you make us banana bread?',
+						status: 'pending',
+						eventId: 'd27a197e',
+					},
+				],
+			},
+		},
+	})
+	console.timeEnd(`🐨 Created supplier "dev"`)
 
 	console.timeEnd(`🌱 Database has been seeded`)
 }

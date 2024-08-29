@@ -301,3 +301,7 @@ export function formatDate(dateTimeString: string) {
 
 	return date.toLocaleDateString('en-ZA', options)
 }
+
+export const capitaliseFirstLetter = (string: string) => {
+	return string.charAt(0).toUpperCase() + string.slice(1)
+}

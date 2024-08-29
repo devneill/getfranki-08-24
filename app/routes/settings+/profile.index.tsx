@@ -9,7 +9,7 @@ import {
 } from '@remix-run/node'
 import { Link, useFetcher, useLoaderData } from '@remix-run/react'
 import { z } from 'zod'
-import { ErrorList, Field } from '#app/components/forms.tsx'
+import { ErrorList, Field, TextareaField } from '#app/components/forms.tsx'
 import { Button } from '#app/components/ui/button.tsx'
 import { Icon } from '#app/components/ui/icon.tsx'
 import { StatusButton } from '#app/components/ui/status-button.tsx'
@@ -18,7 +18,11 @@ import { prisma } from '#app/utils/db.server.ts'
 import { getUserImgSrc, useDoubleCheck } from '#app/utils/misc.tsx'
 import { authSessionStorage } from '#app/utils/session.server.ts'
 import { redirectWithToast } from '#app/utils/toast.server.ts'
-import { NameSchema, UsernameSchema } from '#app/utils/user-validation.ts'
+import {
+	AboutSchema,
+	NameSchema,
+	UsernameSchema,
+} from '#app/utils/user-validation.ts'
 import { twoFAVerificationType } from './profile.two-factor.tsx'
 
 export const handle: SEOHandle = {
@@ -28,6 +32,7 @@ export const handle: SEOHandle = {
 const ProfileFormSchema = z.object({
 	name: NameSchema.optional(),
 	username: UsernameSchema,
+	about: AboutSchema.optional(),
 })
 
 export async function loader({ request }: LoaderFunctionArgs) {
@@ -37,6 +42,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 		select: {
 			id: true,
 			name: true,
+			about: true,
 			username: true,
 			email: true,
 			image: {
@@ -208,6 +214,7 @@ async function profileUpdateAction({ userId, formData }: ProfileActionArgs) {
 		data: {
 			name: data.name,
 			username: data.username,
+			about: data.about,
 		},
 	})
 
@@ -231,6 +238,7 @@ function UpdateProfile() {
 		defaultValue: {
 			username: data.user.username,
 			name: data.user.name,
+			about: data.user.about,
 		},
 	})
 
@@ -251,6 +259,12 @@ function UpdateProfile() {
 					labelProps={{ htmlFor: fields.name.id, children: 'Name' }}
 					inputProps={getInputProps(fields.name, { type: 'text' })}
 					errors={fields.name.errors}
+				/>
+				<TextareaField
+					className="col-span-6"
+					labelProps={{ htmlFor: fields.about.id, children: 'About' }}
+					textareaProps={getInputProps(fields.about, { type: 'text' })}
+					errors={fields.about.errors}
 				/>
 			</div>
 
