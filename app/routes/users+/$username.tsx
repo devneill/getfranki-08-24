@@ -86,7 +86,7 @@ export default function ProfileRoute() {
 							</>
 						) : (
 							<Button asChild>
-								<Link to="notes" prefetch="intent">
+								<Link to="events" prefetch="intent">
 									{userDisplayName}'s events
 								</Link>
 							</Button>
