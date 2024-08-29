@@ -21,24 +21,28 @@ model User {
 
   image       UserImage?
   password    Password?
-  notes       Note[]
+  events      Event[]
   roles       Role[]
   sessions    Session[]
   connections Connection[]
 }
 
-model Note {
-  id      String @id @default(cuid())
-  title   String
-  content String
+model Event {
+  id       String    @id @default(cuid())
+  title    String
+  date     DateTime?
+  type     String? // e.g. corporate, wedding, private
+  venue    String?
+  capacity Int?
+  budget   Int?
+  notes    String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  owner   User   @relation(fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  owner   User         @relation(fields: [ownerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   ownerId String
-
-  images NoteImage[]
+  images  EventImage[]
 
   // non-unique foreign key
   @@index([ownerId])
@@ -46,7 +50,7 @@ model Note {
   @@index([ownerId, updatedAt])
 }
 
-model NoteImage {
+model EventImage {
   id          String  @id @default(cuid())
   altText     String?
   contentType String
@@ -55,11 +59,11 @@ model NoteImage {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  note   Note   @relation(fields: [noteId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  noteId String
+  event   Event  @relation(fields: [eventId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  eventId String
 
   // non-unique foreign key
-  @@index([noteId])
+  @@index([eventId])
 }
 
 model UserImage {

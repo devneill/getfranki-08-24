@@ -1,5 +1,6 @@
 import {
 	FormProvider,
+	getCollectionProps,
 	getFieldsetProps,
 	getFormProps,
 	getInputProps,
@@ -8,26 +9,37 @@ import {
 	type FieldMetadata,
 } from '@conform-to/react'
 import { getZodConstraint, parseWithZod } from '@conform-to/zod'
-import { type Note, type NoteImage } from '@prisma/client'
+import { type Event, type EventImage } from '@prisma/client'
 import { type SerializeFrom } from '@remix-run/node'
 import { Form, useActionData } from '@remix-run/react'
 import { useState } from 'react'
 import { z } from 'zod'
 import { GeneralErrorBoundary } from '#app/components/error-boundary.tsx'
 import { floatingToolbarClassName } from '#app/components/floating-toolbar.tsx'
-import { ErrorList, Field, TextareaField } from '#app/components/forms.tsx'
+import {
+	ErrorList,
+	Field,
+	RadioField,
+	TextareaField,
+} from '#app/components/forms.tsx'
 import { Button } from '#app/components/ui/button.tsx'
 import { Icon } from '#app/components/ui/icon.tsx'
 import { Label } from '#app/components/ui/label.tsx'
 import { StatusButton } from '#app/components/ui/status-button.tsx'
 import { Textarea } from '#app/components/ui/textarea.tsx'
-import { cn, getNoteImgSrc, useIsPending } from '#app/utils/misc.tsx'
-import { type action } from './__note-editor.server'
+import { cn, getEventImgSrc, useIsPending } from '#app/utils/misc.tsx'
+import { type action } from './__event-editor.server'
 
 const titleMinLength = 1
 const titleMaxLength = 100
-const contentMinLength = 1
-const contentMaxLength = 10000
+const venueMinLength = 1
+const venueMaxLength = 300
+const capacityMin = 1
+const capacityMax = 20000
+const budgetMin = 1
+const budgetMax = 50_000_000
+const notesMinLength = 1
+const notesMaxLength = 10000
 
 export const MAX_UPLOAD_SIZE = 1024 * 1024 * 3 // 3MB
 
@@ -44,19 +56,40 @@ const ImageFieldsetSchema = z.object({
 
 export type ImageFieldset = z.infer<typeof ImageFieldsetSchema>
 
-export const NoteEditorSchema = z.object({
+export const EventEditorSchema = z.object({
 	id: z.string().optional(),
 	title: z.string().min(titleMinLength).max(titleMaxLength),
-	content: z.string().min(contentMinLength).max(contentMaxLength),
+	date: z
+		.date()
+		.min(new Date(), { message: 'Please enter a date in the future' }),
+	type: z
+		.enum(['Corporate', 'Wedding', 'Private'], {
+			message: 'Please select an event type',
+		})
+		.transform((value) => value.toLowerCase()),
+	venue: z.string().min(venueMinLength).max(venueMaxLength),
+	capacity: z.number().min(capacityMin).max(capacityMax),
+	budget: z.number().min(budgetMin).max(budgetMax),
+	notes: z.string().min(notesMinLength).max(notesMaxLength).optional(),
 	images: z.array(ImageFieldsetSchema).max(5).optional(),
 })
 
-export function NoteEditor({
-	note,
+export function EventEditor({
+	event,
 }: {
-	note?: SerializeFrom<
-		Pick<Note, 'id' | 'title' | 'content'> & {
-			images: Array<Pick<NoteImage, 'id' | 'altText'>>
+	event?: SerializeFrom<
+		Pick<
+			Event,
+			| 'id'
+			| 'title'
+			| 'date'
+			| 'type'
+			| 'venue'
+			| 'capacity'
+			| 'budget'
+			| 'notes'
+		> & {
+			images: Array<Pick<EventImage, 'id' | 'altText'>>
 		}
 	>
 }) {
@@ -64,15 +97,19 @@ export function NoteEditor({
 	const isPending = useIsPending()
 
 	const [form, fields] = useForm({
-		id: 'note-editor',
-		constraint: getZodConstraint(NoteEditorSchema),
+		id: 'event-editor',
+		constraint: getZodConstraint(EventEditorSchema),
 		lastResult: actionData?.result,
 		onValidate({ formData }) {
-			return parseWithZod(formData, { schema: NoteEditorSchema })
+			return parseWithZod(formData, { schema: EventEditorSchema })
 		},
 		defaultValue: {
-			...note,
-			images: note?.images ?? [{}],
+			...event,
+			date: event?.date?.split('T')[0] ?? '',
+			type: event?.type
+				? event.type.charAt(0).toUpperCase() + event.type.slice(1)
+				: '',
+			images: event?.images ?? [{}],
 		},
 		shouldRevalidate: 'onBlur',
 	})
@@ -93,7 +130,7 @@ export function NoteEditor({
 					rather than the first button in the form (which is delete/add image).
 				*/}
 					<button type="submit" className="hidden" />
-					{note ? <input type="hidden" name="id" value={note.id} /> : null}
+					{event ? <input type="hidden" name="id" value={event.id} /> : null}
 					<div className="flex flex-col gap-1">
 						<Field
 							labelProps={{ children: 'Title' }}
@@ -103,12 +140,60 @@ export function NoteEditor({
 							}}
 							errors={fields.title.errors}
 						/>
-						<TextareaField
-							labelProps={{ children: 'Content' }}
-							textareaProps={{
-								...getTextareaProps(fields.content),
+						<Field
+							labelProps={{ children: 'Date' }}
+							inputProps={{
+								...getInputProps(fields.date, {
+									type: 'date',
+									ariaAttributes: true,
+								}),
 							}}
-							errors={fields.content.errors}
+							errors={fields.date.errors}
+						/>
+						<RadioField
+							labelProps={{ htmlFor: fields.type.id, children: 'Type' }}
+							inputCollectionProps={getCollectionProps(fields.type, {
+								type: 'radio',
+								options: ['Corporate', 'Wedding', 'Private'],
+							})}
+							errors={fields.type.errors}
+						/>
+						<Field
+							labelProps={{ children: 'Venue' }}
+							inputProps={{
+								...getInputProps(fields.venue, {
+									type: 'text',
+									ariaAttributes: true,
+								}),
+							}}
+							errors={fields.venue.errors}
+						/>
+						<Field
+							labelProps={{ children: 'Number of people' }}
+							inputProps={{
+								...getInputProps(fields.capacity, {
+									type: 'number',
+									ariaAttributes: true,
+								}),
+							}}
+							errors={fields.capacity.errors}
+						/>
+						<Field
+							labelProps={{ children: 'Budget' }}
+							inputProps={{
+								...getInputProps(fields.budget, {
+									type: 'number',
+									ariaAttributes: true,
+								}),
+							}}
+							errors={fields.budget.errors}
+						/>
+						<TextareaField
+							labelProps={{ children: 'Notes' }}
+							textareaProps={{
+								...getTextareaProps(fields.notes),
+							}}
+							errors={fields.notes.errors}
 						/>
 						<div>
 							<Label>Images</Label>
@@ -174,7 +259,7 @@ function ImageChooser({ meta }: { meta: FieldMetadata<ImageFieldset> }) {
 	const fields = meta.getFieldset()
 	const existingImage = Boolean(fields.id.initialValue)
 	const [previewImage, setPreviewImage] = useState<string | null>(
-		fields.id.initialValue ? getNoteImgSrc(fields.id.initialValue) : null,
+		fields.id.initialValue ? getEventImgSrc(fields.id.initialValue) : null,
 	)
 	const [altText, setAltText] = useState(fields.altText.initialValue ?? '')
 
@@ -263,7 +348,7 @@ export function ErrorBoundary() {
 		<GeneralErrorBoundary
 			statusHandlers={{
 				404: ({ params }) => (
-					<p>No note with the id "{params.noteId}" exists</p>
+					<p>No event with the id "{params.eventId}" exists</p>
 				),
 			}}
 		/>

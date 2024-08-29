@@ -9,8 +9,8 @@ export function getUserImgSrc(imageId?: string | null) {
 	return imageId ? `/resources/user-images/${imageId}` : '/img/user.png'
 }
 
-export function getNoteImgSrc(imageId: string) {
-	return `/resources/note-images/${imageId}`
+export function getEventImgSrc(imageId: string) {
+	return `/resources/event-images/${imageId}`
 }
 
 export function getErrorMessage(error: unknown) {
@@ -287,4 +287,17 @@ export async function downloadFile(url: string, retries: number = 0) {
 		if (retries > MAX_RETRIES) throw e
 		return downloadFile(url, retries + 1)
 	}
+}
+
+export function formatDate(dateTimeString: string) {
+	const date = new Date(Date.parse(dateTimeString))
+
+	const options = {
+		weekday: 'long',
+		year: 'numeric',
+		month: 'long',
+		day: 'numeric',
+	} as const
+
+	return date.toLocaleDateString('en-ZA', options)
 }

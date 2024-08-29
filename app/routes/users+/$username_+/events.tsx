@@ -14,7 +14,7 @@ export async function loader({ params }: LoaderFunctionArgs) {
 			name: true,
 			username: true,
 			image: { select: { id: true } },
-			notes: { select: { id: true, title: true } },
+			events: { select: { id: true, title: true } },
 		},
 		where: { username: params.username },
 	})
@@ -24,7 +24,7 @@ export async function loader({ params }: LoaderFunctionArgs) {
 	return json({ owner })
 }
 
-export default function NotesRoute() {
+export default function EventsRoute() {
 	const data = useLoaderData<typeof loader>()
 	const user = useOptionalUser()
 	const isOwner = user?.id === data.owner.id
@@ -46,7 +46,7 @@ export default function NotesRoute() {
 								className="h-16 w-16 rounded-full object-cover lg:h-24 lg:w-24"
 							/>
 							<h1 className="text-center text-base font-bold md:text-lg lg:text-left lg:text-2xl">
-								{ownerDisplayName}'s Notes
+								{ownerDisplayName}'s Events
 							</h1>
 						</Link>
 						<ul className="overflow-y-auto overflow-x-hidden pb-12">
@@ -58,21 +58,21 @@ export default function NotesRoute() {
 											cn(navLinkDefaultClassName, isActive && 'bg-accent')
 										}
 									>
-										<Icon name="plus">New Note</Icon>
+										<Icon name="plus">New Event</Icon>
 									</NavLink>
 								</li>
 							) : null}
-							{data.owner.notes.map((note) => (
-								<li key={note.id} className="p-1 pr-0">
+							{data.owner.events.map((event) => (
+								<li key={event.id} className="p-1 pr-0">
 									<NavLink
-										to={note.id}
+										to={event.id}
 										preventScrollReset
 										prefetch="intent"
 										className={({ isActive }) =>
 											cn(navLinkDefaultClassName, isActive && 'bg-accent')
 										}
 									>
-										{note.title}
+										{event.title}
 									</NavLink>
 								</li>
 							))}

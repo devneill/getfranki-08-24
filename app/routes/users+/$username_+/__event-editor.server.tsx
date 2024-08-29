@@ -12,9 +12,9 @@ import { requireUserId } from '#app/utils/auth.server.ts'
 import { prisma } from '#app/utils/db.server.ts'
 import {
 	MAX_UPLOAD_SIZE,
-	NoteEditorSchema,
+	EventEditorSchema,
 	type ImageFieldset,
-} from './__note-editor'
+} from './__event-editor'
 
 function imageHasFile(
 	image: ImageFieldset,
@@ -37,17 +37,17 @@ export async function action({ request }: ActionFunctionArgs) {
 	)
 
 	const submission = await parseWithZod(formData, {
-		schema: NoteEditorSchema.superRefine(async (data, ctx) => {
+		schema: EventEditorSchema.superRefine(async (data, ctx) => {
 			if (!data.id) return
 
-			const note = await prisma.note.findUnique({
+			const event = await prisma.event.findUnique({
 				select: { id: true },
 				where: { id: data.id, ownerId: userId },
 			})
-			if (!note) {
+			if (!event) {
 				ctx.addIssue({
 					code: z.ZodIssueCode.custom,
-					message: 'Note not found',
+					message: 'Event not found',
 				})
 			}
 		}).transform(async ({ images = [], ...data }) => {
@@ -95,25 +95,40 @@ export async function action({ request }: ActionFunctionArgs) {
 	}
 
 	const {
-		id: noteId,
+		id: eventId,
 		title,
-		content,
+		date,
+		type,
+		venue,
+		capacity,
+		budget,
+		notes,
 		imageUpdates = [],
 		newImages = [],
 	} = submission.value
 
-	const updatedNote = await prisma.note.upsert({
+	const updatedEvent = await prisma.event.upsert({
 		select: { id: true, owner: { select: { username: true } } },
-		where: { id: noteId ?? '__new_note__' },
+		where: { id: eventId ?? '__new_event__' },
 		create: {
 			ownerId: userId,
 			title,
-			content,
+			date,
+			type,
+			venue,
+			capacity,
+			budget,
+			notes,
 			images: { create: newImages },
 		},
 		update: {
 			title,
-			content,
+			date,
+			type,
+			venue,
+			capacity,
+			budget,
+			notes,
 			images: {
 				deleteMany: { id: { notIn: imageUpdates.map((i) => i.id) } },
 				updateMany: imageUpdates.map((updates) => ({
@@ -126,6 +141,6 @@ export async function action({ request }: ActionFunctionArgs) {
 	})
 
 	return redirect(
-		`/users/${updatedNote.owner.username}/notes/${updatedNote.id}`,
+		`/users/${updatedEvent.owner.username}/events/${updatedEvent.id}`,
 	)
 }

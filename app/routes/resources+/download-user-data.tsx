@@ -21,7 +21,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 					contentType: true,
 				},
 			},
-			notes: {
+			events: {
 				include: {
 					images: {
 						select: {
@@ -50,11 +50,11 @@ export async function loader({ request }: LoaderFunctionArgs) {
 						url: `${domain}/resources/user-images/${user.image.id}`,
 					}
 				: null,
-			notes: user.notes.map((note) => ({
-				...note,
-				images: note.images.map((image) => ({
+			events: user.events.map((event) => ({
+				...event,
+				images: event.images.map((image) => ({
 					...image,
-					url: `${domain}/resources/note-images/${image.id}`,
+					url: `${domain}/resources/event-images/${image.id}`,
 				})),
 			})),
 		},
