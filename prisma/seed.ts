@@ -50,7 +50,18 @@ async function seed() {
 	})
 	await prisma.role.create({
 		data: {
-			name: 'user',
+			name: 'organiser',
+			permissions: {
+				connect: await prisma.permission.findMany({
+					select: { id: true },
+					where: { access: 'own' },
+				}),
+			},
+		},
+	})
+	await prisma.role.create({
+		data: {
+			name: 'supplier',
 			permissions: {
 				connect: await prisma.permission.findMany({
 					select: { id: true },
@@ -75,7 +86,7 @@ async function seed() {
 					...userData,
 					password: { create: createPassword(userData.username) },
 					image: { create: userImages[index % userImages.length] },
-					roles: { connect: { name: 'user' } },
+					roles: { connect: { name: 'organiser' } },
 					events: {
 						create: Array.from({
 							length: faker.number.int({ min: 1, max: 3 }),
@@ -153,7 +164,7 @@ async function seed() {
 			connections: {
 				create: { providerName: 'github', providerId: githubUser.profile.id },
 			},
-			roles: { connect: [{ name: 'admin' }, { name: 'user' }] },
+			roles: { connect: [{ name: 'admin' }, { name: 'organiser' }] },
 			events: {
 				create: [
 					{
