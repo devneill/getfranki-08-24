@@ -13,13 +13,6 @@ import { authSessionStorage } from '#app/utils/session.server.ts'
 import { createUser, getUserImages } from '#tests/db-utils.ts'
 import { default as UsernameRoute, loader } from './$username.tsx'
 
-async function createRole(role: 'supplier' | 'organiser' | 'admin') {
-	return await prisma.role.create({
-		select: { id: true },
-		data: { name: role },
-	})
-}
-
 test('The user profile when not logged in', async () => {
 	const userImages = await getUserImages()
 	const userImage =
@@ -49,13 +42,12 @@ test('The user profile when logged in as self as an organiser', async () => {
 	const userImages = await getUserImages()
 	const userImage =
 		userImages[faker.number.int({ min: 0, max: userImages.length - 1 })]
-	const role = await createRole('organiser')
 	const user = await prisma.user.create({
 		select: { id: true, username: true, name: true },
 		data: {
 			...createUser(),
 			image: { create: userImage },
-			roles: { connect: role },
+			roles: { connect: { name: 'organiser' } },
 		},
 	})
 	const session = await prisma.session.create({
@@ -111,13 +103,12 @@ test('The user profile when logged in as self as a supplier', async () => {
 	const userImages = await getUserImages()
 	const userImage =
 		userImages[faker.number.int({ min: 0, max: userImages.length - 1 })]
-	const role = await createRole('supplier')
 	const user = await prisma.user.create({
 		select: { id: true, username: true, name: true },
 		data: {
 			...createUser(),
 			image: { create: userImage },
-			roles: { connect: role },
+			roles: { connect: { name: 'supplier' } },
 		},
 	})
 	const session = await prisma.session.create({
@@ -173,13 +164,12 @@ test('The user profile of a supplier when logged in as an organiser', async () =
 	const userImages = await getUserImages()
 	const userImage =
 		userImages[faker.number.int({ min: 0, max: userImages.length - 1 })]
-	const organiserRole = await createRole('organiser')
 	const organiser = await prisma.user.create({
 		select: { id: true, username: true, name: true },
 		data: {
 			...createUser(),
 			image: { create: userImage },
-			roles: { connect: organiserRole },
+			roles: { connect: { name: 'organiser' } },
 		},
 	})
 	const session = await prisma.session.create({
@@ -198,13 +188,12 @@ test('The user profile of a supplier when logged in as an organiser', async () =
 		[parsedCookie.name]: parsedCookie.value,
 	}).toString()
 
-	const supplierRole = await createRole('supplier')
 	const supplier = await prisma.user.create({
 		select: { id: true, username: true, name: true },
 		data: {
 			...createUser(),
 			image: { create: userImage },
-			roles: { connect: supplierRole },
+			roles: { connect: { name: 'supplier' } },
 		},
 	})
 
