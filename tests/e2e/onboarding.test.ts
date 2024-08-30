@@ -92,6 +92,8 @@ test('onboarding with link', async ({ page, getOnboardingData }) => {
 
 	await page.getByLabel(/^confirm password/i).fill(onboardingData.password)
 
+	await page.getByRole('radio', { name: 'organiser' }).setChecked(true)
+
 	await page.getByLabel(/terms/i).check()
 
 	await page.getByLabel(/remember me/i).check()
