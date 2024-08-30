@@ -10,8 +10,15 @@ import { loader as rootLoader } from '#app/root.tsx'
 import { getSessionExpirationDate, sessionKey } from '#app/utils/auth.server.ts'
 import { prisma } from '#app/utils/db.server.ts'
 import { authSessionStorage } from '#app/utils/session.server.ts'
-import { createRole, createUser, getUserImages } from '#tests/db-utils.ts'
+import { createUser, getUserImages } from '#tests/db-utils.ts'
 import { default as UsernameRoute, loader } from './$username.tsx'
+
+async function createRole(role: 'supplier' | 'organiser' | 'admin') {
+	return await prisma.role.create({
+		select: { id: true },
+		data: { name: role },
+	})
+}
 
 test('The user profile when not logged in', async () => {
 	const userImages = await getUserImages()
