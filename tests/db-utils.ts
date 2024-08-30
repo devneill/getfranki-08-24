@@ -3,8 +3,16 @@ import { faker } from '@faker-js/faker'
 import { type PrismaClient } from '@prisma/client'
 import bcrypt from 'bcryptjs'
 import { UniqueEnforcer } from 'enforce-unique'
+import { prisma } from '#app/utils/db.server.js'
 
 const uniqueUsernameEnforcer = new UniqueEnforcer()
+
+export async function createRole(role: 'supplier' | 'organiser' | 'admin') {
+	return await prisma.role.create({
+		select: { id: true },
+		data: { name: role },
+	})
+}
 
 export function createUser() {
 	const firstName = faker.person.firstName()

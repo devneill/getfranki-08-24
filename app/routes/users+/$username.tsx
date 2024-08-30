@@ -44,7 +44,7 @@ export default function ProfileRoute() {
 	if (!loggedInUser) {
 		return (
 			<div className="container mb-48 mt-36 flex flex-col items-center justify-center">
-				<p>Log in to view suppliers</p>
+				<h1 className="text-center text-h4">Log in to view user accounts</h1>
 			</div>
 		)
 	}
