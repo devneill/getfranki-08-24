@@ -32,6 +32,7 @@ import {
 import { requireUserWithPermission } from '#app/utils/permissions.server.ts'
 import { redirectWithToast } from '#app/utils/toast.server.ts'
 import { userHasPermission, useOptionalUser } from '#app/utils/user.ts'
+import { Spacer } from '#app/components/spacer.js'
 
 export async function loader({ params }: LoaderFunctionArgs) {
 	const booking = await prisma.booking.findUnique({
@@ -45,6 +46,7 @@ export async function loader({ params }: LoaderFunctionArgs) {
 			supplier: { select: { name: true } },
 			event: {
 				select: {
+					title: true,
 					owner: { select: { username: true, name: true } },
 					date: true,
 				},
@@ -141,16 +143,20 @@ export default function EventRoute() {
 
 	return (
 		<div className="absolute inset-0 flex flex-col px-10">
-			<h2 className="mb-2 pt-12 text-h2 lg:mb-6">
-				<Link
-					to={`/users/${data.booking.event.owner.username}`}
-					prefetch="intent"
-				>
-					{data.booking.event.owner.name}
-				</Link>
-			</h2>
+			<h2 className="mb-2 pt-12 text-h2 lg:mb-6">{data.booking.event.title}</h2>
+			<Spacer size="2xs" />
+
 			<div className={`${displayBar ? 'pb-24' : 'pb-12'} overflow-y-auto`}>
 				<div className="flex flex-col gap-8">
+					<div className="flex flex-col gap-2">
+						<p className="text-h6">Organiser</p>
+						<Link
+							to={`/users/${data.booking.event.owner.username}`}
+							prefetch="intent"
+						>
+							{data.booking.event.owner.name}
+						</Link>
+					</div>
 					<div className="flex flex-col gap-2">
 						<p className="text-h6">Date</p>
 						<p className="whitespace-break-spaces text-sm md:text-lg">

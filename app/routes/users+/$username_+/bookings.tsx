@@ -2,7 +2,6 @@ import { invariantResponse } from '@epic-web/invariant'
 import { json, type LoaderFunctionArgs } from '@remix-run/node'
 import { Link, NavLink, Outlet, useLoaderData } from '@remix-run/react'
 import { GeneralErrorBoundary } from '#app/components/error-boundary.tsx'
-import { Icon } from '#app/components/ui/icon.tsx'
 import { prisma } from '#app/utils/db.server.ts'
 import { cn, getUserImgSrc } from '#app/utils/misc.tsx'
 import { userHasRole, useUser } from '#app/utils/user.ts'
@@ -14,7 +13,7 @@ export async function loader({ params }: LoaderFunctionArgs) {
 			name: true,
 			username: true,
 			image: { select: { id: true } },
-			bookings: { select: { id: true, event: { select: { owner: true } } } },
+			bookings: { select: { id: true, event: { select: { title: true } } } },
 		},
 		where: { username: params.username },
 	})
@@ -70,7 +69,7 @@ export default function BookingsRoute() {
 												cn(navLinkDefaultClassName, isActive && 'bg-accent')
 											}
 										>
-											{booking.event.owner.name}
+											{booking.event.title}
 										</NavLink>
 									</li>
 								))

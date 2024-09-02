@@ -1,6 +1,17 @@
-import { useInputControl } from '@conform-to/react'
+import {
+	useInputControl,
+	unstable_useControl as useControl,
+	type FieldMetadata,
+} from '@conform-to/react'
 import { REGEXP_ONLY_DIGITS_AND_CHARS, type OTPInputProps } from 'input-otp'
-import React, { useId } from 'react'
+import { useRef, useId, type ElementRef, type ComponentProps } from 'react'
+import {
+	SelectTrigger,
+	Select,
+	SelectValue,
+	SelectContent,
+	SelectItem,
+} from '#app/components/ui/select.tsx'
 import { Checkbox, type CheckboxProps } from './ui/checkbox.tsx'
 import {
 	InputOTP,
@@ -238,5 +249,77 @@ export function RadioField({
 				{errorId ? <ErrorList id={errorId} errors={errors} /> : null}
 			</div>
 		</fieldset>
+	)
+}
+
+export const SelectField = ({
+	labelProps,
+	meta,
+	items,
+	placeholder,
+	errors,
+	...props
+}: {
+	labelProps: React.LabelHTMLAttributes<HTMLLabelElement>
+	meta: FieldMetadata<string>
+	items: Array<{ name: string; value: string }>
+	placeholder: string
+	errors?: ListOfErrors
+} & ComponentProps<typeof Select>) => {
+	const selectRef = useRef<ElementRef<typeof SelectTrigger>>(null)
+	const control = useControl(meta)
+
+	const fallbackId = useId()
+	const id = meta.id ?? fallbackId
+	const errorId = errors?.length ? `${id}-error` : undefined
+
+	return (
+		<>
+			<select
+				id={id}
+				name={meta.name}
+				defaultValue={meta.initialValue ?? ''}
+				className="sr-only"
+				ref={control.register}
+				aria-hidden
+				tabIndex={-1}
+				onFocus={() => {
+					selectRef.current?.focus()
+				}}
+			>
+				<option value="" />
+				{items.map((option) => (
+					<option key={option.value} value={option.value} />
+				))}
+			</select>
+
+			<Label htmlFor={id} {...labelProps} />
+			<Select
+				{...props}
+				value={control.value ?? ''}
+				onValueChange={control.change}
+				onOpenChange={(open) => {
+					if (!open) {
+						control.blur()
+					}
+				}}
+			>
+				<SelectTrigger>
+					<SelectValue placeholder={placeholder} />
+				</SelectTrigger>
+				<SelectContent>
+					{items.map((item) => {
+						return (
+							<SelectItem key={item.value} value={item.value}>
+								{item.name}
+							</SelectItem>
+						)
+					})}
+				</SelectContent>
+			</Select>
+			<div className="min-h-[32px] px-4 pb-3 pt-1">
+				{errorId ? <ErrorList id={errorId} errors={errors} /> : null}
+			</div>
+		</>
 	)
 }

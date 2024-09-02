@@ -1,5 +1,5 @@
 import { getFormProps, useForm } from '@conform-to/react'
-import { parseWithZod } from '@conform-to/zod'
+import { getZodConstraint, parseWithZod } from '@conform-to/zod'
 import { invariantResponse } from '@epic-web/invariant'
 import {
 	json,
@@ -18,16 +18,23 @@ import { z } from 'zod'
 import { GeneralErrorBoundary } from '#app/components/error-boundary.tsx'
 import { floatingToolbarClassName } from '#app/components/floating-toolbar.tsx'
 import { ErrorList } from '#app/components/forms.tsx'
+import { Badge } from '#app/components/ui/badge.js'
 import { Button } from '#app/components/ui/button.tsx'
 import { Icon } from '#app/components/ui/icon.tsx'
 import { StatusButton } from '#app/components/ui/status-button.tsx'
 import { requireUserId } from '#app/utils/auth.server.ts'
 import { prisma } from '#app/utils/db.server.ts'
-import { formatDate, getEventImgSrc, useIsPending } from '#app/utils/misc.tsx'
+import {
+	capitaliseFirstLetter,
+	formatDate,
+	getEventImgSrc,
+	useIsPending,
+} from '#app/utils/misc.tsx'
 import { requireUserWithPermission } from '#app/utils/permissions.server.ts'
 import { redirectWithToast } from '#app/utils/toast.server.ts'
 import { userHasPermission, useOptionalUser } from '#app/utils/user.ts'
 import { type loader as eventsLoader } from './events.tsx'
+import { Spacer } from '#app/components/spacer.js'
 
 export async function loader({ params }: LoaderFunctionArgs) {
 	const event = await prisma.event.findUnique({
@@ -49,6 +56,13 @@ export async function loader({ params }: LoaderFunctionArgs) {
 					altText: true,
 				},
 			},
+			bookings: {
+				select: {
+					id: true,
+					supplier: { select: { username: true, name: true } },
+					status: true,
+				},
+			},
 		},
 	})
 
@@ -64,8 +78,8 @@ export async function loader({ params }: LoaderFunctionArgs) {
 }
 
 const DeleteFormSchema = z.object({
-	intent: z.literal('delete-event'),
-	eventId: z.string(),
+	intent: z.enum(['delete-event', 'delete-booking']),
+	id: z.string(),
 })
 
 export async function action({ request }: ActionFunctionArgs) {
@@ -81,26 +95,70 @@ export async function action({ request }: ActionFunctionArgs) {
 		)
 	}
 
-	const { eventId } = submission.value
+	let redirectUrl
+	let deletedItem
 
-	const event = await prisma.event.findFirst({
-		select: { id: true, ownerId: true, owner: { select: { username: true } } },
-		where: { id: eventId },
-	})
-	invariantResponse(event, 'Not found', { status: 404 })
+	if (submission.value.intent === 'delete-booking') {
+		console.log('deleting booking...')
+		const { id: bookingId } = submission.value
 
-	const isOwner = event.ownerId === userId
-	await requireUserWithPermission(
-		request,
-		isOwner ? `delete:event:own` : `delete:event:any`,
-	)
+		const booking = await prisma.booking.findFirst({
+			select: {
+				id: true,
+				eventId: true,
+				event: {
+					select: { owner: { select: { id: true, username: true } } },
+				},
+			},
+			where: { id: bookingId },
+		})
 
-	await prisma.event.delete({ where: { id: event.id } })
+		invariantResponse(booking, 'Not found', { status: 404 })
 
-	return redirectWithToast(`/users/${event.owner.username}/events`, {
+		const isOwner = booking.event.owner.id === userId
+		await requireUserWithPermission(
+			request,
+			isOwner ? `delete:booking:own` : `delete:booking:any`,
+		)
+
+		const eventId = booking.eventId
+
+		await prisma.booking.delete({ where: { id: booking.id } })
+
+		deletedItem = 'booking'
+		redirectUrl = `/users/${booking.event.owner.username}/events/${eventId}`
+	}
+
+	if (submission.value.intent === 'delete-event') {
+		console.log('deleting event...')
+		const { id: eventId } = submission.value
+
+		const event = await prisma.event.findFirst({
+			select: {
+				id: true,
+				ownerId: true,
+				owner: { select: { username: true } },
+			},
+			where: { id: eventId },
+		})
+		invariantResponse(event, 'Not found', { status: 404 })
+
+		const isOwner = event.ownerId === userId
+		await requireUserWithPermission(
+			request,
+			isOwner ? `delete:event:own` : `delete:event:any`,
+		)
+
+		await prisma.event.delete({ where: { id: event.id } })
+
+		deletedItem = 'event'
+		redirectUrl = `/users/${event.owner.username}/events`
+	}
+
+	return redirectWithToast(redirectUrl ?? '', {
 		type: 'success',
 		title: 'Success',
-		description: 'Your event has been deleted.',
+		description: `Your ${deletedItem} has been deleted.`,
 	})
 }
 
@@ -108,11 +166,15 @@ export default function EventRoute() {
 	const data = useLoaderData<typeof loader>()
 	const user = useOptionalUser()
 	const isOwner = user?.id === data.event.ownerId
-	const canDelete = userHasPermission(
+	const canDeleteEvent = userHasPermission(
 		user,
 		isOwner ? `delete:event:own` : `delete:event:any`,
 	)
-	const displayBar = canDelete || isOwner
+	const canDeleteBooking = userHasPermission(
+		user,
+		isOwner ? `delete:booking:own` : `delete:booking:any`,
+	)
+	const displayBar = canDeleteEvent || isOwner
 
 	return (
 		<div className="absolute inset-0 flex flex-col px-10">
@@ -169,6 +231,60 @@ export default function EventRoute() {
 						</p>
 					</div>
 				</div>
+				<Spacer size="2xs" />
+
+				<div className="mb-2 lg:mb-4">
+					<div className="flex items-center justify-between border-b pb-4">
+						<h2 className="text-h5">Suppliers</h2>
+						<div className="flex justify-start">
+							<Button asChild>
+								<Link to={`/users`} prefetch="intent">
+									<Icon name="plus" className="scale-125 max-md:scale-150">
+										<span className="max-md:hidden">Add supplier</span>
+									</Icon>
+								</Link>
+							</Button>
+						</div>
+					</div>
+					<div className="whitespace-break-spaces text-sm md:text-lg">
+						{data.event.bookings.map((booking) => (
+							<div
+								key={booking.id}
+								className="mt-4 flex w-full justify-between"
+							>
+								<div className="flex flex-col items-start gap-2 lg:flex-row lg:items-center">
+									<Link
+										to={`/users/${booking.supplier.username}`}
+										prefetch="intent"
+										className="justify-start"
+									>
+										{booking.supplier.name}
+									</Link>
+									<Badge
+										variant={
+											booking.status === 'paid' ? 'default' : `secondary`
+										}
+									>
+										{capitaliseFirstLetter(booking.status ?? '')}
+									</Badge>
+								</div>
+								<div className="flex gap-2">
+									{booking.status === 'confirmed' ||
+									booking.status === 'invoiced' ? (
+										<Button asChild>
+											<Link to={`/pay/${booking.id}`} prefetch="intent">
+												Pay
+											</Link>
+										</Button>
+									) : null}
+									{canDeleteBooking && booking.status === 'pending' ? (
+										<DeleteBooking id={booking.id} />
+									) : null}
+								</div>
+							</div>
+						))}
+					</div>
+				</div>
 			</div>
 			{displayBar ? (
 				<div className={floatingToolbarClassName}>
@@ -178,7 +294,7 @@ export default function EventRoute() {
 						</Icon>
 					</span>
 					<div className="grid flex-1 grid-cols-2 justify-end gap-2 min-[525px]:flex md:gap-4">
-						{canDelete ? <DeleteEvent id={data.event.id} /> : null}
+						{canDeleteEvent ? <DeleteEvent id={data.event.id} /> : null}
 						<Button
 							asChild
 							className="min-[525px]:max-md:aspect-square min-[525px]:max-md:px-0"
@@ -196,17 +312,52 @@ export default function EventRoute() {
 	)
 }
 
+export function DeleteBooking({ id }: { id: string }) {
+	const actionData = useActionData<typeof action>()
+	const isPending = useIsPending()
+	const [form] = useForm({
+		id: 'delete-booking',
+		lastResult: actionData?.result,
+		constraint: getZodConstraint(DeleteFormSchema),
+		onValidate({ formData }) {
+			return parseWithZod(formData, { schema: DeleteFormSchema })
+		},
+	})
+
+	return (
+		<Form method="POST" {...getFormProps(form)}>
+			<input type="hidden" name="id" value={id} />
+			<StatusButton
+				type="submit"
+				name="intent"
+				value="delete-booking"
+				variant="destructive"
+				status={isPending ? 'pending' : (form?.status ?? 'idle')}
+				disabled={isPending}
+				className="w-full min-w-12 max-md:aspect-square max-md:px-0"
+			>
+				Cancel
+			</StatusButton>
+			<ErrorList errors={form.errors} id={form.errorId} />
+		</Form>
+	)
+}
+
 export function DeleteEvent({ id }: { id: string }) {
 	const actionData = useActionData<typeof action>()
 	const isPending = useIsPending()
 	const [form] = useForm({
 		id: 'delete-event',
 		lastResult: actionData?.result,
+		constraint: getZodConstraint(DeleteFormSchema),
+		onValidate({ formData }) {
+			return parseWithZod(formData, { schema: DeleteFormSchema })
+		},
 	})
 
 	return (
 		<Form method="POST" {...getFormProps(form)}>
-			<input type="hidden" name="eventId" value={id} />
+			<input type="hidden" name="id" value={id} />
 			<StatusButton
 				type="submit"
 				name="intent"

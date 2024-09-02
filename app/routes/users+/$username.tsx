@@ -77,7 +77,10 @@ export default function ProfileRoute() {
 							<p className="text-center">Supplier</p>
 							{isLoggedInOrganiser && (
 								<Button asChild>
-									<Link to={`/users/${user.username}/book`} prefetch="intent">
+									<Link
+										to={`/users/${user.username}/bookings/new`}
+										prefetch="intent"
+									>
 										Book this supplier
 									</Link>
 								</Button>
