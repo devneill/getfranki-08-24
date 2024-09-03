@@ -1,4 +1,9 @@
-import { Role, type Connection, type Password, type User } from '@prisma/client'
+import {
+	type Role,
+	type Connection,
+	type Password,
+	type User,
+} from '@prisma/client'
 import { redirect } from '@remix-run/node'
 import bcrypt from 'bcryptjs'
 import { Authenticator } from 'remix-auth'

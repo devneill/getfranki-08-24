@@ -12,8 +12,6 @@ import { redirectWithToast } from '#app/utils/toast.server.js'
 import { BookingEditorSchema } from './__booking-editor'
 
 export async function loader({ params, request }: LoaderFunctionArgs) {
-	await requireUserId(request)
-
 	const user = await prisma.user.findFirst({
 		select: {
 			id: true,
@@ -87,7 +85,7 @@ export async function action({ request }: ActionFunctionArgs) {
 			id: true,
 			event: { select: { owner: { select: { username: true } }, id: true } },
 		},
-		where: { id: bookingId ?? '__new_booking' },
+		where: { id: bookingId ?? '__new_booking__' },
 		create: {
 			eventId,
 			supplierId,

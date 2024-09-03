@@ -18,6 +18,7 @@ import { z } from 'zod'
 import { GeneralErrorBoundary } from '#app/components/error-boundary.tsx'
 import { floatingToolbarClassName } from '#app/components/floating-toolbar.tsx'
 import { ErrorList } from '#app/components/forms.tsx'
+import { Spacer } from '#app/components/spacer.js'
 import { Badge } from '#app/components/ui/badge.js'
 import { Button } from '#app/components/ui/button.tsx'
 import { Icon } from '#app/components/ui/icon.tsx'
@@ -34,7 +35,6 @@ import { requireUserWithPermission } from '#app/utils/permissions.server.ts'
 import { redirectWithToast } from '#app/utils/toast.server.ts'
 import { userHasPermission, useOptionalUser } from '#app/utils/user.ts'
 import { type loader as eventsLoader } from './events.tsx'
-import { Spacer } from '#app/components/spacer.js'
 
 export async function loader({ params }: LoaderFunctionArgs) {
 	const event = await prisma.event.findUnique({

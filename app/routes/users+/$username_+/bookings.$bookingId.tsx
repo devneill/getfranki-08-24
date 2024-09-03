@@ -18,6 +18,7 @@ import { z } from 'zod'
 import { GeneralErrorBoundary } from '#app/components/error-boundary.tsx'
 import { floatingToolbarClassName } from '#app/components/floating-toolbar.tsx'
 import { ErrorList } from '#app/components/forms.tsx'
+import { Spacer } from '#app/components/spacer.js'
 import { Badge } from '#app/components/ui/badge.js'
 import { Button } from '#app/components/ui/button.tsx'
 import { Icon } from '#app/components/ui/icon.tsx'
@@ -32,7 +33,6 @@ import {
 import { requireUserWithPermission } from '#app/utils/permissions.server.ts'
 import { redirectWithToast } from '#app/utils/toast.server.ts'
 import { userHasPermission, useOptionalUser } from '#app/utils/user.ts'
-import { Spacer } from '#app/components/spacer.js'
 
 export async function loader({ params }: LoaderFunctionArgs) {
 	const booking = await prisma.booking.findUnique({
@@ -131,7 +131,7 @@ export async function action({ request }: ActionFunctionArgs) {
 	)
 }
 
-export default function EventRoute() {
+export default function BookingRoute() {
 	const data = useLoaderData<typeof loader>()
 	const user = useOptionalUser()
 	const isOwner = user?.id === data.booking.supplierId
@@ -262,9 +262,9 @@ export function BookingResponse({
 
 export const meta: MetaFunction<typeof loader> = ({ data, params }) => {
 	const displayName = data?.booking.supplier.name ?? params.username
-	const bookingOwner = data?.booking.event.owner.name ?? 'Booking'
+	const eventTitle = data?.booking.event.title ?? 'Booking'
 
-	return [{ title: `${bookingOwner} | ${displayName}'s Bookings | Get Franki` }]
+	return [{ title: `${eventTitle} | ${displayName}'s Bookings | Get Franki` }]
 }
 
 export function ErrorBoundary() {
