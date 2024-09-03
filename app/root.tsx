@@ -54,7 +54,7 @@ import { useNonce } from './utils/nonce-provider.ts'
 import { type Theme, getTheme } from './utils/theme.server.ts'
 import { makeTimings, time } from './utils/timing.server.ts'
 import { getToast } from './utils/toast.server.ts'
-import { useOptionalUser, useUser } from './utils/user.ts'
+import { useOptionalUser, userHasRole, useUser } from './utils/user.ts'
 
 export const links: LinksFunction = () => {
 	return [
@@ -293,6 +293,9 @@ export default withSentry(AppWithProviders)
 
 function UserDropdown() {
 	const user = useUser()
+	const isOrganiser = userHasRole(user, 'organiser')
+	const isSupplier = userHasRole(user, 'supplier')
+
 	const submit = useSubmit()
 	const formRef = useRef<HTMLFormElement>(null)
 	return (
@@ -325,13 +328,24 @@ function UserDropdown() {
 							</Icon>
 						</Link>
 					</DropdownMenuItem>
-					<DropdownMenuItem asChild>
-						<Link prefetch="intent" to={`/users/${user.username}/events`}>
-							<Icon className="text-body-md" name="pencil-2">
-								Events
-							</Icon>
-						</Link>
-					</DropdownMenuItem>
+					{isOrganiser ? (
+						<DropdownMenuItem asChild>
+							<Link prefetch="intent" to={`/users/${user.username}/events`}>
+								<Icon className="text-body-md" name="pencil-2">
+									Events
+								</Icon>
+							</Link>
+						</DropdownMenuItem>
+					) : null}
+					{isSupplier ? (
+						<DropdownMenuItem asChild>
+							<Link prefetch="intent" to={`/users/${user.username}/bookings`}>
+								<Icon className="text-body-md" name="pencil-2">
+									Bookings
+								</Icon>
+							</Link>
+						</DropdownMenuItem>
+					) : null}
 					<DropdownMenuItem
 						asChild
 						// this prevents the menu from closing before the form submission is completed

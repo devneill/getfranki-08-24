@@ -21,7 +21,7 @@ async function seed() {
 	console.timeEnd('🧹 Cleaned up the database...')
 
 	console.time('🔑 Created permissions...')
-	const entities = ['user', 'event']
+	const entities = ['user', 'event', 'booking']
 	const actions = ['create', 'read', 'update', 'delete']
 	const accesses = ['own', 'any'] as const
 
@@ -50,7 +50,18 @@ async function seed() {
 	})
 	await prisma.role.create({
 		data: {
-			name: 'user',
+			name: 'organiser',
+			permissions: {
+				connect: await prisma.permission.findMany({
+					select: { id: true },
+					where: { access: 'own' },
+				}),
+			},
+		},
+	})
+	await prisma.role.create({
+		data: {
+			name: 'supplier',
 			permissions: {
 				connect: await prisma.permission.findMany({
 					select: { id: true },
@@ -75,7 +86,7 @@ async function seed() {
 					...userData,
 					password: { create: createPassword(userData.username) },
 					image: { create: userImages[index % userImages.length] },
-					roles: { connect: { name: 'user' } },
+					roles: { connect: { name: 'organiser' } },
 					events: {
 						create: Array.from({
 							length: faker.number.int({ min: 1, max: 3 }),
@@ -105,7 +116,7 @@ async function seed() {
 	}
 	console.timeEnd(`👤 Created ${totalUsers} users...`)
 
-	console.time(`🐨 Created admin user "kody"`)
+	console.time(`🐨 Created admin and organiser "kody"`)
 
 	const kodyImages = await promiseHash({
 		kodyUser: img({ filepath: './tests/fixtures/images/user/kody.png' }),
@@ -153,7 +164,7 @@ async function seed() {
 			connections: {
 				create: { providerName: 'github', providerId: githubUser.profile.id },
 			},
-			roles: { connect: [{ name: 'admin' }, { name: 'user' }] },
+			roles: { connect: [{ name: 'admin' }, { name: 'organiser' }] },
 			events: {
 				create: [
 					{
@@ -209,7 +220,32 @@ async function seed() {
 			},
 		},
 	})
-	console.timeEnd(`🐨 Created admin user "kody"`)
+	console.timeEnd(`🐨 Created admin and organiser "kody"`)
+
+	console.time(`🐨 Created supplier "dev"`)
+
+	await prisma.user.create({
+		select: { id: true },
+		data: {
+			email: 'dev@dev.dev',
+			username: 'dev',
+			name: 'Devon',
+			image: { create: kodyImages.kodyUser },
+			password: { create: createPassword('devisthebest') },
+			roles: { connect: [{ name: 'admin' }, { name: 'supplier' }] },
+			bookings: {
+				create: [
+					{
+						id: 'a27e168e',
+						message: 'Monkeys Wedding - can you make us banana bread?',
+						status: 'pending',
+						eventId: 'd27a197e',
+					},
+				],
+			},
+		},
+	})
+	console.timeEnd(`🐨 Created supplier "dev"`)
 
 	console.timeEnd(`🌱 Database has been seeded`)
 }
