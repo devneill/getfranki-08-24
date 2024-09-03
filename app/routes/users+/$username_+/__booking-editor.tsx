@@ -19,7 +19,7 @@ import {
 import { Spacer } from '#app/components/spacer.js'
 import { Button } from '#app/components/ui/button.tsx'
 import { StatusButton } from '#app/components/ui/status-button.js'
-import { getUserImgSrc, useIsPending } from '#app/utils/misc.tsx'
+import { cn, getUserImgSrc, useIsPending } from '#app/utils/misc.tsx'
 import { userHasRole, useUser } from '#app/utils/user.js'
 import { type loader, type action } from './__booking-editor.server'
 
@@ -73,7 +73,7 @@ export function BookingEditor({
 
 	if (!isSupplier) {
 		return (
-			<div className="container mb-48 mt-36 flex flex-col items-center justify-center">
+			<div className="container mb-20 mt-36 flex flex-col items-center justify-center">
 				<p>This user is not a supplier and can't be booked.</p>
 			</div>
 		)
@@ -91,7 +91,7 @@ export function BookingEditor({
 		<div className="container mb-20 flex flex-col px-5 pt-20">
 			<Spacer size="4xs" />
 
-			<div className="container relative flex flex-col rounded-3xl bg-muted px-4 py-12 sm:p-12">
+			<div className="container relative flex flex-col rounded-3xl bg-accent px-4 py-12 sm:p-12">
 				<div className="relative w-52 self-center">
 					<div className="absolute -top-40">
 						<div className="relative">
@@ -147,7 +147,7 @@ export function BookingEditor({
 						</div>
 						<ErrorList id={form.errorId} errors={form.errors} />
 					</Form>
-					<div className={floatingToolbarClassName}>
+					<div className={cn(floatingToolbarClassName, 'bottom-3 rounded-2xl')}>
 						<Button variant="destructive" {...form.reset.getButtonProps()}>
 							Reset
 						</Button>
