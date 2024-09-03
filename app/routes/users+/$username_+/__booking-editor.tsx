@@ -116,7 +116,6 @@ export function BookingEditor({
 						method="POST"
 						className="flex h-full flex-col gap-y-4 overflow-y-auto overflow-x-hidden px-10 pb-28 pt-12"
 						{...getFormProps(form)}
-						encType="multipart/form-data"
 					>
 						{/*
 						This hidden submit button is here to ensure that when the user hits

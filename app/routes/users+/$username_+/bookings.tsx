@@ -7,7 +7,7 @@ import { cn, getUserImgSrc } from '#app/utils/misc.tsx'
 import { userHasRole, useUser } from '#app/utils/user.ts'
 
 export async function loader({ params }: LoaderFunctionArgs) {
-	const owner = await prisma.user.findFirst({
+	const supplier = await prisma.user.findFirst({
 		select: {
 			id: true,
 			name: true,
@@ -18,16 +18,16 @@ export async function loader({ params }: LoaderFunctionArgs) {
 		where: { username: params.username },
 	})
 
-	invariantResponse(owner, 'Owner not found', { status: 404 })
+	invariantResponse(supplier, 'Supplier not found', { status: 404 })
 
-	return json({ owner })
+	return json({ supplier })
 }
 
 export default function BookingsRoute() {
 	const data = useLoaderData<typeof loader>()
 	const user = useUser()
-	const hasBookings = data.owner.bookings.length > 0
-	const ownerDisplayName = data.owner.name ?? data.owner.username
+	const hasBookings = data.supplier.bookings.length > 0
+	const supplierDisplayName = data.supplier.name ?? data.supplier.username
 	const navLinkDefaultClassName =
 		'line-clamp-2 block rounded-l-full py-2 pl-8 pr-6 text-base lg:text-xl'
 
@@ -45,21 +45,21 @@ export default function BookingsRoute() {
 				<div className="relative col-span-1">
 					<div className="absolute inset-0 flex flex-col">
 						<Link
-							to={`/users/${data.owner.username}`}
+							to={`/users/${data.supplier.username}`}
 							className="flex flex-col items-center justify-center gap-2 bg-muted pb-4 pl-8 pr-4 pt-12 lg:flex-row lg:justify-start lg:gap-4"
 						>
 							<img
-								src={getUserImgSrc(data.owner.image?.id)}
-								alt={ownerDisplayName}
+								src={getUserImgSrc(data.supplier.image?.id)}
+								alt={supplierDisplayName}
 								className="h-16 w-16 rounded-full object-cover lg:h-24 lg:w-24"
 							/>
 							<h1 className="text-center text-base font-bold md:text-lg lg:text-left lg:text-2xl">
-								{ownerDisplayName}'s Bookings
+								{supplierDisplayName}'s Bookings
 							</h1>
 						</Link>
 						<ul className="overflow-y-auto overflow-x-hidden pb-12">
 							{hasBookings ? (
-								data.owner.bookings.map((booking) => (
+								data.supplier.bookings.map((booking) => (
 									<li key={booking.id} className="p-1 pr-0">
 										<NavLink
 											to={booking.id}

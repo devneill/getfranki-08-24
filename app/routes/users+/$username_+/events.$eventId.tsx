@@ -18,6 +18,7 @@ import { z } from 'zod'
 import { GeneralErrorBoundary } from '#app/components/error-boundary.tsx'
 import { floatingToolbarClassName } from '#app/components/floating-toolbar.tsx'
 import { ErrorList } from '#app/components/forms.tsx'
+import { Spacer } from '#app/components/spacer.js'
 import { Badge } from '#app/components/ui/badge.js'
 import { Button } from '#app/components/ui/button.tsx'
 import { Icon } from '#app/components/ui/icon.tsx'
@@ -34,7 +35,6 @@ import { requireUserWithPermission } from '#app/utils/permissions.server.ts'
 import { redirectWithToast } from '#app/utils/toast.server.ts'
 import { userHasPermission, useOptionalUser } from '#app/utils/user.ts'
 import { type loader as eventsLoader } from './events.tsx'
-import { Spacer } from '#app/components/spacer.js'
 
 export async function loader({ params }: LoaderFunctionArgs) {
 	const event = await prisma.event.findUnique({
@@ -237,20 +237,20 @@ export default function EventRoute() {
 					<div className="flex items-center justify-between border-b pb-4">
 						<h2 className="text-h5">Suppliers</h2>
 						<div className="flex justify-start">
-							<Button asChild>
+							<Button asChild className="sm:min-w-36">
 								<Link to={`/users`} prefetch="intent">
-									<Icon name="plus" className="scale-125 max-md:scale-150">
-										<span className="max-md:hidden">Add supplier</span>
+									<Icon name="plus" className="scale-125 max-sm:scale-150">
+										<span className="max-sm:hidden">Add supplier</span>
 									</Icon>
 								</Link>
 							</Button>
 						</div>
 					</div>
-					<div className="whitespace-break-spaces text-sm md:text-lg">
+					<ul className="divide-y whitespace-break-spaces text-sm md:text-lg">
 						{data.event.bookings.map((booking) => (
-							<div
+							<li
 								key={booking.id}
-								className="mt-4 flex w-full justify-between"
+								className="flex w-full items-center justify-between py-4"
 							>
 								<div className="flex flex-col items-start gap-2 lg:flex-row lg:items-center">
 									<Link
@@ -281,9 +281,9 @@ export default function EventRoute() {
 										<DeleteBooking id={booking.id} />
 									) : null}
 								</div>
-							</div>
+							</li>
 						))}
-					</div>
+					</ul>
 				</div>
 			</div>
 			{displayBar ? (
@@ -297,11 +297,11 @@ export default function EventRoute() {
 						{canDeleteEvent ? <DeleteEvent id={data.event.id} /> : null}
 						<Button
 							asChild
-							className="min-[525px]:max-md:aspect-square min-[525px]:max-md:px-0"
+							className="min-[525px]:max-sm:aspect-square min-[525px]:max-sm:px-0"
 						>
 							<Link to="edit">
-								<Icon name="pencil-1" className="scale-125 max-md:scale-150">
-									<span className="max-md:hidden">Edit</span>
+								<Icon name="pencil-1" className="scale-125 max-sm:scale-150">
+									<span className="max-sm:hidden">Edit</span>
 								</Icon>
 							</Link>
 						</Button>
@@ -334,9 +334,11 @@ export function DeleteBooking({ id }: { id: string }) {
 				variant="destructive"
 				status={isPending ? 'pending' : (form?.status ?? 'idle')}
 				disabled={isPending}
-				className="w-full min-w-12 max-md:aspect-square max-md:px-0"
+				className="sm:min-w-36"
 			>
-				Cancel
+				<Icon name="trash" className="scale-125 max-sm:scale-150">
+					<span className="hidden sm:block">Cancel</span>
+				</Icon>
 			</StatusButton>
 			<ErrorList errors={form.errors} id={form.errorId} />
 		</Form>
@@ -365,10 +367,10 @@ export function DeleteEvent({ id }: { id: string }) {
 				variant="destructive"
 				status={isPending ? 'pending' : (form.status ?? 'idle')}
 				disabled={isPending}
-				className="w-full max-md:aspect-square max-md:px-0"
+				className="w-full max-sm:aspect-square max-sm:px-0"
 			>
-				<Icon name="trash" className="scale-125 max-md:scale-150">
-					<span className="max-md:hidden">Delete</span>
+				<Icon name="trash" className="scale-125 max-sm:scale-150">
+					<span className="hidden sm:block">Delete</span>
 				</Icon>
 			</StatusButton>
 			<ErrorList errors={form.errors} id={form.errorId} />
