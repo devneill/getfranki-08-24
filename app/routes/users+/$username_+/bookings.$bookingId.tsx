@@ -240,7 +240,7 @@ export function BookingResponse({
 					</Link>
 				</Button>
 			) : null}
-			{status !== 'invoiced' ? (
+			{status !== 'invoiced' && status !== 'paid' ? (
 				<StatusButton
 					type="submit"
 					name="intent"

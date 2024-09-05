@@ -40,6 +40,13 @@ export default async function handleRequest(...args: DocRequestArgs) {
 		responseHeaders.append('Document-Policy', 'js-profiling')
 	}
 
+	// Hack to fix BigInt not being serializable - https://github.com/prisma/studio/issues/614#issuecomment-1328105236
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+	// @ts-ignore: Unreachable code error
+	BigInt.prototype.toJSON = function (): string {
+		return this.toString()
+	}
+
 	const callbackName = isbot(request.headers.get('user-agent'))
 		? 'onAllReady'
 		: 'onShellReady'
