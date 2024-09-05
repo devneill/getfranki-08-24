@@ -13,6 +13,7 @@ import {
 	startTransaction,
 } from '#app/utils/paystack.server.js'
 import { PaymentEditorSchema } from './bookings_.$bookingId_.pay'
+import { z } from 'zod'
 
 export async function loader({ params }: LoaderFunctionArgs) {
 	const booking = await prisma.booking.findUnique({
@@ -78,13 +79,9 @@ export async function action({ request }: ActionFunctionArgs) {
 
 			if (!booking) {
 				ctx.addIssue({
-					code: 'custom',
+					code: z.ZodIssueCode.custom,
 					message: 'Booking not found',
 				})
-			}
-		}).transform(async ({ ...data }) => {
-			return {
-				...data,
 			}
 		}),
 		async: true,
@@ -213,7 +210,7 @@ export async function action({ request }: ActionFunctionArgs) {
 async function upsertBankAccount(
 	businessName: string,
 	bank: string,
-	accountNumber: number,
+	accountNumber: bigint,
 	ownerId: string,
 	id?: string,
 ) {

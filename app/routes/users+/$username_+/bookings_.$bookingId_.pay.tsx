@@ -27,10 +27,10 @@ export const PaymentEditorSchema = z.object({
 	bookingId: z.string().optional(),
 	supplierBusinessName: z.string(),
 	supplierBank: z.string(),
-	supplierAccountNumber: z.number(),
+	supplierAccountNumber: z.bigint(),
 	organiserBusinessName: z.string(),
 	organiserBank: z.string(),
-	organiserAccountNumber: z.number(),
+	organiserAccountNumber: z.bigint(),
 	amount: z.number().min(amountMin).max(amountMax),
 })
 
@@ -47,6 +47,7 @@ export default function BookingPayRoute() {
 	const [form, fields] = useForm({
 		id: 'payment-editor',
 		constraint: getZodConstraint(PaymentEditorSchema),
+		// @ts-expect-error - not sure about this, I suspect it's a bug in conform/remix
 		lastResult: actionData?.result,
 		onValidate({ formData }) {
 			return parseWithZod(formData, { schema: PaymentEditorSchema })
