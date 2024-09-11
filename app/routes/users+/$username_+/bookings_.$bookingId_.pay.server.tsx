@@ -5,6 +5,7 @@ import {
 	type LoaderFunctionArgs,
 } from '@remix-run/node'
 import { json, redirect } from '@remix-run/react'
+import { z } from 'zod'
 import { prisma } from '#app/utils/db.server.js'
 import { getDomainUrl } from '#app/utils/misc.js'
 import {
@@ -13,7 +14,6 @@ import {
 	startTransaction,
 } from '#app/utils/paystack.server.js'
 import { PaymentEditorSchema } from './bookings_.$bookingId_.pay'
-import { z } from 'zod'
 
 export async function loader({ params }: LoaderFunctionArgs) {
 	const booking = await prisma.booking.findUnique({
