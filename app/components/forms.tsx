@@ -225,8 +225,6 @@ export function RadioField({
 	const id = useId()
 	const errorId = errors?.length ? `${id}-error` : undefined
 
-	console.log(inputCollectionProps)
-
 	return (
 		<fieldset>
 			<legend className="pb-1 text-sm font-medium leading-none">

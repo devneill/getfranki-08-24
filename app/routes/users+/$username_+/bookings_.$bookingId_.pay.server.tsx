@@ -170,8 +170,6 @@ export async function action({ request }: ActionFunctionArgs) {
 		)
 	}
 
-	console.log({ subaccount: supplierBankAccount.paystackSubAccount })
-
 	const organiserBankAccount = await upsertBankAccount(
 		organiserBusinessName,
 		organiserBank,
