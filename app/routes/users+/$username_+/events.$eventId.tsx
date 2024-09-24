@@ -272,7 +272,10 @@ export default function EventRoute() {
 									{booking.status === 'confirmed' ||
 									booking.status === 'invoiced' ? (
 										<Button asChild>
-											<Link to={`/pay/${booking.id}`} prefetch="intent">
+											<Link
+												to={`/users/${booking.supplier.username}/bookings/${booking.id}/pay`}
+												prefetch="intent"
+											>
 												Pay
 											</Link>
 										</Button>

@@ -173,6 +173,64 @@ CREATE INDEX "_RoleToUser_B_index" ON "_RoleToUser"("B");
 -- Hey there, Kent here! This is how you can reliably seed your database with
 -- some data. You edit the migration.sql file and that will handle it for you.
 
+-- The user Roles and Permissions are seeded here.
+-- If you'd like to customise roles and permissions, you can edit and add the code below to your `prisma/seed.ts` file.
+-- Seed your development database with `npx prisma db seed`
+-- Create a sql dump of your database with `sqlite3 prisma/data.db .dump > seed.sql`
+-- Replace the SQL below with your new Roles & Permissions related SQL from `seed.sql`
+
+-- console.time('🔑 Created permissions...')
+-- 	const entities = ['user', 'event', 'booking']
+-- 	const actions = ['create', 'read', 'update', 'delete']
+-- 	const accesses = ['own', 'any'] as const
+
+-- 	let permissionsToCreate = []
+-- 	for (const entity of entities) {
+-- 		for (const action of actions) {
+-- 			for (const access of accesses) {
+-- 				permissionsToCreate.push({ entity, action, access })
+-- 			}
+-- 		}
+-- 	}
+-- 	await prisma.permission.createMany({ data: permissionsToCreate })
+-- 	console.timeEnd('🔑 Created permissions...')
+
+-- 	console.time('👑 Created roles...')
+-- 	await prisma.role.create({
+-- 		data: {
+-- 			name: 'admin',
+-- 			permissions: {
+-- 				connect: await prisma.permission.findMany({
+-- 					select: { id: true },
+-- 					where: { access: 'any' },
+-- 				}),
+-- 			},
+-- 		},
+-- 	})
+-- 	await prisma.role.create({
+-- 		data: {
+-- 			name: 'organiser',
+-- 			permissions: {
+-- 				connect: await prisma.permission.findMany({
+-- 					select: { id: true },
+-- 					where: { access: 'own' },
+-- 				}),
+-- 			},
+-- 		},
+-- 	})
+-- 	await prisma.role.create({
+-- 		data: {
+-- 			name: 'supplier',
+-- 			permissions: {
+-- 				connect: await prisma.permission.findMany({
+-- 					select: { id: true },
+-- 					where: { access: 'own' },
+-- 				}),
+-- 			},
+-- 		},
+-- 	})
+-- 	console.timeEnd('👑 Created roles...')
+
 INSERT INTO Permission VALUES('cm0gj7un30000tllhzrr2r1i9','create','user','own','',1725011347935,1725011347935);
 INSERT INTO Permission VALUES('cm0gj7un30001tllhoncnzncd','create','user','any','',1725011347935,1725011347935);
 INSERT INTO Permission VALUES('cm0gj7un30002tllhhm6kr0j0','read','user','own','',1725011347935,1725011347935);

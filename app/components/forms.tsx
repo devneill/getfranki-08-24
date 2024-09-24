@@ -225,8 +225,6 @@ export function RadioField({
 	const id = useId()
 	const errorId = errors?.length ? `${id}-error` : undefined
 
-	console.log(inputCollectionProps)
-
 	return (
 		<fieldset>
 			<legend className="pb-1 text-sm font-medium leading-none">
@@ -269,14 +267,12 @@ export const SelectField = ({
 	const selectRef = useRef<ElementRef<typeof SelectTrigger>>(null)
 	const control = useControl(meta)
 
-	const fallbackId = useId()
-	const id = meta.id ?? fallbackId
-	const errorId = errors?.length ? `${id}-error` : undefined
+	const errorId = errors?.length ? `${meta.id}-error` : undefined
 
 	return (
 		<>
 			<select
-				id={id}
+				id={meta.id}
 				name={meta.name}
 				defaultValue={meta.initialValue ?? ''}
 				className="sr-only"
@@ -293,7 +289,7 @@ export const SelectField = ({
 				))}
 			</select>
 
-			<Label htmlFor={id} {...labelProps} />
+			<Label htmlFor={meta.id} {...labelProps} />
 			<Select
 				{...props}
 				value={control.value ?? ''}
