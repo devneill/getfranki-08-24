@@ -4,6 +4,8 @@ import { requireHeader } from './utils.ts'
 
 const { json } = HttpResponse
 
+// Uncomment this to use the real Paystack API
+// export const handlers: Array<HttpHandler> = []
 export const handlers: Array<HttpHandler> = [
 	http.get('https://api.paystack.co/bank', async ({ request }) => {
 		requireHeader(request.headers, 'Content-Type')

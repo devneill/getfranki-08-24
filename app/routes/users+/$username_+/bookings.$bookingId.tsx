@@ -217,7 +217,7 @@ export function BookingResponse({
 	return (
 		<Form method="POST" className="flex gap-2" {...getFormProps(form)}>
 			<input type="hidden" name="bookingId" value={id} />
-			{status !== 'confirmed' && status !== 'invoiced' ? (
+			{status !== 'confirmed' && status !== 'invoiced' && status !== 'paid' ? (
 				<StatusButton
 					type="submit"
 					name="intent"

@@ -34,7 +34,7 @@ model BankAccount {
   id                 String  @id @default(cuid())
   businessName       String
   bank               String
-  accountNumber      BigInt
+  accountNumber      String
   paystackSubAccount String?
 
   createdAt DateTime @default(now())

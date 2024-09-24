@@ -56,7 +56,7 @@ export async function addSubAccount(
 		body: JSON.stringify({
 			business_name: account.businessName,
 			settlement_bank: account.bank,
-			account_number: account.accountNumber.toString(),
+			account_number: account.accountNumber,
 			percentage_charge: percentage,
 			primary_contact_email: ownerEmail,
 		}),

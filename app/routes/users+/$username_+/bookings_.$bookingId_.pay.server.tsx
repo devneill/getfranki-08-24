@@ -208,7 +208,7 @@ export async function action({ request }: ActionFunctionArgs) {
 async function upsertBankAccount(
 	businessName: string,
 	bank: string,
-	accountNumber: bigint,
+	accountNumber: string,
 	ownerId: string,
 	id?: string,
 ) {

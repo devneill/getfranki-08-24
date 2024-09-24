@@ -27,10 +27,10 @@ export const PaymentEditorSchema = z.object({
 	bookingId: z.string().optional(),
 	supplierBusinessName: z.string(),
 	supplierBank: z.string(),
-	supplierAccountNumber: z.bigint(),
+	supplierAccountNumber: z.string(),
 	organiserBusinessName: z.string(),
 	organiserBank: z.string(),
-	organiserAccountNumber: z.bigint(),
+	organiserAccountNumber: z.string(),
 	amount: z.number().min(amountMin).max(amountMax),
 })
 
@@ -59,8 +59,7 @@ export default function BookingPayRoute() {
 			organiserBusinessName: booking?.event?.owner?.bankAccount?.businessName,
 			organiserBank: booking?.event?.owner?.bankAccount?.bank,
 			organiserAccountNumber: booking?.event?.owner?.bankAccount?.accountNumber,
-			// amount: '',
-			amount: 10_000,
+			amount: '',
 		},
 	})
 
