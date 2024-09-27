@@ -20,6 +20,59 @@ async function seed() {
 	await cleanupDb(prisma)
 	console.timeEnd('🧹 Cleaned up the database...')
 
+	console.time('🗂️ Created supplier categories...')
+	await prisma.category.create({
+		data: {
+			name: 'Catering',
+		},
+	})
+	await prisma.category.create({
+		data: {
+			name: 'Bar Services',
+		},
+	})
+	await prisma.category.create({
+		data: {
+			name: 'Decor',
+		},
+	})
+	await prisma.category.create({
+		data: {
+			name: 'Photographer',
+		},
+	})
+	await prisma.category.create({
+		data: {
+			name: 'Videographer',
+		},
+	})
+	await prisma.category.create({
+		data: {
+			name: 'Sound Equipment',
+		},
+	})
+	await prisma.category.create({
+		data: {
+			name: 'DJ',
+		},
+	})
+	await prisma.category.create({
+		data: {
+			name: 'Band',
+		},
+	})
+	await prisma.category.create({
+		data: {
+			name: 'Security',
+		},
+	})
+	await prisma.category.create({
+		data: {
+			name: 'Other',
+		},
+	})
+	console.timeEnd('🗂️ Created supplier categories...')
+
 	const totalUsers = 5
 	console.time(`👤 Created ${totalUsers} users...`)
 	const eventImages = await getEventImages()
@@ -179,6 +232,9 @@ async function seed() {
 			username: 'dev',
 			name: 'Devon',
 			image: { create: kodyImages.kodyUser },
+			category: {
+				connect: [{ name: 'DJ' }, { name: 'Sound Equipment' }],
+			},
 			password: { create: createPassword('devisthebest') },
 			roles: { connect: [{ name: 'admin' }, { name: 'supplier' }] },
 			bookings: {

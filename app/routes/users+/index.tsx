@@ -60,8 +60,8 @@ export default function UsersRoute() {
 	}
 
 	return (
-		<div className="container mb-48 mt-36 flex flex-col items-center justify-center gap-6">
-			<h1 className="text-h1">GetFranki Users</h1>
+		<div className="container mb-48 mt-14 flex flex-col items-center justify-center gap-6">
+			<h1 className="text-center text-h3">Find the best event suppliers</h1>
 			<div className="w-full max-w-[700px]">
 				<SearchBar status={data.status} autoFocus autoSubmit />
 			</div>
