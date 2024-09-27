@@ -8,6 +8,7 @@ import {
 } from '@remix-run/node'
 import { Form, useActionData, useLoaderData } from '@remix-run/react'
 import { z } from 'zod'
+import { GeneralErrorBoundary } from '#app/components/error-boundary.js'
 import {
 	ErrorList,
 	Field,
@@ -134,10 +135,10 @@ export const meta: MetaFunction = () => {
 }
 
 export default function CreateSupplierRoute() {
-	const { categories } = useLoaderData<typeof loader>()
+	const data = useLoaderData<typeof loader>()
 	const actionData = useActionData<typeof action>()
 	const isPending = useIsPending()
-	const categoryOptions = categories.map((cat) => ({
+	const categoryOptions = data.categories.map((cat) => ({
 		value: cat.id,
 		name: cat.name,
 	}))
@@ -239,5 +240,17 @@ export default function CreateSupplierRoute() {
 				</Form>
 			</div>
 		</div>
+	)
+}
+
+export function ErrorBoundary() {
+	return (
+		<GeneralErrorBoundary
+			statusHandlers={{
+				403: ({ error }) => (
+					<p>You are not allowed to do that. {error?.data.message}</p>
+				),
+			}}
+		/>
 	)
 }
