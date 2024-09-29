@@ -34,8 +34,8 @@ const CreateSupplierFormSchema = z.object({
 	username: UsernameSchema,
 	name: NameSchema,
 	email: EmailSchema,
-	number: NumberSchema,
-	website: WebsiteSchema,
+	number: NumberSchema.optional(),
+	website: WebsiteSchema.optional(),
 	categoryId: z.string(),
 	about: AboutSchema,
 })
@@ -84,7 +84,7 @@ export async function action({ request }: ActionFunctionArgs) {
 					})
 					return
 				}
-				if (existingUser?.number === data.number) {
+				if (existingUser?.number && existingUser.number === data.number) {
 					ctx.addIssue({
 						path: ['number'],
 						code: z.ZodIssueCode.custom,
@@ -124,7 +124,7 @@ export async function action({ request }: ActionFunctionArgs) {
 		},
 	})
 
-	return redirectWithToast('/admin/suppliers/new', {
+	return redirectWithToast(`/users/${username}`, {
 		title: 'Supplier created',
 		description: `Thanks for adding ${username} as a supplier!`,
 	})
