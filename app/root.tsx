@@ -295,6 +295,7 @@ function UserDropdown() {
 	const user = useUser()
 	const isOrganiser = userHasRole(user, 'organiser')
 	const isSupplier = userHasRole(user, 'supplier')
+	const isAdmin = userHasRole(user, 'admin')
 
 	const submit = useSubmit()
 	const formRef = useRef<HTMLFormElement>(null)
@@ -342,6 +343,15 @@ function UserDropdown() {
 							<Link prefetch="intent" to={`/users/${user.username}/bookings`}>
 								<Icon className="text-body-md" name="pencil-2">
 									Bookings
+								</Icon>
+							</Link>
+						</DropdownMenuItem>
+					) : null}
+					{isAdmin ? (
+						<DropdownMenuItem asChild>
+							<Link prefetch="intent" to={`/admin/suppliers/new`}>
+								<Icon className="text-body-md" name="pencil-2">
+									Add supplier
 								</Icon>
 							</Link>
 						</DropdownMenuItem>

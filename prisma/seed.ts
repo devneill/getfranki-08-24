@@ -179,6 +179,9 @@ async function seed() {
 			username: 'dev',
 			name: 'Devon',
 			image: { create: kodyImages.kodyUser },
+			category: {
+				connect: [{ name: 'DJ' }, { name: 'Sound Equipment' }],
+			},
 			password: { create: createPassword('devisthebest') },
 			roles: { connect: [{ name: 'admin' }, { name: 'supplier' }] },
 			bookings: {

@@ -15,7 +15,9 @@ model User {
   email    String  @unique
   username String  @unique
   name     String?
+  number   String? @unique
   about    String?
+  website  String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -27,7 +29,18 @@ model User {
   sessions    Session[]
   connections Connection[]
   bookings    Booking[]
+  category    Category[]
   bankAccount BankAccount?
+}
+
+model Category {
+  id   String @id @default(cuid())
+  name String @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  users User[]
 }
 
 model BankAccount {
