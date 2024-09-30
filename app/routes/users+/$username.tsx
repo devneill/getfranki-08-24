@@ -3,6 +3,7 @@ import { json, type LoaderFunctionArgs } from '@remix-run/node'
 import { Form, Link, useLoaderData, type MetaFunction } from '@remix-run/react'
 import { GeneralErrorBoundary } from '#app/components/error-boundary.tsx'
 import { Spacer } from '#app/components/spacer.tsx'
+import { Badge } from '#app/components/ui/badge.js'
 import { Button } from '#app/components/ui/button.tsx'
 import { Icon } from '#app/components/ui/icon.tsx'
 import { prisma } from '#app/utils/db.server.ts'
@@ -13,8 +14,11 @@ export async function loader({ params }: LoaderFunctionArgs) {
 	const user = await prisma.user.findFirst({
 		select: {
 			id: true,
+			email: true,
 			name: true,
+			number: true,
 			about: true,
+			website: true,
 			username: true,
 			createdAt: true,
 			image: { select: { id: true } },
@@ -41,14 +45,6 @@ export default function ProfileRoute() {
 	const isLoggedInOrganiser =
 		loggedInUser && userHasRole(loggedInUser, 'organiser')
 
-	if (!loggedInUser) {
-		return (
-			<div className="container mb-48 mt-36 flex flex-col items-center justify-center">
-				<h1 className="text-center text-h4">Log in to view user accounts</h1>
-			</div>
-		)
-	}
-
 	return (
 		<div className="container mb-48 mt-36 flex flex-col items-center justify-center">
 			<Spacer size="4xs" />
@@ -72,9 +68,10 @@ export default function ProfileRoute() {
 					<div className="flex flex-wrap items-center justify-center gap-4">
 						<h1 className="text-center text-h2">{userDisplayName}</h1>
 					</div>
+					{isOrganiser && <Badge variant="secondary">Organiser</Badge>}
 					{isSupplier && (
 						<div className="flex flex-col items-center gap-4">
-							<p className="text-center">Supplier</p>
+							<Badge variant="secondary">Supplier</Badge>
 							{isLoggedInOrganiser && (
 								<Button asChild>
 									<Link
@@ -87,7 +84,8 @@ export default function ProfileRoute() {
 							)}
 						</div>
 					)}
-					{isOrganiser && <p className="text-center">Organiser</p>}
+					<p className="text-center">{user.email}</p>
+					{user.number ? <p className="text-center">{user.number}</p> : null}
 					{user.about ? <p className="text-center">{user.about}</p> : null}
 					<p className="mt-2 text-center text-muted-foreground">
 						Joined {data.userJoinedDisplay}

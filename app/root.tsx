@@ -80,7 +80,10 @@ export const links: LinksFunction = () => {
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
 	return [
 		{ title: data ? 'GetFranki' : 'Error | GetFranki' },
-		{ name: 'description', content: `Your own captain's log` },
+		{
+			name: 'description',
+			content: `Find the best event suppliers in South Africa`,
+		},
 	]
 }
 
@@ -203,10 +206,6 @@ function App() {
 	const nonce = useNonce()
 	const user = useOptionalUser()
 	const theme = useTheme()
-	const matches = useMatches()
-	const isOnLandingPage = matches.find(
-		(m) => m.id === 'routes/_marketing+/index',
-	)
 	const allowIndexing = data.ENV.ALLOW_INDEXING !== 'false'
 	useToast(data.toast)
 
@@ -221,18 +220,7 @@ function App() {
 				<header className="container px-5 py-2">
 					<nav className="flex items-center justify-between gap-8 md:gap-16">
 						<Logo />
-						<div
-							className={cn(
-								'flex w-full items-center',
-								isOnLandingPage ? 'justify-between' : 'justify-end',
-							)}
-						>
-							{isOnLandingPage ? (
-								<div className="flex gap-8">
-									<Link to="#pricing">Pricing</Link>
-									<Link to="#features">Features</Link>
-								</div>
-							) : null}
+						<div className={cn('flex w-full items-center justify-end')}>
 							<div className="flex items-center gap-10">
 								{user ? (
 									<UserDropdown />
