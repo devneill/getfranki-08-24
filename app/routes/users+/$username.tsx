@@ -3,7 +3,6 @@ import { json, type LoaderFunctionArgs } from '@remix-run/node'
 import { Form, Link, useLoaderData, type MetaFunction } from '@remix-run/react'
 import { GeneralErrorBoundary } from '#app/components/error-boundary.tsx'
 import { Spacer } from '#app/components/spacer.tsx'
-import { Badge } from '#app/components/ui/badge.js'
 import { Button } from '#app/components/ui/button.tsx'
 import { Icon } from '#app/components/ui/icon.tsx'
 import { prisma } from '#app/utils/db.server.ts'
@@ -68,10 +67,8 @@ export default function ProfileRoute() {
 					<div className="flex flex-wrap items-center justify-center gap-4">
 						<h1 className="text-center text-h2">{userDisplayName}</h1>
 					</div>
-					{isOrganiser && <Badge variant="secondary">Organiser</Badge>}
 					{isSupplier && (
 						<div className="flex flex-col items-center gap-4">
-							<Badge variant="secondary">Supplier</Badge>
 							{isLoggedInOrganiser && (
 								<Button asChild>
 									<Link

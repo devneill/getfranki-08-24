@@ -101,7 +101,7 @@ export default function Index() {
 							{data.users.map((user) => (
 								<li key={user.id} className="w-full">
 									<Link
-										to={user.username}
+										to={`/users/${user.username}`}
 										className="flex h-32 w-full items-center gap-4 overflow-hidden rounded-lg bg-muted px-5 py-3"
 									>
 										<img
