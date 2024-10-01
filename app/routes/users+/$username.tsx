@@ -67,6 +67,7 @@ export default function ProfileRoute() {
 					<div className="flex flex-wrap items-center justify-center gap-4">
 						<h1 className="text-center text-h2">{userDisplayName}</h1>
 					</div>
+					{/*
 					{isSupplier && (
 						<div className="flex flex-col items-center gap-4">
 							{isLoggedInOrganiser && (
@@ -80,10 +81,11 @@ export default function ProfileRoute() {
 								</Button>
 							)}
 						</div>
-					)}
+						)}*/}
+					{user.about ? <p className="text-center">{user.about}</p> : null}
 					<p className="text-center">{user.email}</p>
 					{user.number ? <p className="text-center">{user.number}</p> : null}
-					{user.about ? <p className="text-center">{user.about}</p> : null}
+					{user.website ? <p className="text-center">{user.website}</p> : null}
 					<p className="mt-2 text-center text-muted-foreground">
 						Joined {data.userJoinedDisplay}
 					</p>
