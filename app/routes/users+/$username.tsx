@@ -13,8 +13,11 @@ export async function loader({ params }: LoaderFunctionArgs) {
 	const user = await prisma.user.findFirst({
 		select: {
 			id: true,
+			email: true,
 			name: true,
+			number: true,
 			about: true,
+			website: true,
 			username: true,
 			createdAt: true,
 			image: { select: { id: true } },
@@ -41,14 +44,6 @@ export default function ProfileRoute() {
 	const isLoggedInOrganiser =
 		loggedInUser && userHasRole(loggedInUser, 'organiser')
 
-	if (!loggedInUser) {
-		return (
-			<div className="container mb-48 mt-36 flex flex-col items-center justify-center">
-				<h1 className="text-center text-h4">Log in to view user accounts</h1>
-			</div>
-		)
-	}
-
 	return (
 		<div className="container mb-48 mt-36 flex flex-col items-center justify-center">
 			<Spacer size="4xs" />
@@ -74,7 +69,6 @@ export default function ProfileRoute() {
 					</div>
 					{isSupplier && (
 						<div className="flex flex-col items-center gap-4">
-							<p className="text-center">Supplier</p>
 							{isLoggedInOrganiser && (
 								<Button asChild>
 									<Link
@@ -87,7 +81,8 @@ export default function ProfileRoute() {
 							)}
 						</div>
 					)}
-					{isOrganiser && <p className="text-center">Organiser</p>}
+					<p className="text-center">{user.email}</p>
+					{user.number ? <p className="text-center">{user.number}</p> : null}
 					{user.about ? <p className="text-center">{user.about}</p> : null}
 					<p className="mt-2 text-center text-muted-foreground">
 						Joined {data.userJoinedDisplay}

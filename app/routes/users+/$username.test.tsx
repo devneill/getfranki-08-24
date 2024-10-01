@@ -13,31 +13,6 @@ import { authSessionStorage } from '#app/utils/session.server.ts'
 import { createUser, getUserImages } from '#tests/db-utils.ts'
 import { default as UsernameRoute, loader } from './$username.tsx'
 
-test('The user profile when not logged in', async () => {
-	const userImages = await getUserImages()
-	const userImage =
-		userImages[faker.number.int({ min: 0, max: userImages.length - 1 })]
-	const user = await prisma.user.create({
-		select: { id: true, username: true, name: true },
-		data: { ...createUser(), image: { create: userImage } },
-	})
-	const App = createRemixStub([
-		{
-			path: '/users/:username',
-			Component: UsernameRoute,
-			loader,
-		},
-	])
-
-	const routeUrl = `/users/${user.username}`
-	render(<App initialEntries={[routeUrl]} />)
-
-	await screen.findByRole('heading', {
-		level: 1,
-		name: 'Log in to view user accounts',
-	})
-})
-
 test('The user profile when logged in as self as an organiser', async () => {
 	const userImages = await getUserImages()
 	const userImage =
