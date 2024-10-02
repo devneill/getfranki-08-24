@@ -200,5 +200,4 @@ test('The user profile of a supplier when logged in as an organiser', async () =
 
 	await screen.findByRole('heading', { level: 1, name: supplier.name! })
 	await screen.findByRole('img', { name: supplier.name! })
-	await screen.findByRole('link', { name: /book this supplier/i })
 })

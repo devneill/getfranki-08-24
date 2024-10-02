@@ -41,8 +41,6 @@ export default function ProfileRoute() {
 	const isLoggedInUser = data.user.id === loggedInUser?.id
 	const isSupplier = userHasRole(user, 'supplier')
 	const isOrganiser = userHasRole(user, 'organiser')
-	const isLoggedInOrganiser =
-		loggedInUser && userHasRole(loggedInUser, 'organiser')
 
 	return (
 		<div className="container mb-48 mt-36 flex flex-col items-center justify-center">
@@ -67,23 +65,10 @@ export default function ProfileRoute() {
 					<div className="flex flex-wrap items-center justify-center gap-4">
 						<h1 className="text-center text-h2">{userDisplayName}</h1>
 					</div>
-					{isSupplier && (
-						<div className="flex flex-col items-center gap-4">
-							{isLoggedInOrganiser && (
-								<Button asChild>
-									<Link
-										to={`/users/${user.username}/bookings/new`}
-										prefetch="intent"
-									>
-										Book this supplier
-									</Link>
-								</Button>
-							)}
-						</div>
-					)}
+					{user.about ? <p className="text-center">{user.about}</p> : null}
 					<p className="text-center">{user.email}</p>
 					{user.number ? <p className="text-center">{user.number}</p> : null}
-					{user.about ? <p className="text-center">{user.about}</p> : null}
+					{user.website ? <p className="text-center">{user.website}</p> : null}
 					<p className="mt-2 text-center text-muted-foreground">
 						Joined {data.userJoinedDisplay}
 					</p>

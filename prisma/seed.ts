@@ -180,7 +180,7 @@ async function seed() {
 			name: 'Devon',
 			image: { create: kodyImages.kodyUser },
 			category: {
-				connect: [{ name: 'DJ' }, { name: 'Sound Equipment' }],
+				connect: [{ name: 'DJ' }, { name: 'Sound & Lighting' }],
 			},
 			password: { create: createPassword('devisthebest') },
 			roles: { connect: [{ name: 'admin' }, { name: 'supplier' }] },
