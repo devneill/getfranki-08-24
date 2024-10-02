@@ -9,11 +9,6 @@ ENV NODE_ENV production
 # Install AWS CLI
 RUN apt-get update && apt-get install -y awscli
 
-# Configure AWS CLI
-RUN aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID && \
-    aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY && \
-    aws configure set endpoint_url $S3_ENDPOINT_URL
-
 # Install openssl for Prisma
 RUN apt-get update && apt-get install -y fuse3 openssl sqlite3 ca-certificates
 
@@ -100,4 +95,6 @@ RUN mkdir -p /data ${LITEFS_DIR}
 
 ADD . .
 
-CMD ["litefs", "mount"]
+COPY start.sh /myapp/start.sh
+
+CMD ["/myapp/start.sh"]
