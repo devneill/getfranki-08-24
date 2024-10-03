@@ -39,16 +39,16 @@ export const prisma = remember('prisma', () => {
 
 const execAsync = promisify(exec)
 
-export async function backupDatabase() {
+export async function backupDB() {
 	try {
 		const { stdout, stderr } = await execAsync('./other/backup_db.sh')
 		if (stderr) {
-			console.error('Backup script error:', stderr)
-			throw new Error('Backup script encountered an error')
+			console.error('Failed to create db backup:', stderr)
+			throw new Error('DB Backup script encountered an error')
 		}
-		console.log('Backup output:', stdout)
+		console.log('DB backup output:', stdout)
 	} catch (error) {
-		console.error('Failed to execute backup script:', error)
+		console.error('Failed to execute DB backup script:', error)
 		throw error
 	}
 }
