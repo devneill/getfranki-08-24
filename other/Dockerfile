@@ -95,6 +95,4 @@ RUN mkdir -p /data ${LITEFS_DIR}
 
 ADD . .
 
-COPY start.sh /myapp/start.sh
-
-CMD ["/myapp/start.sh"]
+CMD ["litefs", "mount"]

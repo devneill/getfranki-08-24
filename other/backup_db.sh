@@ -1,8 +1,8 @@
 # Make a snapshot of the current db
-litefs export -name sqlite.db ./backups/backup-`date +%M`.db
+litefs export -name sqlite.db ./backups/backup-`date +%d`.db
 
 # Compress the file.
-gzip ./backups/backup-`date +%M`.db
+gzip ./backups/backup-`date +%d`.db
 
 # Daily backup
-aws s3 cp ./backups/backup-`date +%M`.db.gz s3://backups-sinp/backup-`date +%M`.db.gz --endpoint-url=$AWS_ENDPOINT_URL_S3
+aws s3 cp ./backups/backup-`date +%d`.db.gz s3://backups-sinp/backup-`date +%d`.db.gz --endpoint-url=$AWS_ENDPOINT_URL_S3
