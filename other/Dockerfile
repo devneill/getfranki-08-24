@@ -6,6 +6,9 @@ FROM node:20-bookworm-slim as base
 # set for base and all layer that inherit from it
 ENV NODE_ENV production
 
+# Install AWS CLI
+RUN apt-get update && apt-get install -y awscli
+
 # Install openssl for Prisma
 RUN apt-get update && apt-get install -y fuse3 openssl sqlite3 ca-certificates
 
