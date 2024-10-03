@@ -1,3 +1,5 @@
+import { exec } from 'child_process'
+import { promisify } from 'util'
 import { remember } from '@epic-web/remember'
 import { PrismaClient } from '@prisma/client'
 import chalk from 'chalk'
@@ -34,3 +36,19 @@ export const prisma = remember('prisma', () => {
 	void client.$connect()
 	return client
 })
+
+const execAsync = promisify(exec)
+
+export async function backupDB() {
+	try {
+		const { stdout, stderr } = await execAsync('./other/backup_db.sh')
+		if (stderr) {
+			console.error('Failed to create db backup:', stderr)
+			throw new Error('DB Backup script encountered an error')
+		}
+		console.log('DB backup output:', stdout)
+	} catch (error) {
+		console.error('Failed to execute DB backup script:', error)
+		throw error
+	}
+}

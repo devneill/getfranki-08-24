@@ -6,6 +6,9 @@ FROM node:20-bookworm-slim as base
 # set for base and all layer that inherit from it
 ENV NODE_ENV production
 
+# Install AWS CLI
+RUN apt-get update && apt-get install -y awscli
+
 # Install openssl for Prisma
 RUN apt-get update && apt-get install -y fuse3 openssl sqlite3 ca-certificates
 
@@ -48,8 +51,8 @@ ADD . .
 
 # Mount the secret and set it as an environment variable and run the build
 RUN --mount=type=secret,id=SENTRY_AUTH_TOKEN \
-  export SENTRY_AUTH_TOKEN=$(cat /run/secrets/SENTRY_AUTH_TOKEN) && \
-  npm run build
+    export SENTRY_AUTH_TOKEN=$(cat /run/secrets/SENTRY_AUTH_TOKEN) && \
+    npm run build
 
 # Finally, build the production image with minimal footprint
 FROM base
@@ -74,7 +77,7 @@ WORKDIR /myapp
 
 # Generate random value and save it to .env file which will be loaded by dotenv
 RUN INTERNAL_COMMAND_TOKEN=$(openssl rand -hex 32) && \
-  echo "INTERNAL_COMMAND_TOKEN=$INTERNAL_COMMAND_TOKEN" > .env
+    echo "INTERNAL_COMMAND_TOKEN=$INTERNAL_COMMAND_TOKEN" > .env
 
 COPY --from=production-deps /myapp/node_modules /myapp/node_modules
 COPY --from=build /myapp/node_modules/.prisma /myapp/node_modules/.prisma

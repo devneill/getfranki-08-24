@@ -1,0 +1,19 @@
+name: Daily Backup
+
+on:
+  schedule:
+    - cron: '0 2 * * *' # Runs at 2 AM UTC every day
+  workflow_dispatch: # Allows manual triggering
+
+jobs:
+  trigger-backup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Backup API
+        env:
+          API_URL: ${{ secrets.BACKUP_API_URL }}
+          API_KEY: ${{ secrets.BACKUP_API_KEY }}
+        run: |
+          curl -X POST $API_URL \
+          -H "X-API-KEY: $API_KEY" \
+          -H "Content-Type: application/json"
