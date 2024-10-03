@@ -1,4 +1,4 @@
-name: Daily Backup
+name: 💾 Daily Backup
 
 on:
   schedule:
@@ -14,6 +14,28 @@ jobs:
           API_URL: ${{ secrets.BACKUP_API_URL }}
           API_KEY: ${{ secrets.BACKUP_API_KEY }}
         run: |
-          curl -X POST $API_URL \
+          response=$(curl -s -o response.txt -w "%{http_code}" \
+          -X POST $API_URL \
           -H "X-API-KEY: $API_KEY" \
           -H "Content-Type: application/json"
+
+          echo "HTTP Status Code: $response"
+
+          if [ $response -eq 500 ]; then
+            echo "Backup failed with a 500 status code"
+            cat response.txt
+            exit 1
+          elif [ $response -ne 200 ]; then
+            echo "Unexpected status code: $response"
+            cat response.txt
+            exit 1
+          else
+            echo "Backup successful"
+            cat response.txt
+          fi
+
+      - name: Check Backup Success
+        if: failure()
+        run: |
+          echo "Backup failed. Please check the logs for more information."
+          exit 1
