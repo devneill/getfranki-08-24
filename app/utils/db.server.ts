@@ -52,3 +52,17 @@ export async function backupDB() {
 		throw error
 	}
 }
+
+export async function restoreDB() {
+	try {
+		const { stdout, stderr } = await execAsync('./other/restore_db.sh')
+		if (stderr) {
+			console.error('Failed to restore db backup:', stderr)
+			throw new Error('DB Restore script encountered an error')
+		}
+		console.log('DB restore output:', stdout)
+	} catch (error) {
+		console.error('Failed to execute DB restore script:', error)
+		throw error
+	}
+}
