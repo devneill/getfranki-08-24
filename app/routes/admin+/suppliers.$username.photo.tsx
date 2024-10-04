@@ -120,7 +120,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
 	return redirectWithToast(`/users/${user.username}`, {
 		title: 'Profile picture saved',
-		description: `Thanks for adding ${user.username}'s picture! You're awesome.`,
+		description: `Thanks for adding ${user.username}'s picture!`,
 	})
 }
 
