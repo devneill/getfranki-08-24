@@ -1,18 +1,16 @@
-name: 💾 Daily Backup
+name: 🚨 Emergency Restore
 
 on:
-  schedule:
-    - cron: '0 2 * * *' # Runs at 2 AM UTC every day
   workflow_dispatch: # Allows manual triggering
 
 jobs:
-  trigger-backup:
+  emergency-restore:
     runs-on: ubuntu-latest
     steps:
-      - name: Trigger Backup API
+      - name: Trigger Emergency Restore
         env:
-          API_URL: ${{ secrets.BACKUP_API_URL }}
-          API_KEY: ${{ secrets.BACKUP_API_KEY }}
+          API_URL: ${{ secrets.RESTORE_API_URL }}
+          API_KEY: ${{ secrets.API_KEY }}
         run: |
           response=$(curl -s -o response.txt -w "%{http_code}" \
           -X POST $API_URL \
@@ -22,7 +20,7 @@ jobs:
           echo "HTTP Status Code: $response"
 
           if [ $response -eq 500 ]; then
-            echo "Backup failed with a 500 status code"
+            echo "Restore failed with a 500 status code"
             cat response.txt
             exit 1
           elif [ $response -ne 200 ]; then
@@ -30,12 +28,12 @@ jobs:
             cat response.txt
             exit 1
           else
-            echo "Backup successful"
+            echo "DB Restored successfully"
             cat response.txt
           fi
 
-      - name: Check Backup Success
+      - name: Check Restore Success
         if: failure()
         run: |
-          echo "Backup failed. Please check the logs for more information."
+          echo "Restore failed. Please check the logs for more information."
           exit 1
