@@ -1,6 +1,6 @@
 import { invariant } from '@epic-web/invariant'
 import { type ActionFunctionArgs, json } from '@remix-run/node'
-import { backupDB } from '#app/utils/db.server.js'
+import { restoreDB } from '#app/utils/db.server.js'
 
 export async function action({ request }: ActionFunctionArgs) {
 	const apiKey = request.headers.get('X-API-KEY')
@@ -11,10 +11,13 @@ export async function action({ request }: ActionFunctionArgs) {
 		return json({ success: false, message: 'Unauthorized' }, { status: 401 })
 	}
 	try {
-		await backupDB()
-		return json({ success: true, message: 'Backup completed successfully' })
+		await restoreDB()
+		return json({ success: true, message: 'DB restored successfully' })
 	} catch (error) {
-		console.error('Backup failed:', error)
-		return json({ success: false, message: 'Backup failed' }, { status: 500 })
+		console.error('DB restoration failed:', error)
+		return json(
+			{ success: false, message: 'DB restoration failed' },
+			{ status: 500 },
+		)
 	}
 }

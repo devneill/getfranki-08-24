@@ -1,0 +1,39 @@
+name: 🚨 Emergency Restore
+
+on:
+  workflow_dispatch: # Allows manual triggering
+
+jobs:
+  emergency-restore:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Emergency Restore
+        env:
+          API_URL: ${{ secrets.RESTORE_API_URL }}
+          API_KEY: ${{ secrets.API_KEY }}
+        run: |
+          response=$(curl -s -o response.txt -w "%{http_code}" \
+          -X POST $API_URL \
+          -H "X-API-KEY: $API_KEY" \
+          -H "Content-Type: application/json")
+
+          echo "HTTP Status Code: $response"
+
+          if [ $response -eq 500 ]; then
+            echo "Restore failed with a 500 status code"
+            cat response.txt
+            exit 1
+          elif [ $response -ne 200 ]; then
+            echo "Unexpected status code: $response"
+            cat response.txt
+            exit 1
+          else
+            echo "DB Restored successfully"
+            cat response.txt
+          fi
+
+      - name: Check Restore Success
+        if: failure()
+        run: |
+          echo "Restore failed. Please check the logs for more information."
+          exit 1
