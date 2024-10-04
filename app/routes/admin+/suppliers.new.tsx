@@ -124,7 +124,7 @@ export async function action({ request }: ActionFunctionArgs) {
 		},
 	})
 
-	return redirectWithToast(`/users/${username}`, {
+	return redirectWithToast(`/admin/suppliers/${username}/photo`, {
 		title: 'Supplier created',
 		description: `Thanks for adding ${username} as a supplier!`,
 	})
