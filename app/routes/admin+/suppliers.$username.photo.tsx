@@ -22,11 +22,7 @@ import { Button } from '#app/components/ui/button.tsx'
 import { Icon } from '#app/components/ui/icon.tsx'
 import { StatusButton } from '#app/components/ui/status-button.tsx'
 import { prisma } from '#app/utils/db.server.ts'
-import {
-	getUserImgSrc,
-	useDoubleCheck,
-	useIsPending,
-} from '#app/utils/misc.tsx'
+import { getUserImgSrc, useIsPending } from '#app/utils/misc.tsx'
 import { requireUserWithRole } from '#app/utils/permissions.server.js'
 import { redirectWithToast } from '#app/utils/toast.server.js'
 
