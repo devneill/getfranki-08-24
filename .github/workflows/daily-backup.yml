@@ -12,7 +12,7 @@ jobs:
       - name: Trigger Backup API
         env:
           API_URL: ${{ secrets.BACKUP_API_URL }}
-          API_KEY: ${{ secrets.BACKUP_API_KEY }}
+          API_KEY: ${{ secrets.API_KEY }}
         run: |
           response=$(curl -s -o response.txt -w "%{http_code}" \
           -X POST $API_URL \
