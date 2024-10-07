@@ -280,8 +280,6 @@ export default withSentry(AppWithProviders)
 
 function UserDropdown() {
 	const user = useUser()
-	const isOrganiser = userHasRole(user, 'organiser')
-	const isSupplier = userHasRole(user, 'supplier')
 	const isAdmin = userHasRole(user, 'admin')
 
 	const submit = useSubmit()
