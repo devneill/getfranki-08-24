@@ -280,8 +280,6 @@ export default withSentry(AppWithProviders)
 
 function UserDropdown() {
 	const user = useUser()
-	const isOrganiser = userHasRole(user, 'organiser')
-	const isSupplier = userHasRole(user, 'supplier')
 	const isAdmin = userHasRole(user, 'admin')
 
 	const submit = useSubmit()
@@ -316,24 +314,6 @@ function UserDropdown() {
 							</Icon>
 						</Link>
 					</DropdownMenuItem>
-					{isOrganiser ? (
-						<DropdownMenuItem asChild>
-							<Link prefetch="intent" to={`/users/${user.username}/events`}>
-								<Icon className="text-body-md" name="pencil-2">
-									Events
-								</Icon>
-							</Link>
-						</DropdownMenuItem>
-					) : null}
-					{isSupplier ? (
-						<DropdownMenuItem asChild>
-							<Link prefetch="intent" to={`/users/${user.username}/bookings`}>
-								<Icon className="text-body-md" name="pencil-2">
-									Bookings
-								</Icon>
-							</Link>
-						</DropdownMenuItem>
-					) : null}
 					{isAdmin ? (
 						<DropdownMenuItem asChild>
 							<Link prefetch="intent" to={`/admin/suppliers/new`}>
