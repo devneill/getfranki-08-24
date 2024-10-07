@@ -1,7 +1,7 @@
 import { getFormProps, getInputProps, useForm } from '@conform-to/react'
 import { getZodConstraint, parseWithZod } from '@conform-to/zod'
 import { type User, type Category } from '@prisma/client'
-import { json, type MetaFunction, type SerializeFrom } from '@remix-run/node'
+import { type MetaFunction, type SerializeFrom } from '@remix-run/node'
 import { Form, useActionData } from '@remix-run/react'
 import { z } from 'zod'
 import { GeneralErrorBoundary } from '#app/components/error-boundary.js'
@@ -14,7 +14,6 @@ import {
 import { Spacer } from '#app/components/spacer.tsx'
 import { StatusButton } from '#app/components/ui/status-button.tsx'
 import { useIsPending } from '#app/utils/misc.tsx'
-import { type action } from './__supplier-editor.server'
 import {
 	UsernameSchema,
 	NameSchema,
@@ -23,6 +22,7 @@ import {
 	WebsiteSchema,
 	AboutSchema,
 } from '#app/utils/user-validation.js'
+import { type action } from './__supplier-editor.server'
 
 export const SupplierEditorSchema = z.object({
 	id: z.string().optional(),
