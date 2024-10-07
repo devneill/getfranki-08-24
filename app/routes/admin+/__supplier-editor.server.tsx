@@ -29,7 +29,6 @@ export async function action({ request }: ActionFunctionArgs) {
 					},
 					select: { id: true, username: true, email: true, number: true },
 				})
-				console.log({ existingUser })
 
 				if (
 					existingUser?.username &&
