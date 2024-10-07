@@ -2,7 +2,6 @@ import { exec } from 'child_process'
 import { promisify } from 'util'
 import { remember } from '@epic-web/remember'
 import { PrismaClient } from '@prisma/client'
-export * as sql from '@prisma/client/sql'
 import chalk from 'chalk'
 
 export const prisma = remember('prisma', () => {
