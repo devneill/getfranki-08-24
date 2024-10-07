@@ -13,50 +13,69 @@ const UserSearchResultSchema = z.object({
 	username: z.string(),
 	name: z.string().nullable(),
 	about: z.string().nullable(),
-	category: z.string(),
+	categories: z.string(),
 	imageId: z.string().nullable(),
 })
 
 const UserSearchResultsSchema = z.array(UserSearchResultSchema)
 
 export async function loader({ request }: LoaderFunctionArgs) {
-	const searchTerm = new URL(request.url).searchParams.get('search')
+	const searchParams = new URL(request.url).searchParams
+	const searchTerm = searchParams.get('search')
 	if (searchTerm === '') {
 		return redirect('/')
 	}
-	const category = new URL(request.url).searchParams.get('category')
+	const category = searchParams.get('category')
 	if (category === '') {
 		return redirect('/')
 	}
 
 	const like = `%${searchTerm ?? ''}%`
+	const categoryFilter = category ? `%${category}%` : '%'
+
 	const rawUsers = await prisma.$queryRaw`
-		SELECT User.id, User.username, User.name, User.about, UserImage.id AS imageId, C.name AS category, r.name as role
+	  SELECT
+			User.id,
+			User.username,
+			User.name,
+			User.about,
+			UserImage.id AS imageId,
+			GROUP_CONCAT(DISTINCT C.name) AS categories,
+			r.name as role
 		FROM User
 		LEFT JOIN UserImage ON User.id = UserImage.userId
 		JOIN _RoleToUser ru ON User.id = ru.b
 		JOIN Role r ON ru.a = r.id
 		JOIN _CategoryToUser cu ON User.id = cu.b
-		JOIN Category C ON cu.a = C.id
+		JOIN Category c ON cu.a = c.id
 		WHERE role LIKE "supplier"
 		AND (User.username LIKE ${like} OR User.name LIKE ${like})
+		AND C.name LIKE ${categoryFilter}
+		GROUP BY User.id
 		ORDER BY (
-			SELECT Event.updatedAt
+		  SELECT Event.updatedAt
 			FROM Event
 			WHERE Event.ownerId = User.id
 			ORDER BY Event.updatedAt DESC
 			LIMIT 1
 		) DESC
 		LIMIT 50
-	`
+`
 
 	const result = UserSearchResultsSchema.safeParse(rawUsers)
+
 	if (!result.success) {
 		return json({ status: 'error', error: result.error.message } as const, {
 			status: 400,
 		})
 	}
-	return json({ status: 'idle', users: result.data, category } as const)
+
+	const users = result.data.map((user) => ({
+		...user,
+		categories: user.categories?.split(',').map((category) => category.trim()),
+	}))
+
+	return json({ status: 'idle', users, category } as const)
 }
 
 export default function Index() {
@@ -116,7 +135,17 @@ export default function Index() {
 														{user.name}
 													</span>
 												) : null}
-												<Badge variant="secondary">{user.category}</Badge>
+												<div className="flex">
+													{user.categories?.map((category) => (
+														<Badge
+															key={category}
+															variant="secondary"
+															className="mr-1 whitespace-nowrap"
+														>
+															{category}
+														</Badge>
+													))}
+												</div>
 											</div>
 											{user.about ? (
 												<span className="overflow-hidden text-ellipsis whitespace-nowrap text-body-sm text-muted-foreground">
