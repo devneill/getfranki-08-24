@@ -39,6 +39,7 @@ export default function ProfileRoute() {
 	const userDisplayName = user.name ?? user.username
 	const loggedInUser = useOptionalUser()
 	const isLoggedInUser = data.user.id === loggedInUser?.id
+	const isLoggedInAdmin = userHasRole(loggedInUser ?? null, 'admin')
 	const isSupplier = userHasRole(user, 'supplier')
 	const isOrganiser = userHasRole(user, 'organiser')
 
@@ -101,6 +102,18 @@ export default function ProfileRoute() {
 								<Button asChild>
 									<Link to="/settings/profile" prefetch="intent">
 										Edit profile
+									</Link>
+								</Button>
+							</>
+						) : null}
+						{isLoggedInAdmin && !isLoggedInUser ? (
+							<>
+								<Button asChild>
+									<Link
+										to={`/admin/suppliers/${user.username}/edit`}
+										prefetch="intent"
+									>
+										Edit this supplier
 									</Link>
 								</Button>
 							</>
