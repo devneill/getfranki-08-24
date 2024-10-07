@@ -85,20 +85,6 @@ export default function ProfileRoute() {
 					<div className="mt-10 flex gap-4">
 						{isLoggedInUser ? (
 							<>
-								{isOrganiser && (
-									<Button asChild>
-										<Link to="events" prefetch="intent">
-											My events
-										</Link>
-									</Button>
-								)}
-								{isSupplier && (
-									<Button asChild>
-										<Link to="bookings" prefetch="intent">
-											My bookings
-										</Link>
-									</Button>
-								)}
 								<Button asChild>
 									<Link to="/settings/profile" prefetch="intent">
 										Edit profile
