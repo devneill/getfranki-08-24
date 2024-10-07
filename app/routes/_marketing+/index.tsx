@@ -5,58 +5,31 @@ import { GeneralErrorBoundary } from '#app/components/error-boundary.tsx'
 import { ErrorList } from '#app/components/forms.tsx'
 import { SearchBar } from '#app/components/search-bar.tsx'
 import { Badge } from '#app/components/ui/badge.js'
-import { prisma } from '#app/utils/db.server.ts'
+import { prisma, sql } from '#app/utils/db.server.ts'
 import { cn, getUserImgSrc, useDelayedIsPending } from '#app/utils/misc.tsx'
 
-const UserSearchResultSchema = z.object({
-	id: z.string(),
-	username: z.string(),
-	name: z.string().nullable(),
-	about: z.string().nullable(),
-	category: z.string(),
-	imageId: z.string().nullable(),
-})
-
-const UserSearchResultsSchema = z.array(UserSearchResultSchema)
-
 export async function loader({ request }: LoaderFunctionArgs) {
-	const searchTerm = new URL(request.url).searchParams.get('search')
+	const searchParams = new URL(request.url).searchParams
+	const searchTerm = searchParams.get('search')
 	if (searchTerm === '') {
 		return redirect('/')
 	}
-	const category = new URL(request.url).searchParams.get('category')
+	const category = searchParams.get('category')
 	if (category === '') {
 		return redirect('/')
 	}
 
 	const like = `%${searchTerm ?? ''}%`
-	const rawUsers = await prisma.$queryRaw`
-		SELECT User.id, User.username, User.name, User.about, UserImage.id AS imageId, C.name AS category, r.name as role
-		FROM User
-		LEFT JOIN UserImage ON User.id = UserImage.userId
-		JOIN _RoleToUser ru ON User.id = ru.b
-		JOIN Role r ON ru.a = r.id
-		JOIN _CategoryToUser cu ON User.id = cu.b
-		JOIN Category C ON cu.a = C.id
-		WHERE role LIKE "supplier"
-		AND (User.username LIKE ${like} OR User.name LIKE ${like})
-		ORDER BY (
-			SELECT Event.updatedAt
-			FROM Event
-			WHERE Event.ownerId = User.id
-			ORDER BY Event.updatedAt DESC
-			LIMIT 1
-		) DESC
-		LIMIT 50
-	`
+	const categoryFilter = category ? `%${category}%` : '%'
 
-	const result = UserSearchResultsSchema.safeParse(rawUsers)
-	if (!result.success) {
-		return json({ status: 'error', error: result.error.message } as const, {
-			status: 400,
-		})
-	}
-	return json({ status: 'idle', users: result.data, category } as const)
+	const rawUsers = await prisma.$queryRawTyped(sql.search(like, categoryFilter))
+
+	const users = rawUsers.map((user) => ({
+		...user,
+		categories: user.categories?.split(',').map((category) => category.trim()),
+	}))
+
+	return json({ status: 'idle', users, category } as const)
 }
 
 export default function Index() {
@@ -65,10 +38,6 @@ export default function Index() {
 		formMethod: 'GET',
 		formAction: '/',
 	})
-
-	if (data.status === 'error') {
-		console.error(data.error)
-	}
 
 	return (
 		<div className="container mb-48 mt-14 flex flex-col items-center justify-center gap-6">
@@ -116,7 +85,17 @@ export default function Index() {
 														{user.name}
 													</span>
 												) : null}
-												<Badge variant="secondary">{user.category}</Badge>
+												<div className="flex">
+													{user.categories?.map((category) => (
+														<Badge
+															key={category}
+															variant="secondary"
+															className="mr-1 whitespace-nowrap"
+														>
+															{category}
+														</Badge>
+													))}
+												</div>
 											</div>
 											{user.about ? (
 												<span className="overflow-hidden text-ellipsis whitespace-nowrap text-body-sm text-muted-foreground">
