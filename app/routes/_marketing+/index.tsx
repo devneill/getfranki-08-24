@@ -35,13 +35,13 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
 	const rawUsers = await prisma.$queryRaw`
 	  SELECT
-				User.id,
-				User.username,
-				User.name,
-				User.about,
-				UserImage.id AS imageId,
-				GROUP_CONCAT(DISTINCT C.name) AS categories,
-				r.name as role
+			User.id,
+			User.username,
+			User.name,
+			User.about,
+			UserImage.id AS imageId,
+			GROUP_CONCAT(DISTINCT C.name) AS categories,
+			r.name as role
 		FROM User
 		LEFT JOIN UserImage ON User.id = UserImage.userId
 		JOIN _RoleToUser ru ON User.id = ru.b
@@ -54,10 +54,10 @@ export async function loader({ request }: LoaderFunctionArgs) {
 		GROUP BY User.id
 		ORDER BY (
 		  SELECT Event.updatedAt
-				FROM Event
-				WHERE Event.ownerId = User.id
-				ORDER BY Event.updatedAt DESC
-				LIMIT 1
+			FROM Event
+			WHERE Event.ownerId = User.id
+			ORDER BY Event.updatedAt DESC
+			LIMIT 1
 		) DESC
 		LIMIT 50
 `
