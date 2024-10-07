@@ -1,17 +1,9 @@
+import { parseWithZod } from '@conform-to/zod'
+import { type ActionFunctionArgs, json } from '@remix-run/node'
+import { z } from 'zod'
 import { prisma } from '#app/utils/db.server.js'
 import { requireUserWithRole } from '#app/utils/permissions.server.js'
 import { redirectWithToast } from '#app/utils/toast.server.js'
-import {
-	UsernameSchema,
-	NameSchema,
-	EmailSchema,
-	NumberSchema,
-	WebsiteSchema,
-	AboutSchema,
-} from '#app/utils/user-validation.js'
-import { parseWithZod } from '@conform-to/zod'
-import { ActionFunctionArgs, json } from '@remix-run/node'
-import { z } from 'zod'
 import { SupplierEditorSchema } from './__supplier-editor'
 
 export async function action({ request }: ActionFunctionArgs) {
@@ -85,7 +77,7 @@ export async function action({ request }: ActionFunctionArgs) {
 		select: { id: true },
 	})
 
-	const updatedUser = await prisma.user.upsert({
+	const user = await prisma.user.upsert({
 		select: { username: true },
 		where: { id: id ?? '__new_supplier' },
 		create: {
@@ -109,8 +101,8 @@ export async function action({ request }: ActionFunctionArgs) {
 		},
 	})
 
-	return redirectWithToast(`/admin/suppliers/${username}/photo`, {
+	return redirectWithToast(`/admin/suppliers/${user.username}/photo`, {
 		title: 'Supplier created',
-		description: `Thanks for adding ${username} as a supplier!`,
+		description: `Thanks for adding ${user.username} as a supplier!`,
 	})
 }
