@@ -40,8 +40,6 @@ export default function ProfileRoute() {
 	const loggedInUser = useOptionalUser()
 	const isLoggedInUser = data.user.id === loggedInUser?.id
 	const isLoggedInAdmin = userHasRole(loggedInUser ?? null, 'admin')
-	const isSupplier = userHasRole(user, 'supplier')
-	const isOrganiser = userHasRole(user, 'organiser')
 
 	return (
 		<div className="container mb-48 mt-36 flex flex-col items-center justify-center">
