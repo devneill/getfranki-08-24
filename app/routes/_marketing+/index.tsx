@@ -20,19 +20,19 @@ const UserSearchResultSchema = z.object({
 const UserSearchResultsSchema = z.array(UserSearchResultSchema)
 
 export async function loader({ request }: LoaderFunctionArgs) {
+	const categories = await prisma.category.findMany({
+		select: { name: true },
+	})
+
 	const searchParams = new URL(request.url).searchParams
 	const searchTerm = searchParams.get('search')
-	if (searchTerm === '') {
-		return redirect('/')
-	}
-	const category = searchParams.get('category')
-	if (category === '') {
+	const categoryFilter = searchParams.get('category')
+	if (searchTerm === '' && categoryFilter === '') {
 		return redirect('/')
 	}
 
 	const like = `%${searchTerm ?? ''}%`
-	const categoryFilter = category ? `%${category}%` : '%'
-
+	const cat = categoryFilter ? `%${categoryFilter}%` : '%'
 	const rawUsers = await prisma.$queryRaw`
 	  SELECT
 			User.id,
@@ -50,7 +50,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 		JOIN Category c ON cu.a = c.id
 		WHERE role LIKE "supplier"
 		AND (User.username LIKE ${like} OR User.name LIKE ${like})
-		AND C.name LIKE ${categoryFilter}
+		AND C.name LIKE ${cat}
 		GROUP BY User.id
 		ORDER BY (
 		  SELECT Event.updatedAt
@@ -75,7 +75,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 		categories: user.categories?.split(',').map((category) => category.trim()),
 	}))
 
-	return json({ status: 'idle', users, category } as const)
+	return json({ status: 'idle', users, categoryFilter, categories } as const)
 }
 
 export default function Index() {
@@ -91,7 +91,7 @@ export default function Index() {
 
 	return (
 		<div className="container mb-48 mt-14 flex flex-col items-center justify-center gap-6">
-			<h1 className="animate-slide-top text-center text-h3">
+			<h1 className="animate-slide-top text-center text-h3 font-extrabold">
 				Find {}
 				<span className="rounded-md bg-foreground px-2 py-1 text-background">
 					the best
@@ -106,7 +106,12 @@ export default function Index() {
 				next event with only the best professionals in the industry.
 			</p>
 			<div className="mt-20 flex w-full max-w-[700px] flex-col gap-4">
-				<SearchBar status={data.status} autoFocus autoSubmit />
+				<SearchBar
+					status={data.status}
+					autoFocus
+					autoSubmit
+					categories={data.status !== 'error' ? data.categories : []}
+				/>
 			</div>
 			<main className="w-full">
 				{data.status === 'idle' ? (
@@ -158,7 +163,9 @@ export default function Index() {
 							))}
 						</ul>
 					) : (
-						<p>No users found</p>
+						<div className="mt-14 flex w-full justify-center">
+							<p className="text-xl font-bold">No suppliers found</p>
+						</div>
 					)
 				) : data.status === 'error' ? (
 					<ErrorList errors={['There was an error parsing the results']} />
