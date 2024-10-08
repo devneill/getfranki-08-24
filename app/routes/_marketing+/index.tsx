@@ -1,5 +1,7 @@
 import { json, redirect, type LoaderFunctionArgs } from '@remix-run/node'
 import { Link, useLoaderData } from '@remix-run/react'
+import { motion } from 'framer-motion'
+import { useEffect, useRef, useState } from 'react'
 import { z } from 'zod'
 import { GeneralErrorBoundary } from '#app/components/error-boundary.tsx'
 import { ErrorList } from '#app/components/forms.tsx'
@@ -89,6 +91,16 @@ export default function Index() {
 		console.error(data.error)
 	}
 
+	// Use a roll animation on intitial render and a simple fade after that
+	const isInitialRenderRef = useRef(true)
+	useEffect(() => {
+		const timer = setTimeout(() => {
+			isInitialRenderRef.current = false
+		}, 2000)
+
+		return () => clearTimeout(timer)
+	}, [])
+
 	return (
 		<div className="container mb-48 mt-14 flex flex-col items-center justify-center gap-6">
 			<h1 className="animate-slide-top text-center text-h3 font-extrabold">
@@ -105,7 +117,7 @@ export default function Index() {
 				Choose from our high quality, hand-selected suppliers. <br /> Run your
 				next event with only the best professionals in the industry.
 			</p>
-			<div className="mt-20 flex w-full max-w-[700px] flex-col gap-4">
+			<div className="mt-20 flex w-full max-w-[1000px] animate-slide-top flex-col gap-4 [animation-delay:0.4s] [animation-fill-mode:backwards]">
 				<SearchBar
 					status={data.status}
 					autoFocus
@@ -116,14 +128,24 @@ export default function Index() {
 			<main className="w-full">
 				{data.status === 'idle' ? (
 					data.users.length ? (
-						<ul
+						<motion.ul
+							initial={{ opacity: 0 }}
+							animate={{ opacity: 1 }}
 							className={cn(
-								'flex w-full flex-col items-center justify-center gap-4 delay-200',
+								'flex w-full flex-col items-center justify-center gap-4',
 								{ 'opacity-50': isPending },
 							)}
 						>
-							{data.users.map((user) => (
-								<li key={user.id} className="w-full">
+							{data.users.map((user, index) => (
+								<li
+									key={user.id}
+									className={`w-full ${isInitialRenderRef.current ? 'animate-roll-reveal [animation-fill-mode:backwards]' : 'animate-in fade-in-0'}`}
+									style={{
+										animationDelay: isInitialRenderRef.current
+											? `${0.5 + 0.1 * index}s`
+											: '0s',
+									}}
+								>
 									<Link
 										to={`/users/${user.username}`}
 										className="flex h-32 w-full items-center gap-4 overflow-hidden rounded-lg bg-muted px-5 py-3"
@@ -161,11 +183,15 @@ export default function Index() {
 									</Link>
 								</li>
 							))}
-						</ul>
+						</motion.ul>
 					) : (
-						<div className="mt-14 flex w-full justify-center">
+						<motion.div
+							initial={{ opacity: 0 }}
+							animate={{ opacity: 1 }}
+							className="mt-14 flex w-full justify-center"
+						>
 							<p className="text-xl font-bold">No suppliers found</p>
-						</div>
+						</motion.div>
 					)
 				) : data.status === 'error' ? (
 					<ErrorList errors={['There was an error parsing the results']} />
