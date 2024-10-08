@@ -1,4 +1,5 @@
 import { Form, useSearchParams, useSubmit } from '@remix-run/react'
+import { motion } from 'framer-motion'
 import { useId, useRef, useState } from 'react'
 import { useDebounce, useIsPending } from '#app/utils/misc.tsx'
 import { Icon } from './ui/icon.tsx'
@@ -33,6 +34,8 @@ export function SearchBar({
 		submit(form)
 	}, 400)
 
+	const [hoveredCategory, setHoveredCategory] = useState<string | null>(null)
+
 	return (
 		<Form
 			ref={formRef}
@@ -41,7 +44,7 @@ export function SearchBar({
 			className="flex flex-wrap items-center justify-center gap-2"
 			onChange={(e) => autoSubmit && handleFormChange(e.currentTarget)}
 		>
-			<div className="flex-1">
+			<div className="max-w-[700px] flex-1">
 				<Label htmlFor={id} className="sr-only">
 					Search
 				</Label>
@@ -75,7 +78,8 @@ export function SearchBar({
 						handleFormChange(formRef.current)
 					}
 				}}
-				className="flex flex-wrap"
+				onMouseLeave={() => setHoveredCategory(null)}
+				className="mt-4 flex flex-wrap rounded-lg p-2"
 			>
 				{categories.map((category) => {
 					return (
@@ -83,8 +87,17 @@ export function SearchBar({
 							key={category.name}
 							value={category.name}
 							aria-label={`Toggle ${category.name}`}
+							className="relative"
+							onMouseEnter={() => setHoveredCategory(category.name)}
 						>
-							{category.name}
+							{hoveredCategory === category.name ? (
+								<motion.div
+									layoutId="hovered-backdrop"
+									className="absolute inset-0 rounded-md bg-accent"
+									transition={{ type: 'spring', stiffness: 600, damping: 50 }}
+								/>
+							) : null}
+							<span className="z-10">{category.name}</span>
 						</ToggleGroupItem>
 					)
 				})}
