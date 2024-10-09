@@ -47,7 +47,7 @@ COPY --from=deps /myapp/node_modules /myapp/node_modules
 ENV DATABASE_URL="file:./data.db?connection_limit=1"
 
 ADD prisma .
-RUN npx prisma generate --sql
+RUN npx prisma migrate deploy && npx prisma generate --sql
 
 ADD . .
 
