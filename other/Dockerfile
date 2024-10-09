@@ -44,6 +44,11 @@ WORKDIR /myapp
 
 COPY --from=deps /myapp/node_modules /myapp/node_modules
 
+ENV DATABASE_URL="file:./data.db?connection_limit=1"
+
+ADD prisma .
+RUN npx prisma generate --sql
+
 ADD . .
 
 # Mount the secret and set it as an environment variable and run the build
@@ -66,9 +71,6 @@ ENV PORT="8081"
 ENV NODE_ENV="production"
 # For WAL support: https://github.com/prisma/prisma-engines/issues/4675#issuecomment-1914383246
 ENV PRISMA_SCHEMA_DISABLE_ADVISORY_LOCK = "1"
-
-ADD prisma .
-RUN npx prisma generate --sql
 
 # add shortcut for connecting to database CLI
 RUN echo "#!/bin/sh\nset -x\nsqlite3 \$DATABASE_URL" > /usr/local/bin/database-cli && chmod +x /usr/local/bin/database-cli
