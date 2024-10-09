@@ -72,13 +72,11 @@ jobs:
       - name: 📥 Download deps
         uses: bahmutov/npm-install@v1
 
-      - name: 💿 Generate Prisma Client
-        run: npx prisma generate --sql
-        env:
-          DATABASE_URL: file:../tests/prisma/base.db
-
       - name: 🏄 Copy test env vars
         run: cp .env.example .env
+
+      - name: 💿 Generate Prisma Client
+        run: npx prisma generate --sql
 
       - name: 🖼 Build icons
         run: npm run build:icons
