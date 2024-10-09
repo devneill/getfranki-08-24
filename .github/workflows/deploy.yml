@@ -73,7 +73,7 @@ jobs:
         uses: bahmutov/npm-install@v1
 
       - name: 💿 Generate Prisma Client
-        run: npx prisma generate --sql
+        run: npx prisma migrate deploy && npx prisma generate --sql
         env:
           DATABASE_URL: file:./data.db
 
