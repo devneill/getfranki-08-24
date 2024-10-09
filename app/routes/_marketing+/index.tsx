@@ -71,7 +71,7 @@ export default function Index() {
 					status={data.status}
 					autoFocus
 					autoSubmit
-					categories={data.status !== 'error' ? data.categories : []}
+					categories={data.categories}
 				/>
 			</div>
 			<main className="w-full">
