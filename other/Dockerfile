@@ -44,14 +44,6 @@ WORKDIR /myapp
 
 COPY --from=deps /myapp/node_modules /myapp/node_modules
 
-ENV LITEFS_DIR="/litefs/data"
-ENV DATABASE_FILENAME="sqlite.db"
-ENV DATABASE_PATH="$LITEFS_DIR/$DATABASE_FILENAME"
-ENV DATABASE_URL="file:$DATABASE_PATH"
-
-ADD prisma .
-RUN npx prisma generate --sql
-
 ADD . .
 
 # Mount the secret and set it as an environment variable and run the build
@@ -62,6 +54,10 @@ RUN --mount=type=secret,id=SENTRY_AUTH_TOKEN \
 # Finally, build the production image with minimal footprint
 FROM base
 
+ENV LITEFS_DIR="/litefs/data"
+ENV DATABASE_FILENAME="sqlite.db"
+ENV DATABASE_PATH="$LITEFS_DIR/$DATABASE_FILENAME"
+ENV DATABASE_URL="file:$DATABASE_PATH"
 ENV FLY="true"
 ENV CACHE_DATABASE_FILENAME="cache.db"
 ENV CACHE_DATABASE_PATH="$LITEFS_DIR/$CACHE_DATABASE_FILENAME"
@@ -70,6 +66,9 @@ ENV PORT="8081"
 ENV NODE_ENV="production"
 # For WAL support: https://github.com/prisma/prisma-engines/issues/4675#issuecomment-1914383246
 ENV PRISMA_SCHEMA_DISABLE_ADVISORY_LOCK = "1"
+
+ADD prisma .
+RUN npx prisma generate --sql
 
 # add shortcut for connecting to database CLI
 RUN echo "#!/bin/sh\nset -x\nsqlite3 \$DATABASE_URL" > /usr/local/bin/database-cli && chmod +x /usr/local/bin/database-cli
