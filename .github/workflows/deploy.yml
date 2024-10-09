@@ -54,6 +54,9 @@ jobs:
       - name: 🖼 Build icons
         run: npm run build:icons
 
+      - name: 🏄 Copy test env vars
+        run: cp .env.example .env
+
       - name: 🛠 Setup Database
         run: npx prisma migrate deploy && npx prisma generate --sql
 
