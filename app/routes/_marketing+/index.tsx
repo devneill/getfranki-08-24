@@ -102,8 +102,8 @@ export default function Index() {
 	}, [])
 
 	return (
-		<div className="container mb-48 mt-14 flex flex-col items-center justify-center gap-6">
-			<h1 className="animate-slide-top text-center text-h3 font-extrabold">
+		<div className="container mb-14 mt-14 flex flex-col items-center justify-center gap-6 lg:mt-20">
+			<h1 className="animate-slide-top text-center text-4xl font-extrabold leading-normal tracking-tight text-foreground sm:text-5xl sm:leading-snug xl:text-6xl">
 				Find {}
 				<span className="rounded-md bg-foreground px-2 py-1 text-background">
 					the best
@@ -112,12 +112,12 @@ export default function Index() {
 			</h1>
 			<p
 				data-paragraph
-				className="animate-slide-top text-center text-lg leading-relaxed text-muted-foreground [animation-delay:0.3s] [animation-fill-mode:backwards]"
+				className="animate-slide-top text-center leading-relaxed text-muted-foreground [animation-delay:0.3s] [animation-fill-mode:backwards] sm:text-lg"
 			>
 				Choose from our high quality, hand-selected suppliers. <br /> Run your
 				next event with only the best professionals in the industry.
 			</p>
-			<div className="mt-20 flex w-full max-w-[1000px] animate-slide-top flex-col gap-4 [animation-delay:0.4s] [animation-fill-mode:backwards]">
+			<div className="mt-14 flex w-full max-w-[1000px] animate-slide-top flex-col gap-4 [animation-delay:0.4s] [animation-fill-mode:backwards] lg:mt-20">
 				<SearchBar
 					status={data.status}
 					autoFocus
