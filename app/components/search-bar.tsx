@@ -31,13 +31,14 @@ export function SearchBar({
 	const formRef = useRef<HTMLFormElement>(null)
 
 	const handleFormChange = useDebounce((form: HTMLFormElement) => {
-		submit(form)
+		submit(form, { preventScrollReset: true })
 	}, 400)
 
 	const [hoveredCategory, setHoveredCategory] = useState<string | null>(null)
 
 	return (
 		<Form
+			preventScrollReset
 			ref={formRef}
 			method="GET"
 			action="/"
@@ -94,7 +95,7 @@ export function SearchBar({
 								<motion.div
 									layoutId="hovered-backdrop"
 									className="absolute inset-0 rounded-md bg-accent"
-									transition={{ type: 'spring', stiffness: 600, damping: 50 }}
+									transition={{ type: 'spring', stiffness: 700, damping: 50 }}
 								/>
 							) : null}
 							<span className="z-10">{category.name}</span>
