@@ -171,10 +171,7 @@ function Document({
 	allowIndexing?: boolean
 }) {
 	return (
-		<html
-			lang="en"
-			className={`${theme} h-full overflow-x-hidden scroll-smooth`}
-		>
+		<html lang="en" className={`${theme} scroll-smooth`}>
 			<head>
 				<ClientHintCheck nonce={nonce} />
 				<Meta />
@@ -185,7 +182,7 @@ function Document({
 				)}
 				<Links />
 			</head>
-			<body className="bg-background text-foreground">
+			<body className="overflow-y-scroll bg-background text-foreground">
 				{children}
 				<script
 					nonce={nonce}
