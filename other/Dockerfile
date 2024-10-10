@@ -44,8 +44,10 @@ WORKDIR /myapp
 
 COPY --from=deps /myapp/node_modules /myapp/node_modules
 
+ENV DATABASE_URL="file:./data.db?connection_limit=1"
+
 ADD prisma .
-RUN npx prisma generate
+RUN npx prisma migrate deploy && npx prisma generate --sql
 
 ADD . .
 
@@ -57,11 +59,11 @@ RUN --mount=type=secret,id=SENTRY_AUTH_TOKEN \
 # Finally, build the production image with minimal footprint
 FROM base
 
-ENV FLY="true"
 ENV LITEFS_DIR="/litefs/data"
 ENV DATABASE_FILENAME="sqlite.db"
 ENV DATABASE_PATH="$LITEFS_DIR/$DATABASE_FILENAME"
 ENV DATABASE_URL="file:$DATABASE_PATH"
+ENV FLY="true"
 ENV CACHE_DATABASE_FILENAME="cache.db"
 ENV CACHE_DATABASE_PATH="$LITEFS_DIR/$CACHE_DATABASE_FILENAME"
 ENV INTERNAL_PORT="8080"

@@ -191,6 +191,13 @@ function Document({
 					}}
 				/>
 				<ScrollRestoration nonce={nonce} />
+				{env.MODE === 'production' ? (
+					<script
+						defer
+						data-domain="getfranki.com"
+						src="https://plausible.io/js/script.js"
+					></script>
+				) : null}
 				<Scripts nonce={nonce} />
 			</body>
 		</html>

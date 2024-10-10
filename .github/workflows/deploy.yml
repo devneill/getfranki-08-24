@@ -54,6 +54,12 @@ jobs:
       - name: 🖼 Build icons
         run: npm run build:icons
 
+      - name: 🏄 Copy test env vars
+        run: cp .env.example .env
+
+      - name: 🛠 Setup Database
+        run: npx prisma migrate deploy && npx prisma generate --sql
+
       - name: 🔎 Type check
         run: npm run typecheck --if-present
 
@@ -74,6 +80,9 @@ jobs:
 
       - name: 🏄 Copy test env vars
         run: cp .env.example .env
+
+      - name: 🛠 Setup Database
+        run: npx prisma migrate deploy && npx prisma generate --sql
 
       - name: 🖼 Build icons
         run: npm run build:icons
@@ -104,7 +113,7 @@ jobs:
         run: npm run test:e2e:install
 
       - name: 🛠 Setup Database
-        run: npx prisma migrate deploy
+        run: npx prisma migrate deploy && npx prisma generate --sql
 
       - name: 🏦 Cache Database
         id: db-cache

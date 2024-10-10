@@ -2,24 +2,12 @@ import { json, redirect, type LoaderFunctionArgs } from '@remix-run/node'
 import { Link, useLoaderData } from '@remix-run/react'
 import { motion } from 'framer-motion'
 import { useEffect, useRef } from 'react'
-import { z } from 'zod'
 import { GeneralErrorBoundary } from '#app/components/error-boundary.tsx'
 import { ErrorList } from '#app/components/forms.tsx'
 import { SearchBar } from '#app/components/search-bar.tsx'
 import { Badge } from '#app/components/ui/badge.js'
-import { prisma } from '#app/utils/db.server.ts'
+import { prisma, sql } from '#app/utils/db.server.ts'
 import { cn, getUserImgSrc, useDelayedIsPending } from '#app/utils/misc.tsx'
-
-const UserSearchResultSchema = z.object({
-	id: z.string(),
-	username: z.string(),
-	name: z.string().nullable(),
-	about: z.string().nullable(),
-	categories: z.string(),
-	imageId: z.string().nullable(),
-})
-
-const UserSearchResultsSchema = z.array(UserSearchResultSchema)
 
 export async function loader({ request }: LoaderFunctionArgs) {
 	const categories = await prisma.category.findMany({
@@ -35,44 +23,9 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
 	const like = `%${searchTerm ?? ''}%`
 	const cat = categoryFilter ? `%${categoryFilter}%` : '%'
-	const rawUsers = await prisma.$queryRaw`
-	  SELECT
-			User.id,
-			User.username,
-			User.name,
-			User.about,
-			UserImage.id AS imageId,
-			GROUP_CONCAT(DISTINCT C.name) AS categories,
-			r.name as role
-		FROM User
-		LEFT JOIN UserImage ON User.id = UserImage.userId
-		JOIN _RoleToUser ru ON User.id = ru.b
-		JOIN Role r ON ru.a = r.id
-		JOIN _CategoryToUser cu ON User.id = cu.b
-		JOIN Category c ON cu.a = c.id
-		WHERE role LIKE "supplier"
-		AND (User.username LIKE ${like} OR User.name LIKE ${like})
-		AND C.name LIKE ${cat}
-		GROUP BY User.id
-		ORDER BY (
-		  SELECT Event.updatedAt
-			FROM Event
-			WHERE Event.ownerId = User.id
-			ORDER BY Event.updatedAt DESC
-			LIMIT 1
-		) DESC
-		LIMIT 50
-`
+	const rawUsers = await prisma.$queryRawTyped(sql.search(like, cat))
 
-	const result = UserSearchResultsSchema.safeParse(rawUsers)
-
-	if (!result.success) {
-		return json({ status: 'error', error: result.error.message } as const, {
-			status: 400,
-		})
-	}
-
-	const users = result.data.map((user) => ({
+	const users = rawUsers.map((user) => ({
 		...user,
 		categories: user.categories?.split(',').map((category) => category.trim()),
 	}))
@@ -87,10 +40,6 @@ export default function Index() {
 		formAction: '/',
 	})
 
-	if (data.status === 'error') {
-		console.error(data.error)
-	}
-
 	// Use a roll animation on intitial render and a simple fade after that
 	const isInitialRenderRef = useRef(true)
 	useEffect(() => {
@@ -102,8 +51,8 @@ export default function Index() {
 	}, [])
 
 	return (
-		<div className="container mb-48 mt-14 flex flex-col items-center justify-center gap-6">
-			<h1 className="animate-slide-top text-center text-h3 font-extrabold">
+		<div className="container mb-14 mt-14 flex flex-col items-center justify-center gap-6 lg:mt-20">
+			<h1 className="animate-slide-top text-center text-4xl font-extrabold leading-normal tracking-tight text-foreground sm:text-5xl sm:leading-snug xl:text-6xl">
 				Find {}
 				<span className="rounded-md bg-foreground px-2 py-1 text-background">
 					the best
@@ -112,17 +61,17 @@ export default function Index() {
 			</h1>
 			<p
 				data-paragraph
-				className="animate-slide-top text-center text-lg leading-relaxed text-muted-foreground [animation-delay:0.3s] [animation-fill-mode:backwards]"
+				className="animate-slide-top text-center leading-relaxed text-muted-foreground [animation-delay:0.3s] [animation-fill-mode:backwards] sm:text-lg"
 			>
 				Choose from our high quality, hand-selected suppliers. <br /> Run your
 				next event with only the best professionals in the industry.
 			</p>
-			<div className="mt-20 flex w-full max-w-[1000px] animate-slide-top flex-col gap-4 [animation-delay:0.4s] [animation-fill-mode:backwards]">
+			<div className="mt-14 flex w-full max-w-[1000px] animate-slide-top flex-col gap-4 [animation-delay:0.4s] [animation-fill-mode:backwards] lg:mt-20">
 				<SearchBar
 					status={data.status}
 					autoFocus
 					autoSubmit
-					categories={data.status !== 'error' ? data.categories : []}
+					categories={data.categories}
 				/>
 			</div>
 			<main className="w-full">
