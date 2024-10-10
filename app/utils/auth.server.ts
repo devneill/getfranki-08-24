@@ -118,13 +118,13 @@ export async function signup({
 	email,
 	username,
 	name,
-	role,
+	role = 'organiser',
 	password,
 }: {
 	email: User['email']
 	username: User['username']
 	name: User['name']
-	role: Role['name']
+	role?: Role['name']
 	password: string
 }) {
 	const hashedPassword = await getPasswordHash(password)
