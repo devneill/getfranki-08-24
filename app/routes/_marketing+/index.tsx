@@ -64,7 +64,11 @@ export default function Index() {
 				className="animate-slide-top text-center leading-relaxed text-muted-foreground [animation-delay:0.3s] [animation-fill-mode:backwards] sm:text-lg"
 			>
 				Choose from our high quality, hand-selected suppliers. <br /> Run your
-				next event with only the best professionals in the industry.
+				next event with{' '}
+				<span className="underline decoration-primary decoration-2 underline-offset-2">
+					only the best
+				</span>{' '}
+				professionals in the industry.
 			</p>
 			<div className="mt-14 flex w-full max-w-[1000px] animate-slide-top flex-col gap-4 [animation-delay:0.4s] [animation-fill-mode:backwards] lg:mt-20">
 				<SearchBar

@@ -48,11 +48,6 @@ const SignupFormSchema = z
 	.object({
 		username: UsernameSchema,
 		name: NameSchema,
-		role: z
-			.enum(['Organiser', 'Supplier'], {
-				message: 'Please select an account type',
-			})
-			.transform((value) => value.toLowerCase()),
 		agreeToTermsOfServiceAndPrivacyPolicy: z.boolean({
 			required_error:
 				'You must agree to the terms of service and privacy policy',
@@ -205,7 +200,6 @@ export default function OnboardingRoute() {
 						}}
 						errors={fields.password.errors}
 					/>
-
 					<Field
 						labelProps={{
 							htmlFor: fields.confirmPassword.id,
@@ -217,19 +211,6 @@ export default function OnboardingRoute() {
 						}}
 						errors={fields.confirmPassword.errors}
 					/>
-
-					<RadioField
-						labelProps={{
-							htmlFor: fields.role.id,
-							children: 'Are you an event organiser or a supplier?',
-						}}
-						inputCollectionProps={getCollectionProps(fields.role, {
-							type: 'radio',
-							options: ['Organiser', 'Supplier'],
-						})}
-						errors={fields.role.errors}
-					/>
-
 					<CheckboxField
 						labelProps={{
 							htmlFor: fields.agreeToTermsOfServiceAndPrivacyPolicy.id,
