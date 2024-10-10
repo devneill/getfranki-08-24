@@ -224,13 +224,20 @@ function App() {
 					<nav className="flex items-center justify-between gap-8 md:gap-16">
 						<Logo />
 						<div className={cn('flex w-full items-center justify-end')}>
-							<div className="flex items-center gap-10">
+							<div className="flex items-center gap-4">
 								{user ? (
 									<UserDropdown />
 								) : (
-									<Button asChild className="min-w-20" variant="secondary">
-										<Link to="/login">Log In</Link>
-									</Button>
+									<>
+										<Button asChild className="min-w-20" variant="secondary">
+											<Link to="/login">Log In</Link>
+										</Button>
+										<Button asChild className="min-w-20">
+											<Link to="https://y5pjft0758o.typeform.com/to/qk3aCfvE">
+												Feature as a supplier
+											</Link>
+										</Button>
+									</>
 								)}
 							</div>
 						</div>
