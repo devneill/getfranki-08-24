@@ -60,17 +60,31 @@ export default function ProfileRoute() {
 
 				<Spacer size="sm" />
 
-				<div className="flex flex-col items-center gap-4">
+				<div className="flex flex-col items-center gap-8">
 					<div className="flex flex-wrap items-center justify-center gap-4">
 						<h1 className="text-center text-h2">{userDisplayName}</h1>
 					</div>
-					{user.about ? <p className="text-center">{user.about}</p> : null}
-					<p className="text-center">{user.email}</p>
-					{user.number ? <p className="text-center">{user.number}</p> : null}
-					{user.website ? <p className="text-center">{user.website}</p> : null}
-					<p className="mt-2 text-center text-muted-foreground">
-						Joined {data.userJoinedDisplay}
-					</p>
+					{user.about ? (
+						<p className="text-center text-muted-foreground">{user.about}</p>
+					) : null}
+					<div className="mt-10 flex flex-col gap-2">
+						<div className="flex gap-2">
+							<Icon name="envelope-closed" />
+							<p>{user.email}</p>
+						</div>
+						{user.number ? (
+							<div className="flex gap-2">
+								<Icon name="mobile" />
+								<p>{user.number}</p>
+							</div>
+						) : null}
+						{user.website ? (
+							<div className="flex gap-2">
+								<Icon name="globe" />
+								<p>{user.website}</p>
+							</div>
+						) : null}
+					</div>
 					{isLoggedInUser ? (
 						<Form action="/logout" method="POST" className="mt-3">
 							<Button type="submit" variant="link" size="pill">
