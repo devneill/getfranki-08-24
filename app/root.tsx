@@ -248,7 +248,11 @@ function App() {
 				<div className="container flex items-center justify-between px-5 py-2">
 					<Logo />
 					<div className="flex gap-8">
-						<Link to="/login" className="flex align-middle">
+						<Link
+							to="/login"
+							className="flex align-middle"
+							aria-label="admin login"
+						>
 							<Icon name="gear" />
 						</Link>
 						<ThemeSwitch userPreference={data.requestInfo.userPrefs.theme} />
