@@ -77,12 +77,20 @@ export const links: LinksFunction = () => {
 }
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
+	const title = data
+		? 'South African Event Suppliers | GetFranki'
+		: 'Error | GetFranki'
+	const description = 'The best event suppliers in South Africa'
+	const imagePath = '/img/og-image.png'
+	const image = `${data?.requestInfo.origin}${imagePath}`
 	return [
-		{ title: data ? 'GetFranki' : 'Error | GetFranki' },
-		{
-			name: 'description',
-			content: `Find the best event suppliers in South Africa`,
-		},
+		{ title },
+		{ name: 'description', content: description },
+		{ name: 'twitter:card', content: 'summary_large_image' },
+		{ name: 'twitter:site', content: '@devneill' },
+		{ name: 'twitter:title', content: title },
+		{ name: 'twitter:description', content: description },
+		{ name: 'twitter:image', content: image },
 	]
 }
 
