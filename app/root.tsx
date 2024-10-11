@@ -229,9 +229,6 @@ function App() {
 									<UserDropdown />
 								) : (
 									<>
-										<Button asChild className="min-w-20" variant="secondary">
-											<Link to="/login">Log In</Link>
-										</Button>
 										<Button asChild className="min-w-20">
 											<Link to="https://y5pjft0758o.typeform.com/to/qk3aCfvE">
 												Feature as a supplier
@@ -250,7 +247,12 @@ function App() {
 
 				<div className="container flex items-center justify-between px-5 py-2">
 					<Logo />
-					<ThemeSwitch userPreference={data.requestInfo.userPrefs.theme} />
+					<div className="flex gap-8">
+						<Link to="/login" className="flex align-middle">
+							<Icon name="gear" />
+						</Link>
+						<ThemeSwitch userPreference={data.requestInfo.userPrefs.theme} />
+					</div>
 				</div>
 			</div>
 			<EpicToaster closeButton position="top-center" theme={theme} />
