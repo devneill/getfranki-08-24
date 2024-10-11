@@ -86,6 +86,13 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
 	return [
 		{ title },
 		{ name: 'description', content: description },
+		// Open Graph / Facebook
+		{ property: 'og:type', content: 'website' },
+		{ property: 'og:url', content: data?.requestInfo.origin },
+		{ property: 'og:title', content: title },
+		{ property: 'og:description', content: description },
+		{ property: 'og:image', content: image },
+		// Twitter
 		{ name: 'twitter:card', content: 'summary_large_image' },
 		{ name: 'twitter:site', content: '@devneill' },
 		{ name: 'twitter:title', content: title },
