@@ -78,9 +78,10 @@ export const links: LinksFunction = () => {
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
 	const title = data
-		? 'South African Event Suppliers | GetFranki'
+		? 'The best event suppliers in South Africa'
 		: 'Error | GetFranki'
-	const description = 'The best event suppliers in South Africa'
+	const description =
+		'Plan your next event with the best suppliers in South Africa'
 	const imagePath = '/img/og-image.png'
 	const image = `${data?.requestInfo.origin}${imagePath}`
 	return [
@@ -93,11 +94,13 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
 		{ property: 'og:description', content: description },
 		{ property: 'og:image', content: image },
 		// Twitter
-		{ name: 'twitter:card', content: 'summary_large_image' },
-		{ name: 'twitter:site', content: '@devneill' },
 		{ name: 'twitter:title', content: title },
 		{ name: 'twitter:description', content: description },
+		{ name: 'twitter:card', content: 'summary_large_image' },
 		{ name: 'twitter:image', content: image },
+		{ name: 'twitter:image:alt', content: 'GetFranki' },
+		{ name: 'twitter:creator', content: '@devneill' },
+		{ name: 'twitter:site', content: '@devneill' },
 	]
 }
 
@@ -262,6 +265,10 @@ function App() {
 
 				<div className="container flex items-center justify-between px-5 py-2">
 					<Logo />
+					<p className="text-sm">
+						Built with <Icon name="heart-filled" /> by{' '}
+						<a href="https://devneill.com">devneill</a>
+					</p>
 					<div className="flex gap-8">
 						<Link
 							to="/login"
