@@ -1,3 +1,4 @@
+import { type SEOHandle } from '@nasa-gcn/remix-seo'
 import { json, type LoaderFunctionArgs } from '@remix-run/node'
 import { useLoaderData } from '@remix-run/react'
 import { prisma } from '#app/utils/db.server.js'
@@ -20,4 +21,9 @@ export default function SupplierNew() {
 	const data = useLoaderData<typeof loader>()
 
 	return <SupplierEditor categories={data.categories} />
+}
+
+// This tells the SEO plugin that this route should not be included in the sitemap.
+export const handle: SEOHandle = {
+	getSitemapEntries: () => null,
 }
