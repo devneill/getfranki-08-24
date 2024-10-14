@@ -71,6 +71,10 @@ export function getDomainUrl(request: Request) {
 	return `${protocol}://${host}`
 }
 
+export function getCanonicalUrl(path: string): string {
+	return `https://getfranki.com${path}`
+}
+
 export function getReferrerRoute(request: Request) {
 	// spelling errors and whatever makes this annoyingly inconsistent
 	// in my own testing, `referer` returned the right value, but 🤷‍♂️
