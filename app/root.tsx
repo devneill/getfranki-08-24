@@ -46,6 +46,7 @@ import { honeypot } from './utils/honeypot.server.ts'
 import {
 	cn,
 	combineHeaders,
+	getCanonicalUrl,
 	getDomainUrl,
 	getUserImgSrc,
 } from './utils/misc.tsx'
@@ -101,6 +102,11 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
 		{ name: 'twitter:image:alt', content: 'GetFranki' },
 		{ name: 'twitter:creator', content: '@devneill' },
 		{ name: 'twitter:site', content: '@devneill' },
+		{
+			tagName: 'link',
+			rel: 'canonical',
+			href: getCanonicalUrl(location.pathname),
+		},
 	]
 }
 
