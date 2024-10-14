@@ -5,6 +5,7 @@
 // ensure the user gets the right status code and we can display a nicer error
 // message for them than the Remix and/or browser default.
 
+import { type SEOHandle } from '@nasa-gcn/remix-seo'
 import { Link, useLocation } from '@remix-run/react'
 import { GeneralErrorBoundary } from '#app/components/error-boundary.tsx'
 import { Icon } from '#app/components/ui/icon.tsx'
@@ -40,4 +41,10 @@ export function ErrorBoundary() {
 			}}
 		/>
 	)
+}
+
+// 404 pages are not typically included in sitemaps.
+// This tells the SEO plugin that this route should not be included in the sitemap.
+export const handle: SEOHandle = {
+	getSitemapEntries: () => null,
 }

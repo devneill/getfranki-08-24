@@ -9,6 +9,7 @@ import {
 } from '@remix-run/node'
 import {
 	Form,
+	Link,
 	useActionData,
 	useLoaderData,
 	useSearchParams,
@@ -204,8 +205,12 @@ export default function OnboardingRoute() {
 					<CheckboxField
 						labelProps={{
 							htmlFor: fields.agreeToTermsOfServiceAndPrivacyPolicy.id,
-							children:
-								'Do you agree to our Terms of Service and Privacy Policy?',
+							children: (
+								<p>
+									Do you agree to our{' '}
+									<Link to={'/tos'}>Terms of Service and Privacy Policy?</Link>
+								</p>
+							),
 						}}
 						buttonProps={getInputProps(
 							fields.agreeToTermsOfServiceAndPrivacyPolicy,
