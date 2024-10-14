@@ -78,8 +78,8 @@ export const links: LinksFunction = () => {
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
 	const title = data
-		? 'The best event suppliers in South Africa'
-		: 'Error | GetFranki'
+		? 'GetFranki | The best event suppliers in South Africa'
+		: ' GetFranki | Error'
 	const description =
 		'Plan your next event with the best suppliers in South Africa'
 	const imagePath = '/img/og-image.png'
