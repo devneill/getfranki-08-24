@@ -3,6 +3,7 @@ import { getZodConstraint, parseWithZod } from '@conform-to/zod'
 import * as E from '@react-email/components'
 import {
 	json,
+	type LoaderFunctionArgs,
 	redirect,
 	type ActionFunctionArgs,
 	type MetaFunction,
@@ -16,12 +17,17 @@ import { StatusButton } from '#app/components/ui/status-button.tsx'
 import { prisma } from '#app/utils/db.server.ts'
 import { sendEmail } from '#app/utils/email.server.ts'
 import { checkHoneypot } from '#app/utils/honeypot.server.ts'
+import { getCanonicalUrl } from '#app/utils/misc.js'
 import { EmailSchema, UsernameSchema } from '#app/utils/user-validation.ts'
 import { prepareVerification } from './verify.server.ts'
 
 const ForgotPasswordSchema = z.object({
 	usernameOrEmail: z.union([EmailSchema, UsernameSchema]),
 })
+
+export async function loader({ request }: LoaderFunctionArgs) {
+	return json({ requestInfo: { path: new URL(request.url).pathname } })
+}
 
 export async function action({ request }: ActionFunctionArgs) {
 	const formData = await request.formData()
@@ -113,8 +119,19 @@ function ForgotPasswordEmail({
 	)
 }
 
-export const meta: MetaFunction = () => {
-	return [{ title: 'Password Recovery for GetFranki' }]
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
+	return [
+		{ title: 'Password Recovery | GetFranki' },
+		{
+			name: 'description',
+			content: `Recover your password for your GetFranki account.`,
+		},
+		{
+			tagName: 'link',
+			rel: 'canonical',
+			href: getCanonicalUrl(data?.requestInfo.path ?? ''),
+		},
+	]
 }
 
 export default function ForgotPasswordRoute() {

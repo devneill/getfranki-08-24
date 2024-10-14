@@ -82,7 +82,7 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
 		? 'GetFranki | The best event suppliers in South Africa'
 		: ' GetFranki | Error'
 	const description =
-		'Plan your next event with the best suppliers in South Africa'
+		'Plan your next event with the only the best event professionals in South Africa, hand selected by our experienced team.'
 	const imagePath = '/img/og-image.png'
 	const image = `${data?.requestInfo.origin}${imagePath}`
 	return [

@@ -19,7 +19,7 @@ import {
 	providerNames,
 } from '#app/utils/connections.tsx'
 import { checkHoneypot } from '#app/utils/honeypot.server.ts'
-import { useIsPending } from '#app/utils/misc.tsx'
+import { getCanonicalUrl, useIsPending } from '#app/utils/misc.tsx'
 import { PasswordSchema, UsernameSchema } from '#app/utils/user-validation.ts'
 import { handleNewSession } from './login.server.ts'
 
@@ -32,7 +32,7 @@ const LoginFormSchema = z.object({
 
 export async function loader({ request }: LoaderFunctionArgs) {
 	await requireAnonymous(request)
-	return json({})
+	return json({ requestInfo: { path: new URL(request.url).pathname } })
 }
 
 export async function action({ request }: ActionFunctionArgs) {
@@ -196,8 +196,19 @@ export default function LoginPage() {
 	)
 }
 
-export const meta: MetaFunction = () => {
-	return [{ title: 'Login to GetFranki' }]
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
+	return [
+		{ title: 'Login to GetFranki' },
+		{
+			name: 'description',
+			content: `Log in to your GetFranki account.`,
+		},
+		{
+			tagName: 'link',
+			rel: 'canonical',
+			href: getCanonicalUrl(data?.requestInfo.path ?? ''),
+		},
+	]
 }
 
 export function ErrorBoundary() {

@@ -6,10 +6,10 @@ import { Spacer } from '#app/components/spacer.tsx'
 import { Button } from '#app/components/ui/button.tsx'
 import { Icon } from '#app/components/ui/icon.tsx'
 import { prisma } from '#app/utils/db.server.ts'
-import { getUserImgSrc } from '#app/utils/misc.tsx'
+import { getCanonicalUrl, getUserImgSrc } from '#app/utils/misc.tsx'
 import { useOptionalUser, userHasRole } from '#app/utils/user.ts'
 
-export async function loader({ params }: LoaderFunctionArgs) {
+export async function loader({ params, request }: LoaderFunctionArgs) {
 	const user = await prisma.user.findFirst({
 		select: {
 			id: true,
@@ -30,7 +30,11 @@ export async function loader({ params }: LoaderFunctionArgs) {
 
 	invariantResponse(user, 'User not found', { status: 404 })
 
-	return json({ user, userJoinedDisplay: user.createdAt.toLocaleDateString() })
+	return json({
+		user,
+		userJoinedDisplay: user.createdAt.toLocaleDateString(),
+		requestInfo: { path: new URL(request.url).pathname },
+	})
 }
 
 export default function ProfileRoute() {
@@ -129,7 +133,12 @@ export const meta: MetaFunction<typeof loader> = ({ data, params }) => {
 		{ title: `${displayName} | GetFranki` },
 		{
 			name: 'description',
-			content: `Profile of ${displayName} on GetFranki`,
+			content: `Find out more information abouth this South African event suppliers and get in touch to make a booking. Here you'll find the profile and contact details for ${displayName} | GetFranki`,
+		},
+		{
+			tagName: 'link',
+			rel: 'canonical',
+			href: getCanonicalUrl(data?.requestInfo.path ?? ''),
 		},
 	]
 }

@@ -3,6 +3,7 @@ import { getZodConstraint, parseWithZod } from '@conform-to/zod'
 import * as E from '@react-email/components'
 import {
 	json,
+	type LoaderFunctionArgs,
 	redirect,
 	type ActionFunctionArgs,
 	type MetaFunction,
@@ -20,13 +21,17 @@ import {
 import { prisma } from '#app/utils/db.server.ts'
 import { sendEmail } from '#app/utils/email.server.ts'
 import { checkHoneypot } from '#app/utils/honeypot.server.ts'
-import { useIsPending } from '#app/utils/misc.tsx'
+import { getCanonicalUrl, useIsPending } from '#app/utils/misc.tsx'
 import { EmailSchema } from '#app/utils/user-validation.ts'
 import { prepareVerification } from './verify.server.ts'
 
 const SignupSchema = z.object({
 	email: EmailSchema,
 })
+
+export async function loader({ request }: LoaderFunctionArgs) {
+	return json({ requestInfo: { path: new URL(request.url).pathname } })
+}
 
 export async function action({ request }: ActionFunctionArgs) {
 	const formData = await request.formData()
@@ -111,8 +116,19 @@ export function SignupEmail({
 	)
 }
 
-export const meta: MetaFunction = () => {
-	return [{ title: 'Sign Up | GetFranki' }]
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
+	return [
+		{ title: 'Sign Up | GetFranki' },
+		{
+			name: 'description',
+			content: `Sign up for a GetFranki account.`,
+		},
+		{
+			tagName: 'link',
+			rel: 'canonical',
+			href: getCanonicalUrl(data?.requestInfo.path ?? ''),
+		},
+	]
 }
 
 export default function SignupRoute() {
