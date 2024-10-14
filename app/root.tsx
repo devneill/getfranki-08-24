@@ -105,7 +105,7 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
 		{
 			tagName: 'link',
 			rel: 'canonical',
-			href: getCanonicalUrl(location.pathname),
+			href: getCanonicalUrl(data?.requestInfo.path ?? ''),
 		},
 	]
 }
