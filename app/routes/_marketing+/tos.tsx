@@ -1,3 +1,5 @@
+import { type SEOHandle } from '@nasa-gcn/remix-seo'
+
 export default function TermsOfServiceRoute() {
 	return (
 		<div className="container my-14 max-w-5xl">
@@ -271,4 +273,9 @@ export default function TermsOfServiceRoute() {
 			</div>
 		</div>
 	)
+}
+
+// This tells the SEO plugin that this route should not be included in the sitemap.
+export const handle: SEOHandle = {
+	getSitemapEntries: () => null,
 }
