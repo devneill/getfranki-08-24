@@ -68,8 +68,17 @@ export async function action({ request }: ActionFunctionArgs) {
 		)
 	}
 
-	const { id, username, name, email, number, website, about, categoryId } =
-		submission.value
+	const {
+		id,
+		username,
+		name,
+		email,
+		number,
+		website,
+		about,
+		categoryId,
+		locationId,
+	} = submission.value
 
 	const role = await prisma.role.findUnique({
 		where: { name: 'supplier' },
@@ -86,6 +95,7 @@ export async function action({ request }: ActionFunctionArgs) {
 			number,
 			website,
 			about,
+			location: { connect: { id: locationId } },
 			category: { connect: { id: categoryId } },
 			roles: { connect: { id: role?.id } },
 		},
@@ -96,6 +106,7 @@ export async function action({ request }: ActionFunctionArgs) {
 			number,
 			website,
 			about,
+			location: { connect: { id: locationId } },
 			category: { connect: { id: categoryId } },
 		},
 	})

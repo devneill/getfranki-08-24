@@ -19,6 +19,7 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
 			email: true,
 			number: true,
 			website: true,
+			location: true,
 			category: true,
 			about: true,
 		},
@@ -28,17 +29,27 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
 	})
 	invariantResponse(user, 'Not found', { status: 404 })
 
+	const locations = await prisma.location.findMany({
+		select: { id: true, name: true },
+	})
+
 	const categories = await prisma.category.findMany({
 		select: { id: true, name: true },
 	})
 
-	return json({ categories, user })
+	return json({ locations, categories, user })
 }
 
 export default function SupplierEdit() {
 	const data = useLoaderData<typeof loader>()
 
-	return <SupplierEditor categories={data.categories} user={data.user} />
+	return (
+		<SupplierEditor
+			locations={data.locations}
+			categories={data.categories}
+			user={data.user}
+		/>
+	)
 }
 
 export function ErrorBoundary() {

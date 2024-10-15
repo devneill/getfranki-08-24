@@ -3,6 +3,7 @@ import { json, type LoaderFunctionArgs } from '@remix-run/node'
 import { Form, Link, useLoaderData, type MetaFunction } from '@remix-run/react'
 import { GeneralErrorBoundary } from '#app/components/error-boundary.tsx'
 import { Spacer } from '#app/components/spacer.tsx'
+import { Badge } from '#app/components/ui/badge.js'
 import { Button } from '#app/components/ui/button.tsx'
 import { Icon } from '#app/components/ui/icon.tsx'
 import { prisma } from '#app/utils/db.server.ts'
@@ -20,6 +21,8 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
 			website: true,
 			username: true,
 			createdAt: true,
+			location: { select: { name: true } },
+			category: { select: { name: true } },
 			image: { select: { id: true } },
 			roles: { select: { name: true, permissions: true } },
 		},
@@ -86,6 +89,25 @@ export default function ProfileRoute() {
 							<div className="flex gap-2">
 								<Icon name="globe" />
 								<p>{user.website}</p>
+							</div>
+						) : null}
+						{user.location.length > 0 ? (
+							<div className="flex gap-2">
+								<Icon name="sewing-pin-filled" />
+								{user.location.map((loc) => (
+									<p key={loc.name}>{loc.name} </p>
+								))}
+							</div>
+						) : null}
+						{user.category.length > 0 ? (
+							<div className="flex gap-2">
+								<Icon name="info-circled" />
+
+								{user.category.map((cat) => (
+									<Badge variant="secondary" key={cat.name}>
+										{cat.name}{' '}
+									</Badge>
+								))}
 							</div>
 						) : null}
 					</div>
