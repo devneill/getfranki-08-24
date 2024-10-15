@@ -150,12 +150,15 @@ export default function ProfileRoute() {
 }
 
 export const meta: MetaFunction<typeof loader> = ({ data, params }) => {
-	const displayName = data?.user.name ?? params.username
+	const user = data?.user
+	const displayName = user?.name ?? params.username
+	const category = user?.category[0]?.name ?? 'Event Supplier'
+	const location = user?.location[0]?.name ?? 'South Africa'
 	return [
-		{ title: `${displayName} | GetFranki` },
+		{ title: `${category} hire in ${location} - ${displayName}` },
 		{
 			name: 'description',
-			content: `Find out more information abouth this South African event suppliers and get in touch to make a booking. Here you'll find the profile and contact details for ${displayName} | GetFranki`,
+			content: `${displayName} is available as a ${category} for hire in ${location}. Book the best ${category} in ${location} for your event with GetFranki.`,
 		},
 		{
 			tagName: 'link',
