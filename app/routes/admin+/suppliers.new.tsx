@@ -8,11 +8,14 @@ import { SupplierEditor } from './__supplier-editor.tsx'
 export async function loader({ request }: LoaderFunctionArgs) {
 	await requireUserWithRole(request, 'admin')
 
+	const locations = await prisma.location.findMany({
+		select: { id: true, name: true },
+	})
 	const categories = await prisma.category.findMany({
 		select: { id: true, name: true },
 	})
 
-	return json({ categories })
+	return json({ locations, categories })
 }
 
 export { action } from './__supplier-editor.server.tsx'
@@ -20,7 +23,9 @@ export { action } from './__supplier-editor.server.tsx'
 export default function SupplierNew() {
 	const data = useLoaderData<typeof loader>()
 
-	return <SupplierEditor categories={data.categories} />
+	return (
+		<SupplierEditor locations={data.locations} categories={data.categories} />
+	)
 }
 
 // This tells the SEO plugin that this route should not be included in the sitemap.

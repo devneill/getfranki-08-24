@@ -32,13 +32,16 @@ export const SupplierEditorSchema = z.object({
 	number: NumberSchema.optional(),
 	website: WebsiteSchema.optional(),
 	categoryId: z.string(),
+	locationId: z.string(),
 	about: AboutSchema,
 })
 
 export function SupplierEditor({
 	categories,
+	locations,
 	user,
 }: {
+	locations: Array<SerializeFrom<Pick<Category, 'id' | 'name'>>>
 	categories: Array<SerializeFrom<Pick<Category, 'id' | 'name'>>>
 	user?: SerializeFrom<
 		Pick<
@@ -51,6 +54,10 @@ export function SupplierEditor({
 }) {
 	const actionData = useActionData<typeof action>()
 	const isPending = useIsPending()
+	const locationOptions = locations.map((loc) => ({
+		value: loc.id,
+		name: loc.name,
+	}))
 	const categoryOptions = categories.map((cat) => ({
 		value: cat.id,
 		name: cat.name,
@@ -127,6 +134,13 @@ export function SupplierEditor({
 							autoComplete: 'website',
 						}}
 						errors={fields.website.errors}
+					/>
+					<SelectField
+						labelProps={{ children: 'Location' }}
+						placeholder="Select a location"
+						meta={fields.locationId}
+						items={locationOptions}
+						errors={fields.locationId.errors}
 					/>
 					<SelectField
 						labelProps={{ children: 'Category' }}
