@@ -24,7 +24,7 @@ export const NameSchema = z
 export const AboutSchema = z
 	.string({ required_error: 'About is required' })
 	.min(3, { message: 'About is too short' })
-	.max(400, { message: 'About is too long' })
+	.max(4000, { message: 'About is too long' })
 export const EmailSchema = z
 	.string({ required_error: 'Email is required' })
 	.email({ message: 'Email is invalid' })
