@@ -7,7 +7,12 @@ import { Badge } from '#app/components/ui/badge.js'
 import { Button } from '#app/components/ui/button.tsx'
 import { Icon } from '#app/components/ui/icon.tsx'
 import { prisma } from '#app/utils/db.server.ts'
-import { getCanonicalUrl, getUserImgSrc } from '#app/utils/misc.tsx'
+import {
+	getCanonicalUrl,
+	getEventImgSrc,
+	getProductImgSrc,
+	getUserImgSrc,
+} from '#app/utils/misc.tsx'
 import { useOptionalUser, userHasRole } from '#app/utils/user.ts'
 
 export async function loader({ params, request }: LoaderFunctionArgs) {
@@ -24,6 +29,12 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
 			location: { select: { name: true } },
 			category: { select: { name: true } },
 			image: { select: { id: true } },
+			productImages: {
+				select: {
+					id: true,
+					altText: true,
+				},
+			},
 			roles: { select: { name: true, permissions: true } },
 		},
 		where: {
@@ -111,6 +122,19 @@ export default function ProfileRoute() {
 							</div>
 						) : null}
 					</div>
+					<ul className="mt-14 flex flex-wrap justify-center gap-5 py-5">
+						{data.user.productImages.map((image) => (
+							<li key={image.id}>
+								<a href={getProductImgSrc(image.id)}>
+									<img
+										src={getProductImgSrc(image.id)}
+										alt={image.altText ?? ''}
+										className="size-48 rounded-lg object-cover transition-transform duration-200 ease-in-out hover:scale-105 sm:size-64 md:size-80 lg:size-96"
+									/>
+								</a>
+							</li>
+						))}
+					</ul>
 					{isLoggedInUser ? (
 						<Form action="/logout" method="POST" className="mt-3">
 							<Button type="submit" variant="link" size="pill">

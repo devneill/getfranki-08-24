@@ -1,8 +1,16 @@
-import { getFormProps, getInputProps, useForm } from '@conform-to/react'
+import {
+	type FieldMetadata,
+	getFieldsetProps,
+	getFormProps,
+	getInputProps,
+	getTextareaProps,
+	useForm,
+} from '@conform-to/react'
 import { getZodConstraint, parseWithZod } from '@conform-to/zod'
-import { type User, type Category } from '@prisma/client'
+import { type User, type Category, type ProductImage } from '@prisma/client'
 import { type MetaFunction, type SerializeFrom } from '@remix-run/node'
 import { Form, useActionData } from '@remix-run/react'
+import { useState } from 'react'
 import { z } from 'zod'
 import { GeneralErrorBoundary } from '#app/components/error-boundary.js'
 import {
@@ -12,8 +20,12 @@ import {
 	TextareaField,
 } from '#app/components/forms.tsx'
 import { Spacer } from '#app/components/spacer.tsx'
+import { Button } from '#app/components/ui/button.js'
+import { Icon } from '#app/components/ui/icon.js'
+import { Label } from '#app/components/ui/label.js'
 import { StatusButton } from '#app/components/ui/status-button.tsx'
-import { useIsPending } from '#app/utils/misc.tsx'
+import { Textarea } from '#app/components/ui/textarea.js'
+import { cn, getProductImgSrc, useIsPending } from '#app/utils/misc.tsx'
 import {
 	UsernameSchema,
 	NameSchema,
@@ -23,6 +35,21 @@ import {
 	AboutSchema,
 } from '#app/utils/user-validation.js'
 import { type action } from './__supplier-editor.server'
+
+export const MAX_UPLOAD_SIZE = 1024 * 1024 * 3 // 3MB
+
+const ImageFieldsetSchema = z.object({
+	id: z.string().optional(),
+	file: z
+		.instanceof(File)
+		.optional()
+		.refine((file) => {
+			return !file || file.size <= MAX_UPLOAD_SIZE
+		}, 'File size must be less than 3MB'),
+	altText: z.string().optional(),
+})
+
+export type ImageFieldset = z.infer<typeof ImageFieldsetSchema>
 
 export const SupplierEditorSchema = z.object({
 	id: z.string().optional(),
@@ -34,6 +61,7 @@ export const SupplierEditorSchema = z.object({
 	categoryId: z.string(),
 	locationId: z.string(),
 	about: AboutSchema,
+	productImages: z.array(ImageFieldsetSchema).max(5).optional(),
 })
 
 export function SupplierEditor({
@@ -48,7 +76,9 @@ export function SupplierEditor({
 			User,
 			'id' | 'username' | 'name' | 'email' | 'number' | 'website' | 'about'
 		> & {
+			location: Array<Pick<Category, 'id' | 'name'>>
 			category: Array<Pick<Category, 'id' | 'name'>>
+			productImages: Array<Pick<ProductImage, 'id' | 'altText'>>
 		}
 	>
 }) {
@@ -68,7 +98,9 @@ export function SupplierEditor({
 		constraint: getZodConstraint(SupplierEditorSchema),
 		defaultValue: {
 			...user,
+			locationId: user?.location[0]?.id,
 			categoryId: user?.category[0]?.id,
+			productImages: user?.productImages ?? [{}],
 		},
 		lastResult: actionData?.result,
 		onValidate({ formData }) {
@@ -76,6 +108,7 @@ export function SupplierEditor({
 		},
 		shouldRevalidate: 'onBlur',
 	})
+	const imageList = fields.productImages.getFieldList()
 
 	return (
 		<div className="container flex min-h-full flex-col justify-center pb-32 pt-20">
@@ -91,7 +124,14 @@ export function SupplierEditor({
 					method="POST"
 					className="mx-auto min-w-full max-w-sm sm:min-w-[368px]"
 					{...getFormProps(form)}
+					encType="multipart/form-data"
 				>
+					{/*
+				This hidden submit button is here to ensure that when the user hits
+				"enter" on an input field, the primary form function is submitted
+				rather than the first button in the form (which is delete/add image).
+			*/}
+					<button type="submit" className="hidden" />
 					{user ? <input type="hidden" name="id" value={user.id} /> : null}
 					<Field
 						labelProps={{ htmlFor: fields.username.id, children: 'Username' }}
@@ -157,6 +197,48 @@ export function SupplierEditor({
 						}}
 						errors={fields.about.errors}
 					/>
+					<div className="mb-8 rounded-lg bg-muted p-6">
+						<div>
+							<Label>Images</Label>
+							<ul className="flex flex-col gap-4">
+								{imageList.map((image, index) => {
+									return (
+										<li
+											key={image.key}
+											className="relative border-b-2 border-muted-foreground"
+										>
+											<button
+												className="absolute right-0 top-0 text-foreground-destructive"
+												{...form.remove.getButtonProps({
+													name: fields.productImages.name,
+													index,
+												})}
+											>
+												<span aria-hidden>
+													<Icon name="cross-1" />
+												</span>{' '}
+												<span className="sr-only">
+													Remove image {index + 1}
+												</span>
+											</button>
+											<ImageChooser meta={image} />
+										</li>
+									)
+								})}
+							</ul>
+						</div>
+						<Button
+							className="mt-3"
+							{...form.insert.getButtonProps({
+								name: fields.productImages.name,
+							})}
+						>
+							<span aria-hidden>
+								<Icon name="plus">Image</Icon>
+							</span>{' '}
+							<span className="sr-only">Add image</span>
+						</Button>
+					</div>
 					<ErrorList errors={form.errors} id={form.errorId} />
 					<div className="flex items-center justify-between gap-6">
 						<StatusButton
@@ -171,6 +253,95 @@ export function SupplierEditor({
 				</Form>
 			</div>
 		</div>
+	)
+}
+
+function ImageChooser({ meta }: { meta: FieldMetadata<ImageFieldset> }) {
+	const fields = meta.getFieldset()
+	const existingImage = Boolean(fields.id.initialValue)
+	const [previewImage, setPreviewImage] = useState<string | null>(
+		fields.id.initialValue ? getProductImgSrc(fields.id.initialValue) : null,
+	)
+	const [altText, setAltText] = useState(fields.altText.initialValue ?? '')
+
+	return (
+		<fieldset {...getFieldsetProps(meta)}>
+			<div className="flex gap-3">
+				<div className="w-32">
+					<div className="relative h-32 w-32">
+						<label
+							htmlFor={fields.file.id}
+							className={cn('group absolute h-32 w-32 rounded-lg', {
+								'bg-accent opacity-40 focus-within:opacity-100 hover:opacity-100':
+									!previewImage,
+								'cursor-pointer focus-within:ring-2': !existingImage,
+							})}
+						>
+							{previewImage ? (
+								<div className="relative">
+									<img
+										src={previewImage}
+										alt={altText ?? ''}
+										className="h-32 w-32 rounded-lg object-cover"
+									/>
+									{existingImage ? null : (
+										<div className="pointer-events-none absolute -right-0.5 -top-0.5 rotate-12 rounded-sm bg-secondary px-2 py-1 text-xs text-secondary-foreground shadow-md">
+											new
+										</div>
+									)}
+								</div>
+							) : (
+								<div className="flex h-32 w-32 items-center justify-center rounded-lg border border-muted-foreground text-4xl text-muted-foreground">
+									<Icon name="plus" />
+								</div>
+							)}
+							{existingImage ? (
+								<input {...getInputProps(fields.id, { type: 'hidden' })} />
+							) : null}
+							<input
+								aria-label="Image"
+								className="absolute left-0 top-0 z-0 h-32 w-32 cursor-pointer opacity-0"
+								onChange={(event) => {
+									const file = event.target.files?.[0]
+
+									if (file) {
+										const reader = new FileReader()
+										reader.onloadend = () => {
+											setPreviewImage(reader.result as string)
+										}
+										reader.readAsDataURL(file)
+									} else {
+										setPreviewImage(null)
+									}
+								}}
+								accept="image/*"
+								{...getInputProps(fields.file, { type: 'file' })}
+							/>
+						</label>
+					</div>
+					<div className="min-h-[32px] px-4 pb-3 pt-1">
+						<ErrorList id={fields.file.errorId} errors={fields.file.errors} />
+					</div>
+				</div>
+				<div className="flex-1">
+					<Label htmlFor={fields.altText.id}>Alt Text</Label>
+					<Textarea
+						className="min-h-[104px]"
+						onChange={(e) => setAltText(e.currentTarget.value)}
+						{...getTextareaProps(fields.altText)}
+					/>
+					<div className="min-h-[32px] px-4 pb-3 pt-1">
+						<ErrorList
+							id={fields.altText.errorId}
+							errors={fields.altText.errors}
+						/>
+					</div>
+				</div>
+			</div>
+			<div className="min-h-[32px] px-4 pb-3 pt-1">
+				<ErrorList id={meta.errorId} errors={meta.errors} />
+			</div>
+		</fieldset>
 	)
 }
 

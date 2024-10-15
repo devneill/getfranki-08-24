@@ -199,7 +199,6 @@ export function EventEditor({
 							<Label>Images</Label>
 							<ul className="flex flex-col gap-4">
 								{imageList.map((image, index) => {
-									console.log('image.key', image.key)
 									return (
 										<li
 											key={image.key}
