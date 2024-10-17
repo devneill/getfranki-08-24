@@ -36,7 +36,7 @@ import {
 } from '#app/utils/user-validation.js'
 import { type action } from './__supplier-editor.server'
 
-export const MAX_UPLOAD_SIZE = 1024 * 1024 * 3 // 3MB
+export const MAX_UPLOAD_SIZE = 1024 * 1024 * 6 // 6MB
 
 const ImageFieldsetSchema = z.object({
 	id: z.string().optional(),
@@ -45,7 +45,7 @@ const ImageFieldsetSchema = z.object({
 		.optional()
 		.refine((file) => {
 			return !file || file.size <= MAX_UPLOAD_SIZE
-		}, 'File size must be less than 3MB'),
+		}, 'File size must be less than 6MB'),
 	altText: z.string().optional(),
 })
 

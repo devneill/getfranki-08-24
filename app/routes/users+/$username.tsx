@@ -9,7 +9,6 @@ import { Icon } from '#app/components/ui/icon.tsx'
 import { prisma } from '#app/utils/db.server.ts'
 import {
 	getCanonicalUrl,
-	getEventImgSrc,
 	getProductImgSrc,
 	getUserImgSrc,
 } from '#app/utils/misc.tsx'
@@ -60,7 +59,7 @@ export default function ProfileRoute() {
 	const isLoggedInAdmin = userHasRole(loggedInUser ?? null, 'admin')
 
 	return (
-		<div className="container mb-48 mt-36 flex flex-col items-center justify-center">
+		<div className="container mb-10 mt-36 flex flex-col items-center justify-center">
 			<Spacer size="4xs" />
 
 			<div className="container flex flex-col items-center rounded-3xl bg-muted p-12">
@@ -78,14 +77,14 @@ export default function ProfileRoute() {
 
 				<Spacer size="sm" />
 
-				<div className="flex flex-col items-center gap-8">
+				<div className="flex flex-col items-center gap-12">
 					<div className="flex flex-wrap items-center justify-center gap-4">
 						<h1 className="text-center text-h2">{userDisplayName}</h1>
 					</div>
 					{user.about ? (
 						<p className="text-center text-muted-foreground">{user.about}</p>
 					) : null}
-					<div className="mt-10 flex flex-col gap-2">
+					<div className="flex flex-col gap-2">
 						<div className="flex gap-2">
 							<Icon name="envelope-closed" />
 							<p>{user.email}</p>
@@ -122,14 +121,14 @@ export default function ProfileRoute() {
 							</div>
 						) : null}
 					</div>
-					<ul className="mt-14 flex flex-wrap justify-center gap-5 py-5">
+					<ul className="flex flex-wrap justify-center gap-2 py-5 sm:gap-5">
 						{data.user.productImages.map((image) => (
 							<li key={image.id}>
 								<a href={getProductImgSrc(image.id)}>
 									<img
 										src={getProductImgSrc(image.id)}
 										alt={image.altText ?? ''}
-										className="size-48 rounded-lg object-cover transition-transform duration-200 ease-in-out hover:scale-105 sm:size-64 md:size-80 lg:size-96"
+										className="size-32 rounded-lg object-cover transition-transform duration-200 ease-in-out hover:scale-105 sm:size-64 md:size-80 lg:size-96"
 									/>
 								</a>
 							</li>
@@ -144,29 +143,27 @@ export default function ProfileRoute() {
 							</Button>
 						</Form>
 					) : null}
-					<div className="mt-10 flex gap-4">
-						{isLoggedInUser ? (
-							<>
-								<Button asChild>
-									<Link to="/settings/profile" prefetch="intent">
-										Edit profile
-									</Link>
-								</Button>
-							</>
-						) : null}
-						{isLoggedInAdmin && !isLoggedInUser ? (
-							<>
-								<Button asChild>
-									<Link
-										to={`/admin/suppliers/${user.username}/edit`}
-										prefetch="intent"
-									>
-										Edit this supplier
-									</Link>
-								</Button>
-							</>
-						) : null}
-					</div>
+					{isLoggedInUser ? (
+						<>
+							<Button asChild>
+								<Link to="/settings/profile" prefetch="intent">
+									Edit profile
+								</Link>
+							</Button>
+						</>
+					) : null}
+					{isLoggedInAdmin && !isLoggedInUser ? (
+						<>
+							<Button asChild>
+								<Link
+									to={`/admin/suppliers/${user.username}/edit`}
+									prefetch="intent"
+								>
+									Edit this supplier
+								</Link>
+							</Button>
+						</>
+					) : null}
 				</div>
 			</div>
 		</div>
