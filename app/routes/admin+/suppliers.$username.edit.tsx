@@ -22,6 +22,12 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
 			location: true,
 			category: true,
 			about: true,
+			productImages: {
+				select: {
+					id: true,
+					altText: true,
+				},
+			},
 		},
 		where: {
 			username: params.username,

@@ -115,6 +115,7 @@ app.use(
 				'connect-src': [
 					MODE === 'development' ? 'ws:' : null,
 					process.env.SENTRY_DSN ? '*.sentry.io' : null,
+					'https://plausible.io',
 					"'self'",
 				].filter(Boolean),
 				'font-src': ["'self'"],

@@ -23,16 +23,18 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  image       UserImage?
-  password    Password?
-  events      Event[]
-  roles       Role[]
-  sessions    Session[]
-  connections Connection[]
-  bookings    Booking[]
-  category    Category[]
-  location    Location[]
-  bankAccount BankAccount?
+  image          UserImage?
+  password       Password?
+  events         Event[]
+  roles          Role[]
+  sessions       Session[]
+  connections    Connection[]
+  bookings       Booking[]
+  category       Category[]
+  location       Location[]
+  productImages  ProductImage[]
+  bankAccount    BankAccount?
+  productImageId String?
 }
 
 model Category {
@@ -135,6 +137,22 @@ model UserImage {
 
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId String @unique
+}
+
+model ProductImage {
+  id          String  @id @default(cuid())
+  altText     String?
+  contentType String
+  blob        Bytes
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId String
+
+  // non-unique foreign key
+  @@index([userId])
 }
 
 model Password {
