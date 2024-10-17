@@ -61,7 +61,7 @@ export const SupplierEditorSchema = z.object({
 	categoryId: z.string(),
 	locationId: z.string(),
 	about: AboutSchema,
-	productImages: z.array(ImageFieldsetSchema).max(5).optional(),
+	productImages: z.array(ImageFieldsetSchema).max(6).optional(),
 })
 
 export function SupplierEditor({
