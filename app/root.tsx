@@ -79,10 +79,10 @@ export const links: LinksFunction = () => {
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
 	const title = data
-		? 'GetFranki | The best event suppliers in South Africa'
+		? 'The best event suppliers for weddings, conferences and parties in South Africa'
 		: ' GetFranki | Error'
 	const description =
-		'Plan your next event with the only the best event professionals in South Africa, hand selected by our experienced team.'
+		'Plan your next event with the only the best conference, party and wedding suppliers in South Africa, hand selected by our experienced team.'
 	const imagePath = '/img/og-image.png'
 	const image = `${data?.requestInfo.origin}${imagePath}`
 	return [

@@ -31,8 +31,6 @@ function imageHasId(
 export async function action({ request }: ActionFunctionArgs) {
 	await requireUserWithRole(request, 'admin')
 
-	console.log({ request })
-
 	const formData = await parseMultipartFormData(
 		request,
 		createMemoryUploadHandler({ maxPartSize: MAX_UPLOAD_SIZE }),
