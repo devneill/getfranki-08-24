@@ -79,10 +79,10 @@ export const links: LinksFunction = () => {
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
 	const title = data
-		? 'GetFranki | The best event suppliers in South Africa'
+		? 'The best event suppliers for weddings, conferences and parties in South Africa'
 		: ' GetFranki | Error'
 	const description =
-		'Plan your next event with the only the best event professionals in South Africa, hand selected by our experienced team.'
+		'Plan your next event with the only the best conference, party and wedding suppliers in South Africa, hand selected by our experienced team.'
 	const imagePath = '/img/og-image.png'
 	const image = `${data?.requestInfo.origin}${imagePath}`
 	return [
@@ -206,11 +206,19 @@ function Document({
 				)}
 				<Links />
 				{env.MODE === 'production' ? (
-					<script
-						defer
-						data-domain="getfranki.com"
-						src="https://plausible.io/js/script.js"
-					></script>
+					<>
+						<script
+							defer
+							data-website-id="673479c508d6f743c8f7e9bb"
+							data-domain="getfranki.com"
+							src="https://datafa.st/js/script.js"
+						></script>
+						<script
+							defer
+							data-domain="getfranki.com"
+							src="https://plausible.io/js/script.js"
+						></script>
+					</>
 				) : null}
 			</head>
 			<body className="overflow-y-scroll bg-background text-foreground">
