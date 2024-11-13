@@ -206,11 +206,19 @@ function Document({
 				)}
 				<Links />
 				{env.MODE === 'production' ? (
-					<script
-						defer
-						data-domain="getfranki.com"
-						src="https://plausible.io/js/script.js"
-					></script>
+					<>
+						<script
+							defer
+							data-website-id="673479c508d6f743c8f7e9bb"
+							data-domain="getfranki.com"
+							src="https://datafa.st/js/script.js"
+						></script>
+						<script
+							defer
+							data-domain="getfranki.com"
+							src="https://plausible.io/js/script.js"
+						></script>
+					</>
 				) : null}
 			</head>
 			<body className="overflow-y-scroll bg-background text-foreground">
